@@ -114,10 +114,26 @@
 
 			}else{// modern browsers that support CSS3
 
-				$(_this).parent().css({
-					'width': options.width + 'px',
-					'height': options.height + 'px'
-				});
+				if (methods.percentOrPixel(options.width) == '%') { // width is in percentage
+					$(_this).parent().css({
+						'width': options.width
+					});
+				}else{
+					$(_this).parent().css({
+						'width': options.width + 'px'
+					});
+				}
+
+				if (methods.percentOrPixel(options.height) == '%') { // height is in percentage
+					$(_this).parent().css({
+						'height': options.height
+					});
+				}else{
+					$(_this).parent().css({
+						'height': options.height + 'px'
+					});
+				}
+
 				var featuredBgImg = $('<div/>').css({
 					'width': '100%',
 					'height': '100%',
@@ -134,6 +150,20 @@
 					$(featuredBgImg).show();
 				}
 				options.complete.call(_this, $(featuredBgImg));
+			}
+		},
+
+		percentOrPixel: function(str){
+			var str = str.toString();
+			var lastChar = str.charAt(str.length - 1);
+			var str = str.substr(0, str.length - 1);
+			if($.isNumeric(str)){
+				if(lastChar == '%'){
+					return '%';
+				}
+				if(str.charAt(str.length - 2, str.length).toLowerCase() == 'px'){
+					return 'px';
+				}
 			}
 		},
 
