@@ -2,7 +2,7 @@
 	Copyright (c) 2013-2013 Tho Pak Cheong
 	Version: 1.2 (1-SEP-2013)
 	Dual licensed under the MIT and GPL licenses.
-	Requires: jQuery v1.2.5 or later
+	Requires: jQuery v1.8.0 or later
 
 	Change Log:
 	V1.1
