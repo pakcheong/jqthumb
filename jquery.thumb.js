@@ -1,44 +1,45 @@
 /*
 	Copyright (c) 2013-2013 Tho Pak Cheong
-	Version: 1.0 (26-AUG-2013)
+	Version: 1.1 (31-AUG-2013)
 	Dual licensed under the MIT and GPL licenses.
 	Requires: jQuery v1.2.5 or later
+
+	Change Log:
+	V1.1
+	=========================
+	1. Uses jquery boilerplate written in https://github.com/jquery-boilerplate/jquery-boilerplate/blob/master/src/jquery.boilerplate.js as a plugin template
+	2. Dimension now supports percentage instead of fixed value. But it only works in CSS3-supported browsers.
+	3. Fixed bugs that occur when there are two plugin initializations and options in the 2nd one would replace the options in the first one. But I have no idea how I fixed it though, it just worked out of sudden after many hours of debugging.
 */
-(function ($){
-	var defaults = {
-		classname: 'jqthumb',
-		width: 100,
-		height: 100,
-		showoncomplete: true,
-		complete: function(){}
-	};
+;(function ( $, window, document, undefined ) {
 	
-	var methods = {
-		/* EXECUTE PLUGIN */
-		init: function (_options){
-		
-			options = $.extend({}, defaults, _options); // replace _options with the default ones, and assign it to "options" which is a global variable
+	var pluginName = "jqthumb",
+		defaults = {
+			classname: 'jqthumb',
+			width: 100,
+			height: 100,
+			showoncomplete: true,
+			complete: function(){}
+		};
 
-			return this.each(function(){
+	
+	function Plugin ( element, options ) {// The actual plugin constructor
+		this.element = element;
+		this.settings = $.extend( {}, defaults, options );
+		this._defaults = defaults;
+		this._name = pluginName;
+		this.init();
+	}
 
-				var _this = $(this);
-				
-				$(_this).one('load', function() {
-					methods.makethumbnail($(_this));
-				}).each(function() {
-					if(this.complete) { // fix cached images for not going through .load() in IE
-						$(this).load();
-					}
-				});
-
-			});
+	Plugin.prototype = {
+		init: function () {
+			this.makethumbnail(this.element, this.settings);
 		},
 
-		makethumbnail: function(_this){
+		makethumbnail: function (_this, options) {
 			$(_this).hide();
-
-			if(methods.support_css3_attr('backgroundSize') == false){ // old browsers need to do calculation to perform same output like "background-size: cover"
-
+			
+			if(this.support_css3_attr('backgroundSize') == false){ // old browsers need to do calculation to perform same output like "background-size: cover"
 				$(_this).parent().css({
 					'position': 'relative',
 					'overflow': 'hidden',
@@ -111,45 +112,35 @@
 					$(oriImg.obj).show();
 				}
 				options.complete.call(this, $(oriImg.obj));
+			}else{
+				var pw = this.percentOrPixel(options.width),
+					ph = this.percentOrPixel(options.height);
 
-			}else{// modern browsers that support CSS3
-
-				if (methods.percentOrPixel(options.width) == '%') { // width is in percentage
+				$(_this).one('load',function() {
 					$(_this).parent().css({
-						'width': options.width
+						'width': (pw == '%') ? options.width : options.width + 'px',
+						'height': (ph == '%') ? options.height : options.height + 'px'
 					});
-				}else{
-					$(_this).parent().css({
-						'width': options.width + 'px'
-					});
-				}
+					var featuredBgImg = $('<div/>').css({
+						'width': '100%',
+						'height': '100%',
+						'background-image': 'url("' + $(_this).attr('src') + '")',
+						'background-repeat': 'no-repeat',
+						'background-position': 'center center',
+						'background-size': 'cover',
+						'display': 'none'
+					})
+					.addClass(options.classname)
+					.insertBefore($(_this));
 
-				if (methods.percentOrPixel(options.height) == '%') { // height is in percentage
-					$(_this).parent().css({
-						'height': options.height
-					});
-				}else{
-					$(_this).parent().css({
-						'height': options.height + 'px'
-					});
-				}
-
-				var featuredBgImg = $('<div/>').css({
-					'width': '100%',
-					'height': '100%',
-					'background-image': 'url("' + $(_this).attr('src') + '")',
-					'background-repeat': 'no-repeat',
-					'background-position': 'center center',
-					'background-size': 'cover',
-					'display': 'none'
-				})
-				.addClass(options.classname)
-				.insertBefore($(_this));
-
-				if(options.showoncomplete == true){
-					$(featuredBgImg).show();
-				}
-				options.complete.call(_this, $(featuredBgImg));
+					if(options.showoncomplete == true){
+						$(featuredBgImg).show();
+					}
+					options.complete.call(_this, $(featuredBgImg));
+				}).each(function(){
+					$(_this).load();
+				});
+				
 			}
 		},
 
@@ -178,7 +169,7 @@
 		},
 
 		support_css3_attr: (function() {
-			/* code availabel at http://net.tutsplus.com/tutorials/html-css-techniques/quick-tip-detect-css-support-in-browsers-with-javascript/ */
+			/* code available at http://net.tutsplus.com/tutorials/html-css-techniques/quick-tip-detect-css-support-in-browsers-with-javascript/ */
 			var div = document.createElement('div'),
 			vendors = 'Khtml Ms O Moz Webkit'.split(' '),
 			len = vendors.length;
@@ -202,13 +193,12 @@
 		})()
 	};
 
-	$.fn.jqThumb = function (method){
-		if(methods[method]){
-			return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
-		}else if(typeof method === 'object' || !method){
-			return methods.init.apply(this, arguments);
-		}else{
-			$.error('Method ' + method + ' does not exist on jQuery.mobileappsau');
-		}
+	$.fn[ pluginName ] = function ( options ) {
+		return this.each(function() {
+			if ( !$.data( this, "plugin_" + pluginName ) ) {
+				$.data( this, "plugin_" + pluginName, new Plugin( this, options ) );
+			}
+		});
 	};
-})(jQuery);
+
+})( jQuery, window, document );
