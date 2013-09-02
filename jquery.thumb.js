@@ -1,6 +1,6 @@
 /*
 	Copyright (c) 2013-2013 Tho Pak Cheong
-	Version: 1.2 (1-SEP-2013)
+	Version: 1.2.1 (2-SEP-2013)
 	Dual licensed under the MIT and GPL licenses.
 	Requires: jQuery v1.8.0 or later
 
@@ -18,6 +18,10 @@
 	3. Added global variables to store things to be used in every methods globally.
 	4. Added updateGlobal() method to update global variables and also keep all input and output elements.
 	5. Fixed bug - methods.getActualSize() has changed to this.getActualSize().
+	
+	V1.2.1
+	=========================
+	1. Bug occurs when you have more than one initialzations and global.counter keep adding up from the previous initialzation. Bug fixed.
 */
 
 ;(function ( $, window, document, undefined ) {
@@ -226,6 +230,8 @@
 	$.fn[ pluginName ] = function ( options ) {
 
 		var elems = $(this).find('*').addBack();
+		
+		global.counter = 0; // must always set to zero for every initialization
 		global.inputElems = $(elems);
 		global.totalElem = $(elems).length; // set total of elements for later use.
 
