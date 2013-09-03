@@ -1,6 +1,6 @@
 /*
 	Copyright (c) 2013-2013 Tho Pak Cheong
-	Version: 1.2.1 (2-SEP-2013)
+	Version: 1.2.2 (2-SEP-2013)
 	Dual licensed under the MIT and GPL licenses.
 	Requires: jQuery v1.8.0 or later
 
@@ -22,6 +22,13 @@
 	V1.2.1
 	=========================
 	1. Bug occurs when you have more than one initialzations and global.counter keep adding up from the previous initialzation. Bug fixed.
+	
+	v1.2.2
+	=========================
+	1. Bug occurs when you have more than one initialzations and global.outputElems keep stacking up objects from the previous initialzation. Bug fixed.
+	2. Bug occurs in older browsers which causes images not showing up when "allcomplete" callback is used.
+	3. Removed unwanted parameter from contrustor.
+	4. Change of variable names.
 */
 
 ;(function ( $, window, document, undefined ) {
@@ -36,14 +43,14 @@
 			allcomplete: function(){}
 		},
 		global = {
-			totalElem: 0,
-			counter: 0,
+			elemCounter: 0,
+			totalElems: 0,
 			inputElems: {}, // store all the elements before executing
-			outputElem: []
+			outputElems: []
 		};
 
 	
-	function Plugin ( element, options, totalElem ) {// The actual plugin constructor
+	function Plugin ( element, options ) {// The actual plugin constructor
 		this.element = element;
 		this.settings = $.extend( {}, defaults, options );
 		this._defaults = defaults;
@@ -135,7 +142,7 @@
 					}
 					options.eachcomplete.call(_this, $(oriImg.obj));
 
-					that.updateGlobal(_this, $(featuredBgImg), options);
+					that.updateGlobal(_this, $(oriImg.obj), options);
 				}else{
 					var pw = that.percentOrPixel(options.width),
 						ph = that.percentOrPixel(options.height),
@@ -171,10 +178,10 @@
 		},
 
 		updateGlobal: function(_this, obj, options){
-			global.outputElem.push($(obj));
-			global.counter = global.counter + 1;
-			if(global.counter == global.totalElem){
-				options.allcomplete.call(_this, global.outputElem);
+			global.outputElems.push($(obj));
+			global.elemCounter = global.elemCounter + 1;
+			if(global.elemCounter == global.totalElems){
+				options.allcomplete.call(_this, global.outputElems);
 			}
 		},
 
@@ -231,9 +238,10 @@
 
 		var elems = $(this).find('*').addBack();
 		
-		global.counter = 0; // must always set to zero for every initialization
+		global.elemCounter = 0; // must always set to zero for every initialization
+		global.outputElems = []; // must clear before doing anythong
 		global.inputElems = $(elems);
-		global.totalElem = $(elems).length; // set total of elements for later use.
+		global.totalElems = $(elems).length; // set total of elements for later use.
 
 		return this.each(function() {
             
