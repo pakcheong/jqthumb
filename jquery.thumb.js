@@ -57,7 +57,6 @@
 	function Plugin ( element, options ) {// The actual plugin constructor
 		this.element = element;
 		this.settings = $.extend( {}, defaults, options );
-		console.log(this.settings);
 		this._defaults = defaults;
 		this._name = pluginName;
 		this.init();
@@ -173,7 +172,14 @@
 						$(featuredBgImg).show();
 					}
 
-					if(options.img_src != 'src' && $(_this).attr('src') == ''){
+					if(
+						ptions.img_src != 'src' && 
+						(
+							typeof $(_this).attr('src') == 'undefined' || 
+							$(_this).attr('src') == ''
+						)
+					)
+					{
 						$(_this).attr('src', $(_this).attr(options.img_src));
 					}
 
