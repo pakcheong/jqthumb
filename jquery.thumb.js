@@ -1,6 +1,6 @@
 /*
 	Copyright (c) 2013-2013 Tho Pak Cheong
-	Version: 1.2.2 (2-SEP-2013)
+	Version: 1.3.0 (8-SEP-2013)
 	Dual licensed under the MIT and GPL licenses.
 	Requires: jQuery v1.8.0 or later
 
@@ -29,6 +29,9 @@
 	2. Bug occurs in older browsers which causes images not showing up when "allcomplete" callback is used.
 	3. Removed unwanted parameter from contrustor.
 	4. Change of variable names.
+
+	v1.3.0
+	1. Added "img_src" attribute for specifying the image source. Because some people might want to do lazy-loading to optimize the performance of the site.
 */
 
 ;(function ( $, window, document, undefined ) {
@@ -38,6 +41,7 @@
 			classname: 'jqthumb',
 			width: 100,
 			height: 100,
+			img_src: 'src',
 			showoncomplete: true,
 			eachcomplete: function(){},
 			allcomplete: function(){}
@@ -53,6 +57,7 @@
 	function Plugin ( element, options ) {// The actual plugin constructor
 		this.element = element;
 		this.settings = $.extend( {}, defaults, options );
+		console.log(this.settings);
 		this._defaults = defaults;
 		this._name = pluginName;
 		this.init();
@@ -155,7 +160,7 @@
 					featuredBgImg = $('<div/>').css({
 						'width': '100%',
 						'height': '100%',
-						'background-image': 'url("' + $(_this).attr('src') + '")',
+						'background-image': 'url("' + $(_this).attr(options.img_src) + '")',
 						'background-repeat': 'no-repeat',
 						'background-position': 'center center',
 						'background-size': 'cover',
@@ -167,6 +172,11 @@
 					if(options.showoncomplete == true){
 						$(featuredBgImg).show();
 					}
+
+					if(options.img_src != 'src' && $(_this).attr('src') == ''){
+						$(_this).attr('src', $(_this).attr(options.img_src));
+					}
+
 					options.eachcomplete.call(_this, $(featuredBgImg));
 
 					that.updateGlobal(_this, $(featuredBgImg), options);
@@ -201,7 +211,7 @@
 
 		getActualSize: function(imgObj){
 			var tempImg = new Image();
-			tempImg.src = imgObj.attr("src");
+			tempImg.src = imgObj.attr(options.img_src);
 			imgObj = {
 				width: tempImg.width,
 				height: tempImg.height
@@ -244,7 +254,7 @@
 		global.totalElems = $(elems).length; // set total of elements for later use.
 
 		return this.each(function() {
-            
+			
 			if ( !$.data( this, "plugin_" + pluginName ) ) {
 				$.data( this, "plugin_" + pluginName, new Plugin( this, options ) );
 			}
