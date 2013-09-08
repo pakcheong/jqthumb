@@ -173,7 +173,7 @@
 					}
 
 					if(
-						ptions.img_src != 'src' && 
+						options.img_src != 'src' && 
 						(
 							typeof $(_this).attr('src') == 'undefined' || 
 							$(_this).attr('src') == ''
