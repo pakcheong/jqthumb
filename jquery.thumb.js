@@ -1,6 +1,6 @@
 /*
 	Copyright (c) 2013-2013 Tho Pak Cheong
-	Version: 1.3.0 (8-SEP-2013)
+	Version: 1.3.1 (9-SEP-2013)
 	Dual licensed under the MIT and GPL licenses.
 	Requires: jQuery v1.8.0 or later
 
@@ -31,7 +31,13 @@
 	4. Change of variable names.
 
 	v1.3.0
+	=========================
 	1. Added "img_src" attribute for specifying the image source. Because some people might want to do lazy-loading to optimize the performance of the site.
+	
+	v1.3.1
+	=========================
+	1. Fixed browser-hang issue in IE8,7,6.
+	2. Added real demo image file instead of using a 64-bit image.
 */
 
 ;(function ( $, window, document, undefined ) {
@@ -73,6 +79,9 @@
 
 			$(_this).one('load',function() {
 				if(that.support_css3_attr('backgroundSize') == false){ // old browsers need to do calculation to perform same output like "background-size: cover"
+
+					that.checkSrcAttrName(_this, options);
+					
 					$(_this).parent().css({
 						'position': 'relative',
 						'overflow': 'hidden',
@@ -82,7 +91,7 @@
 					
 					var oriImg = {
 						obj: $(_this),
-						size: that.getActualSize( $(_this) )// get actual size
+						size: that.getActualSize( $(_this), options )// get actual size
 					}
 					
 					if(oriImg.size.width > oriImg.size.height){ // horizontal
@@ -160,6 +169,8 @@
 						'width': '100%',
 						'height': '100%',
 						'background-image': 'url("' + $(_this).attr(options.img_src) + '")',
+						//'filter': 'progid:DXImageTransform.Microsoft.AlphaImageLoader(src="'+$(_this).attr(options.img_src)+'",sizingMethod="scale")', // this would create problem in IE9
+						'-ms-filter': '"progid:DXImageTransform.Microsoft.AlphaImageLoader(src="'+$(_this).attr(options.img_src)+'",sizingMethod="scale")',
 						'background-repeat': 'no-repeat',
 						'background-position': 'center center',
 						'background-size': 'cover',
@@ -172,16 +183,7 @@
 						$(featuredBgImg).show();
 					}
 
-					if(
-						options.img_src != 'src' && 
-						(
-							typeof $(_this).attr('src') == 'undefined' || 
-							$(_this).attr('src') == ''
-						)
-					)
-					{
-						$(_this).attr('src', $(_this).attr(options.img_src));
-					}
+					that.checkSrcAttrName(_this, options);
 
 					options.eachcomplete.call(_this, $(featuredBgImg));
 
@@ -200,6 +202,19 @@
 				options.allcomplete.call(_this, global.outputElems);
 			}
 		},
+		
+		checkSrcAttrName: function(_this, options){
+			if(
+				options.img_src != 'src' && 
+				(
+					typeof $(_this).attr('src') == 'undefined' || 
+					$(_this).attr('src') == ''
+				)
+			)
+			{
+				$(_this).attr('src', $(_this).attr(options.img_src));
+			}
+		},
 
 		percentOrPixel: function(str){
 			var str = str.toString();
@@ -215,14 +230,14 @@
 			}
 		},
 
-		getActualSize: function(imgObj){
+		getActualSize: function(_this, options){
 			var tempImg = new Image();
-			tempImg.src = imgObj.attr(options.img_src);
-			imgObj = {
+			tempImg.src = _this.attr(options.img_src);
+			_this = {
 				width: tempImg.width,
 				height: tempImg.height
 			}
-			return imgObj;
+			return _this;
 		},
 
 		support_css3_attr: (function() {
@@ -238,7 +253,10 @@
 					return val.toUpperCase();
 				});
 
+				max = 200;
+				counter = 0;
 				while(len--) {
+					if(counter >= max) return false; counter++;
 					if ( vendors[len] + prop in div.style ) {
 						// browser supports box-shadow. Do what you need.
 						// Or use a bang (!) to test if the browser doesn't.
