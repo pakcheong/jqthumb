@@ -3,10 +3,11 @@
     <head>
         <meta charset="utf-8">
         <title>DEMO - jQThumb Plugin</title>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
+        <script type="text/javascript" src="jquery-1.8.0.min.js"></script>
         <script type="text/javascript" src="jquery.thumb.js"></script>
         <script type="text/javascript">                     
             $(document).ready(function(){
+
                 $('.example1').jqthumb({
                     classname: 'jqthumb',
                     width: 100,
@@ -14,8 +15,10 @@
                     showoncomplete: false,
                     eachcomplete: function(imgObj){
                         $(imgObj).fadeIn();
-                    }
+                    },
+                    debug: true
                 });
+                
                 $('.example2').jqthumb({
                     classname: 'jqthumb',
                     width: '20%',
@@ -38,6 +41,7 @@
                         alert('example 4 has called a "allcomplete" callback');
                     }
                 });
+                
             });
         </script>
     </head>
@@ -54,7 +58,7 @@
                 <td><img src="picture.jpg" /></td>
                 <td align="center">
                     <div class="img-container">
-                        <img class="example1" src="picture.jpg" />
+                        <img id="imageToTest" class="example1" src="picture.jpg" />
                     </div>
                 </td>
                 <td align="center">

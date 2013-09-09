@@ -1,6 +1,6 @@
 /*
 	Copyright (c) 2013-2013 Tho Pak Cheong
-	Version: 1.3.1 (9-SEP-2013)
+	Version: 1.3.3 (9-SEP-2013)
 	Dual licensed under the MIT and GPL licenses.
 	Requires: jQuery v1.8.0 or later
 
@@ -42,6 +42,12 @@
 	v1.3.2
 	=========================
 	1. Permanently fixed browser-hang issue in IE8,7,6.
+	
+	v1.3.3
+	=========================
+	1. Width and height in percentage is now supported.
+	2. Split makethumbnail method into two different methods for better maintenance.
+	3. Added a local jQuery core file.
 */
 
 ;(function ( $, window, document, undefined ) {
@@ -74,29 +80,40 @@
 
 	Plugin.prototype = {
 		init: function () {
-			this.makethumbnail(this.element, this.settings);
+			if(this.support_css3_attr('backgroundSize') == false){ // old browsers need to do calculation to perform same output like "background-size: cover"
+				this.nonCss3Supported_method(this.element, this.settings);
+			}else{ // modern browsers that support CSS3 would be easier
+				this.css3Supported_method(this.element, this.settings);
+			}
 		},
 
-		makethumbnail: function (_this, options) {
+		nonCss3Supported_method: function(_this, options){
 			var that = this;
+
 			$(_this).hide();
 
 			$(_this).one('load',function() {
-				if(that.support_css3_attr('backgroundSize') == false){ // old browsers need to do calculation to perform same output like "background-size: cover"
+				that.checkSrcAttrName(_this, options);
+				
+				var tempImg = $("<img/>").attr("src", $(_this).attr("src"));
+				$(tempImg).load(function(){
 
-					that.checkSrcAttrName(_this, options);
-					
+					var oriImg = {
+							obj: $(_this),
+							size: {
+								width: this.width,
+								height: this.height
+							}
+						},
+						pw = that.percentOrPixel(options.width),
+						ph = that.percentOrPixel(options.height);
+				
 					$(_this).parent().css({
 						'position': 'relative',
 						'overflow': 'hidden',
-						'width': options.width + 'px',
-						'height': options.height + 'px'
+						'width': (pw == '%') ? options.width : options.width + 'px',
+						'height': (ph == '%') ? options.height : options.height + 'px'
 					});
-					
-					var oriImg = {
-						obj: $(_this),
-						size: that.getActualSize( $(_this), options )// get actual size
-					}
 					
 					if(oriImg.size.width > oriImg.size.height){ // horizontal
 						$(oriImg.obj).css({
@@ -160,43 +177,60 @@
 					options.eachcomplete.call(_this, $(oriImg.obj));
 
 					that.updateGlobal(_this, $(oriImg.obj), options);
-				}else{
-					var pw = that.percentOrPixel(options.width),
-						ph = that.percentOrPixel(options.height),
-						featuredBgImg;
+			
+				}).each(function(){
 
-					$(_this).parent().css({
-						'width': (pw == '%') ? options.width : options.width + 'px',
-						'height': (ph == '%') ? options.height : options.height + 'px'
-					});
-					featuredBgImg = $('<div/>').css({
-						'width': '100%',
-						'height': '100%',
-						'background-image': 'url("' + $(_this).attr(options.img_src) + '")',
-						//'filter': 'progid:DXImageTransform.Microsoft.AlphaImageLoader(src="'+$(_this).attr(options.img_src)+'",sizingMethod="scale")', // this would create problem in IE9
-						'-ms-filter': '"progid:DXImageTransform.Microsoft.AlphaImageLoader(src="'+$(_this).attr(options.img_src)+'",sizingMethod="scale")',
-						'background-repeat': 'no-repeat',
-						'background-position': 'center center',
-						'background-size': 'cover',
-						'display': 'none'
-					})
-					.addClass(options.classname)
-					.insertBefore($(_this));
+					$(tempImg).load();
 
-					if(options.showoncomplete == true){
-						$(featuredBgImg).show();
-					}
-
-					that.checkSrcAttrName(_this, options);
-
-					options.eachcomplete.call(_this, $(featuredBgImg));
-
-					that.updateGlobal(_this, $(featuredBgImg), options);
-				}
+				});
 			}).each(function(){
-				$(_this).load();
-			});
 
+				$(_this).load();
+
+			});
+		},
+
+		css3Supported_method: function (_this, options) {
+			var that = this;
+			$(_this).hide();
+
+			$(_this).one('load',function() {
+				var pw = that.percentOrPixel(options.width),
+					ph = that.percentOrPixel(options.height),
+					featuredBgImg;
+
+				$(_this).parent().css({
+					'width': (pw == '%') ? options.width : options.width + 'px',
+					'height': (ph == '%') ? options.height : options.height + 'px'
+				});
+				featuredBgImg = $('<div/>').css({
+					'width': '100%',
+					'height': '100%',
+					'background-image': 'url("' + $(_this).attr(options.img_src) + '")',
+					'-ms-filter': '"progid:DXImageTransform.Microsoft.AlphaImageLoader(src="'+$(_this).attr(options.img_src)+'",sizingMethod="scale")',
+					'background-repeat': 'no-repeat',
+					'background-position': 'center center',
+					'background-size': 'cover',
+					'display': 'none'
+				})
+				.addClass(options.classname)
+				.insertBefore($(_this));
+
+				if(options.showoncomplete == true){
+					$(featuredBgImg).show();
+				}
+
+				that.checkSrcAttrName(_this, options);
+
+				options.eachcomplete.call(_this, $(featuredBgImg));
+
+				that.updateGlobal(_this, $(featuredBgImg), options);
+
+			}).each(function(){
+
+				$(_this).load();
+
+			});
 		},
 
 		updateGlobal: function(_this, obj, options){
@@ -232,16 +266,6 @@
 					return 'px';
 				}
 			}
-		},
-
-		getActualSize: function(_this, options){
-			var tempImg = new Image();
-			tempImg.src = _this.attr(options.img_src);
-			_this = {
-				width: tempImg.width,
-				height: tempImg.height
-			}
-			return _this;
 		},
 
 		support_css3_attr: (function() {
