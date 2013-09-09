@@ -38,6 +38,10 @@
 	=========================
 	1. Fixed browser-hang issue in IE8,7,6.
 	2. Added real demo image file instead of using a 64-bit image.
+	
+	v1.3.2
+	=========================
+	1. Permanently fixed browser-hang issue in IE8,7,6.
 */
 
 ;(function ( $, window, document, undefined ) {
@@ -243,8 +247,8 @@
 		support_css3_attr: (function() {
 			/* code available at http://net.tutsplus.com/tutorials/html-css-techniques/quick-tip-detect-css-support-in-browsers-with-javascript/ */
 			var div = document.createElement('div'),
-			vendors = 'Khtml Ms O Moz Webkit'.split(' '),
-			len = vendors.length;
+				vendors = 'Khtml Ms O Moz Webkit'.split(' '),
+				len = vendors.length;
 
 			return function(prop) {
 				if ( prop in div.style ) return true;
@@ -252,14 +256,9 @@
 				prop = prop.replace(/^[a-z]/, function(val) {
 					return val.toUpperCase();
 				});
-
-				max = 200;
-				counter = 0;
-				while(len--) {
-					if(counter >= max) return false; counter++;
-					if ( vendors[len] + prop in div.style ) {
-						// browser supports box-shadow. Do what you need.
-						// Or use a bang (!) to test if the browser doesn't.
+				
+				for(i=0; i<vendors.length; i++){
+					if ( vendors[i] + prop in div.style ) {
 						return true;
 					} 
 				}
