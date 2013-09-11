@@ -1,8 +1,8 @@
 /*
 	Copyright (c) 2013-2013 Tho Pak Cheong
-	Version: 1.3.3 (9-SEP-2013)
+	Version: 1.3.4 (11-SEP-2013)
 	Dual licensed under the MIT and GPL licenses.
-	Requires: jQuery v1.8.0 or later
+	Requires: jQuery v1.3 or later
 
 	Change Log:
 	V1.1
@@ -48,6 +48,10 @@
 	1. Width and height in percentage is now supported.
 	2. Split makethumbnail method into two different methods for better maintenance.
 	3. Added a local jQuery core file.
+	
+	v1.3.4
+	=========================
+	1. This plugin now supports from jQuery v1.3 and above. Previously was v1.8 and above.
 */
 
 ;(function ( $, window, document, undefined ) {
@@ -258,7 +262,7 @@
 			var str = str.toString();
 			var lastChar = str.charAt(str.length - 1);
 			var str = str.substr(0, str.length - 1);
-			if($.isNumeric(str)){
+			if(!isNaN( parseFloat(str) ) && isFinite(str)){ // equivalent to $.isNumeric in jQuery
 				if(lastChar == '%'){
 					return '%';
 				}
@@ -292,9 +296,20 @@
 	};
 
 	$.fn[ pluginName ] = function ( options ) {
-
+	
+		if($.isFunction($.fn.addBack) == false){ // we need to use addBack functions which only exists from jQuery v1.3 and above. 
+			$.fn.extend({
+				addBack: function( selector ) {
+					return this.add( selector == null ?
+						this.prevObject : this.prevObject.filter(selector)
+					);
+				}
+			});
+		}
+		
 		var elems = $(this).find('*').addBack();
 		
+
 		global.elemCounter = 0; // must always set to zero for every initialization
 		global.outputElems = []; // must clear before doing anythong
 		global.inputElems = $(elems);
