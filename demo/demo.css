@@ -1,0 +1,57 @@
+.demo{
+	width: 100%;
+	float: left;
+}
+.arrow{
+	background-image: url(arrow.png);
+	background-repeat: no-repeat;
+	background-position: center center;
+	width: 100%;
+	height: 147px;
+	margin: 30px 0;
+}
+	.demo .ori{
+		text-align: center;
+		width: 100%;
+	}
+		.demo .frame{
+			margin: 0 auto;
+			overflow: auto;
+			padding: 20px 20px 0 20px;
+			background-color: #f8ebdb;
+			-webkit-box-shadow: 3px 3px 3px #777;
+			-moz-box-shadow: 3px 3px 3px #777;
+			box-shadow: 3px 3px 3px #777;
+		}
+		.demo .frame img,
+		.demo .frame jqthumb{
+			float: left;
+			margin-bottom: 10px;
+		}
+		.demo .frame p{
+			clear: both;
+			text-align: center;
+			font-family: 'Gochi Hand', cursive;
+			font-size: 20px;
+			margin: 10px 0;
+			line-height: 100%;
+		}
+		.demo .ori .frame{
+			width: 270px;
+		}
+.results{
+	position: relative;
+	width: 100%;
+}
+	.results .frame{
+		margin-bottom: 30px;
+	}
+#example1{
+	width: 200px;
+}
+#example2{
+	width: 250px;
+}
+#example3{
+	width: 250px;
+}
