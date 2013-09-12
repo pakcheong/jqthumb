@@ -26,3 +26,8 @@ Tested Browsers:
 2. Mozilla Firefox
 3. Safari
 4. Internet Explorer 6, 7, 8, 9 and 10
+
+
+Demo:
+======================================
+http://pakcheong.github.io/jqthumb/
