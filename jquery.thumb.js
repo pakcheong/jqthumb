@@ -1,6 +1,6 @@
 /*
 	Copyright (c) 2013-2013 Tho Pak Cheong
-	Version: 1.3.4 (11-SEP-2013)
+	Version: 1.3.5 (16-SEP-2013)
 	Dual licensed under the MIT and GPL licenses.
 	Requires: jQuery v1.3 or later
 
@@ -52,6 +52,10 @@
 	v1.3.4
 	=========================
 	1. This plugin now supports from jQuery v1.3 and above. Previously was v1.8 and above.
+	
+	v1.3.5
+	=========================
+	1. Changed attribute name from "img_src" to "source".
 */
 
 ;(function ( $, window, document, undefined ) {
@@ -61,7 +65,7 @@
 			classname: 'jqthumb',
 			width: 100,
 			height: 100,
-			img_src: 'src',
+			source: 'src',
 			showoncomplete: true,
 			eachcomplete: function(){},
 			allcomplete: function(){}
@@ -210,8 +214,8 @@
 				featuredBgImg = $('<div/>').css({
 					'width': '100%',
 					'height': '100%',
-					'background-image': 'url("' + $(_this).attr(options.img_src) + '")',
-					'-ms-filter': '"progid:DXImageTransform.Microsoft.AlphaImageLoader(src="'+$(_this).attr(options.img_src)+'",sizingMethod="scale")',
+					'background-image': 'url("' + $(_this).attr(options.source) + '")',
+					'-ms-filter': '"progid:DXImageTransform.Microsoft.AlphaImageLoader(src="'+$(_this).attr(options.source)+'",sizingMethod="scale")',
 					'background-repeat': 'no-repeat',
 					'background-position': 'center center',
 					'background-size': 'cover',
@@ -247,14 +251,14 @@
 		
 		checkSrcAttrName: function(_this, options){
 			if(
-				options.img_src != 'src' && 
+				options.source != 'src' && 
 				(
 					typeof $(_this).attr('src') == 'undefined' || 
 					$(_this).attr('src') == ''
 				)
 			)
 			{
-				$(_this).attr('src', $(_this).attr(options.img_src));
+				$(_this).attr('src', $(_this).attr(options.source));
 			}
 		},
 
