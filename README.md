@@ -1,4 +1,4 @@
-jQThumb V1.3.5
+jQThumb V1.4
 ======================================
 
 Create thumbnails from images proportionally. It even works on IE6 from jQuery V1.3 and above.
@@ -9,12 +9,19 @@ USAGE:
 		classname      : 'jqthumb',        // class name. DEFUALT IS jqthumb
 		width          : 100,              // new image width after cropping. DEFAULT IS 100px.
 		height         : 100,              // new image height after cropping. DEFAULT IS 100px.
+		position: {
+			top  : '50%',                  // position of the image. DEFAULT is 50%.
+			left : '50%'                   // position of the image. DEFAULT is 50%.
+		},
 		source         : 'src',            // to specify the image source attribute. DEFAULT IS src.
 		showoncomplete : false,            // TRUE = show immediately after processing. FALSE = do not show it. DEFAULT IS TRUE.		
-		eachcomplete   : function(imgObj){ // callback when ONE image is cropped.
+		before         : function(){       // callback before processing.
+			alert('I'm about to start processing now...');
+		},	
+		after          : function(imgObj){ // callback when ONE image is cropped.
 			$(imgObj).fadeIn();
 		},
-		allcomplete    : function(){       // callback when ALL images are cropped.
+		complete       : function(){       // callback when ALL images are cropped.
 			alert('Done!');
 		}
 	});

@@ -1,6 +1,6 @@
 /*
 	Copyright (c) 2013-2013 Tho Pak Cheong
-	Version: 1.3.5 (16-SEP-2013)
+	Version: 1.4 (16-SEP-2013)
 	Dual licensed under the MIT and GPL licenses.
 	Requires: jQuery v1.3 or later
 
@@ -56,6 +56,16 @@
 	v1.3.5
 	=========================
 	1. Changed attribute name from "img_src" to "source".
+	
+	v1.4
+	=========================
+	1. Added "position.top" and "position.left" attributes to allow users specify which portion of the photos to be shown.
+	2. Added "before" callback.
+	3. Renamed "eachcomplete" callback to "after".
+	4. Renamed "allcomplete" callback to "complete".
+	5. Simplified and fixed "percentOrPixel()" method.
+	6. Changed all "parseInt()" to "parseFloat()" to get more accurate values.
+	7. Replace 'px' from all atributes during plugin initialzation.
 */
 
 ;(function ( $, window, document, undefined ) {
@@ -65,10 +75,15 @@
 			classname: 'jqthumb',
 			width: 100,
 			height: 100,
+			position: {
+				top: '50%',
+				left: '50%'
+			},
 			source: 'src',
 			showoncomplete: true,
-			eachcomplete: function(){},
-			allcomplete: function(){}
+			before: function(){},
+			after: function(){},
+			complete: function(){}
 		},
 		global = {
 			elemCounter: 0,
@@ -81,6 +96,10 @@
 	function Plugin ( element, options ) {// The actual plugin constructor
 		this.element = element;
 		this.settings = $.extend( {}, defaults, options );
+			this.settings.width = this.settings.width.toString().replace(/px/g, '');
+			this.settings.height = this.settings.height.toString().replace(/px/g, '');
+			this.settings.position.top = this.settings.position.top.toString().replace(/px/g, '');
+			this.settings.position.left = this.settings.position.left.toString().replace(/px/g, '');
 		this._defaults = defaults;
 		this._name = pluginName;
 		this.init();
@@ -96,8 +115,11 @@
 		},
 
 		nonCss3Supported_method: function(_this, options){
+			
+			options.before.call(_this, _this);
+			
 			var that = this;
-
+			
 			$(_this).hide();
 
 			$(_this).one('load',function() {
@@ -124,6 +146,7 @@
 					});
 					
 					if(oriImg.size.width > oriImg.size.height){ // horizontal
+					
 						$(oriImg.obj).css({
 							'width' : 'auto',
 							'max-height' : 99999999,
@@ -138,7 +161,7 @@
 						if( $(oriImg.obj).width() < $(oriImg.obj).parent().width() ){
 							$(oriImg.obj).css({
 								'width': $(oriImg.obj).parent().width(),
-								'height': parseInt($(oriImg.obj).parent().width() * ratio)
+								'height': parseFloat($(oriImg.obj).parent().width() * ratio)
 							});
 						}
 					}else{ // vertical
@@ -156,33 +179,36 @@
 						
 						if( $(oriImg.obj).height() < $(oriImg.obj).parent().height() ){
 							$(oriImg.obj).css({
-								'width': parseInt($(oriImg.obj).parent().height() * ratio),
+								'width': parseFloat($(oriImg.obj).parent().height() * ratio),
 								'height': $(oriImg.obj).parent().height()
 							});
 						}
 					}
 
-					if($(oriImg.obj).width() > $(oriImg.obj).parent().width()){
-						$(oriImg.obj).css({
-							'position': 'absolute',
-							'top': 0,
-							'left': parseInt(($(oriImg.obj).parent().width() - $(oriImg.obj).width()) / 2) + 'px'
-						});
-					}
+					posTop = (that.percentOrPixel(options.position.top) == '%') ? options.position.top : options.position.top + 'px';
+					posLeft = (that.percentOrPixel(options.position.left) == '%') ? options.position.left : options.position.left + 'px';
 					
-					if($(oriImg.obj).height() > $(oriImg.obj).parent().height()){
-						$(oriImg.obj).css({
-							'position': 'absolute',
-							'top': parseInt(($(oriImg.obj).parent().height() - $(oriImg.obj).height()) / 2) + 'px',
-							'left': 0
-						});
-					}
+					$(oriImg.obj).css({
+						'position': 'absolute',
+						'top': posTop,
+						'margin-top': function(){
+							if(that.percentOrPixel(options.position.top) == '%'){
+								return '-' + parseFloat(($(oriImg.obj).height() / 100) * options.position.top.slice(0,-1)) + 'px'
+							}
+						},
+						'left': posLeft,
+						'margin-left': function(){
+							if(that.percentOrPixel(options.position.left) == '%'){
+								return '-' + parseFloat(($(oriImg.obj).width() / 100) * options.position.left.slice(0,-1)) + 'px'
+							}
+						}
+					});
 					
 					$(oriImg.obj).addClass(options.classname);
 					if(options.showoncomplete == true){
 						$(oriImg.obj).show();
 					}
-					options.eachcomplete.call(_this, $(oriImg.obj));
+					options.after.call(_this, $(oriImg.obj));
 
 					that.updateGlobal(_this, $(oriImg.obj), options);
 			
@@ -199,7 +225,11 @@
 		},
 
 		css3Supported_method: function (_this, options) {
+		
+			options.before.call(_this, _this);
+			
 			var that = this;
+			
 			$(_this).hide();
 
 			$(_this).one('load',function() {
@@ -211,13 +241,17 @@
 					'width': (pw == '%') ? options.width : options.width + 'px',
 					'height': (ph == '%') ? options.height : options.height + 'px'
 				});
+				
+				posTop = (that.percentOrPixel(options.position.top) == '%') ? options.position.top : options.position.top + 'px';
+				posLeft = (that.percentOrPixel(options.position.left) == '%') ? options.position.left : options.position.left + 'px';
+				
 				featuredBgImg = $('<div/>').css({
 					'width': '100%',
 					'height': '100%',
 					'background-image': 'url("' + $(_this).attr(options.source) + '")',
 					'-ms-filter': '"progid:DXImageTransform.Microsoft.AlphaImageLoader(src="'+$(_this).attr(options.source)+'",sizingMethod="scale")',
 					'background-repeat': 'no-repeat',
-					'background-position': 'center center',
+					'background-position': posTop + ' ' + posLeft,
 					'background-size': 'cover',
 					'display': 'none'
 				})
@@ -230,7 +264,7 @@
 
 				that.checkSrcAttrName(_this, options);
 
-				options.eachcomplete.call(_this, $(featuredBgImg));
+				options.after.call(_this, $(featuredBgImg));
 
 				that.updateGlobal(_this, $(featuredBgImg), options);
 
@@ -245,7 +279,7 @@
 			global.outputElems.push($(obj));
 			global.elemCounter = global.elemCounter + 1;
 			if(global.elemCounter == global.totalElems){
-				options.allcomplete.call(_this, global.outputElems);
+				options.complete.call(_this, global.outputElems);
 			}
 		},
 		
@@ -263,16 +297,11 @@
 		},
 
 		percentOrPixel: function(str){
-			var str = str.toString();
-			var lastChar = str.charAt(str.length - 1);
-			var str = str.substr(0, str.length - 1);
-			if(!isNaN( parseFloat(str) ) && isFinite(str)){ // equivalent to $.isNumeric in jQuery
-				if(lastChar == '%'){
-					return '%';
-				}
-				if(str.charAt(str.length - 2, str.length).toLowerCase() == 'px'){
-					return 'px';
-				}
+			str = str.toString();
+			if(str.match("px$") || str.match("PX$") || str.match("pX$") || str.match("Px$")) {
+				return 'px';
+			}else if(str.match("%$")) {
+				return '%';
 			}
 		},
 
