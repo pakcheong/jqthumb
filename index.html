@@ -18,9 +18,11 @@
 					classname: 'jqthumb',
 					width: 200,
 					height: 200,
-					img_src: 'src',
-					showoncomplete: false,     
-					eachcomplete: function(imgObj){
+					source: 'src',
+					showoncomplete: false,
+					before: function(oriImg){
+					},					
+					after: function(imgObj){
 						$(imgObj).fadeIn();
 					}
 				});
@@ -28,9 +30,9 @@
 					classname: 'jqthumb',
 					width: 250,
 					height: 100,
-					img_src: 'src',
+					source: 'src',
 					showoncomplete: false,     
-					eachcomplete: function(imgObj){
+					after: function(imgObj){
 						$(imgObj).fadeIn();
 						$(imgObj).parent().next().text('eachcomplate() callback is called!');
 					}
@@ -39,9 +41,9 @@
 					classname: 'jqthumb',
 					width: 250,
 					height: 500,
-					img_src: 'src',
+					source: 'src',
 					showoncomplete: false,     
-					allcomplete: function(imgObjs){
+					complete: function(imgObjs){
 						$.each(imgObjs, function(){
 							$(this).fadeIn();
 							$(this).parent().next().text('allcomplate() callback is called!');
@@ -79,12 +81,19 @@
     classname      : 'jqthumb',        // class name. DEFUALT IS jqthumb
     width          : 100,              // new image width after cropping. DEFAULT IS 100px.
     height         : 100,              // new image height after cropping. DEFAULT IS 100px.
-    img_src        : 'src',            // to specify the image source attribute. DEFAULT IS src.
+    position: {
+        top  : '50%',                  // position of the image. DEFAULT is 50%.
+        left : '50%'                   // position of the image. DEFAULT is 50%.
+    },
+    source         : 'src',            // to specify the image source attribute. DEFAULT IS src.
     showoncomplete : false,            // TRUE = show immediately after processing. FALSE = do not show it. DEFAULT IS TRUE.        
-    eachcomplete   : function(imgObj){ // callback when ONE image is cropped.
+    before         : function(){       // callback before processing.
+        alert('I'm about to start processing now...');
+    },  
+    after          : function(imgObj){ // callback when ONE image is cropped.
         $(imgObj).fadeIn();
     },
-    allcomplete    : function(){       // callback when ALL images are cropped.
+    complete       : function(){       // callback when ALL images are cropped.
         alert('Done!');
     }
 });</code></pre>
