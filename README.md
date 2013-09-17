@@ -10,14 +10,14 @@ USAGE:
 		width          : 100,              // new image width after cropping. DEFAULT IS 100px.
 		height         : 100,              // new image height after cropping. DEFAULT IS 100px.
 		position: {
-			top  : '50%',                  // position of the image. DEFAULT is 50%.
-			left : '50%'                   // position of the image. DEFAULT is 50%.
+			top  : '50%',                  // position of the image. DEFAULT is 50%. 50% also means centerize the image.
+			left : '50%'                   // position of the image. DEFAULT is 50%. 50% also means centerize the image.
 		},
 		source         : 'src',            // to specify the image source attribute. DEFAULT IS src.
-		showoncomplete : false,            // TRUE = show immediately after processing. FALSE = do not show it. DEFAULT IS TRUE.		
+		showoncomplete : false,            // TRUE = show immediately after processing. FALSE = do not show it. DEFAULT IS TRUE.
 		before         : function(){       // callback before processing.
 			alert('I'm about to start processing now...');
-		},	
+		},
 		after          : function(imgObj){ // callback when ONE image is cropped.
 			$(imgObj).fadeIn();
 		},
