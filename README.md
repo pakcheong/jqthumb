@@ -16,7 +16,7 @@ USAGE:
 		source         : 'src',            // to specify the image source attribute. DEFAULT IS src.
 		showoncomplete : false,            // TRUE = show immediately after processing. FALSE = do not show it. DEFAULT IS TRUE.
 		before         : function(){       // callback before processing.
-			alert('I'm about to start processing now...');
+			alert("I'm about to start processing now...");
 		},
 		after          : function(imgObj){ // callback when ONE image is cropped.
 			$(imgObj).fadeIn();
