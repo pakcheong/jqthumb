@@ -1,6 +1,6 @@
 /*
 	Copyright (c) 2013-2013 Tho Pak Cheong
-	Version: 1.4 (16-SEP-2013)
+	Version: 1.4.1 (14-NOV-2013)
 	Dual licensed under the MIT and GPL licenses.
 	Requires: jQuery v1.3 or later
 
@@ -66,6 +66,10 @@
 	5. Simplified and fixed "percentOrPixel()" method.
 	6. Changed all "parseInt()" to "parseFloat()" to get more accurate values.
 	7. Replace 'px' from all atributes during plugin initialzation.
+
+	v1.4.1
+	=========================
+	1. Change callback name from "complete" to "done" as the name "complete" is a reserved by jQuery.
 */
 
 ;(function ( $, window, document, undefined ) {
@@ -83,7 +87,7 @@
 			showoncomplete: true,
 			before: function(){},
 			after: function(){},
-			complete: function(){}
+			done: function(){}
 		},
 		global = {
 			elemCounter: 0,
@@ -279,7 +283,7 @@
 			global.outputElems.push($(obj));
 			global.elemCounter = global.elemCounter + 1;
 			if(global.elemCounter == global.totalElems){
-				options.complete.call(_this, global.outputElems);
+				options.done.call(_this, global.outputElems);
 			}
 		},
 		
