@@ -43,7 +43,7 @@
 					height: 500,
 					source: 'src',
 					showoncomplete: false,     
-					complete: function(imgObjs){
+					done: function(imgObjs){
 						$.each(imgObjs, function(){
 							$(this).fadeIn();
 							$(this).parent().next().text('allcomplate() callback is called!');
@@ -93,7 +93,7 @@
     after          : function(imgObj){ // callback when ONE image is cropped.
         $(imgObj).fadeIn();
     },
-    complete       : function(){       // callback when ALL images are cropped.
+    done          : function(){       // callback when ALL images are cropped.
         alert('Done!');
     }
 });</code></pre>
