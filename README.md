@@ -1,4 +1,4 @@
-jQThumb V1.4
+jQThumb V1.4.1
 ======================================
 
 Create thumbnails from images proportionally. It even works on IE6 from jQuery V1.3 and above.
@@ -21,7 +21,7 @@ USAGE:
 		after          : function(imgObj){ // callback when ONE image is cropped.
 			$(imgObj).fadeIn();
 		},
-		complete       : function(){       // callback when ALL images are cropped.
+		done           : function(){       // callback when ALL images are cropped.
 			alert('Done!');
 		}
 	});
