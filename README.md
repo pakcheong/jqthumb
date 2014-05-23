@@ -27,12 +27,8 @@ USAGE:
 	});
 
 KILL:
-	
-```
-#!javascript
 
-$('img').jqthumb('kill');
-```
+	$('img').jqthumb('kill');
 
 
 
