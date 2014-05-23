@@ -1,4 +1,4 @@
-jQThumb V1.5
+jQThumb V1.6.1
 ======================================
 
 Create thumbnails from images proportionally. It even works on IE6 from jQuery V1.3 and above.
@@ -25,6 +25,15 @@ USAGE:
 			alert('Done!');
 		}
 	});
+
+KILL:
+	
+```
+#!javascript
+
+$('img').jqthumb('kill');
+```
+
 
 
 Tested Browsers:
