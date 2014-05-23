@@ -1,6 +1,6 @@
 /*
-	Copyright (c) 2013-2013 Tho Pak Cheong
-	Version: 1.4.1 (14-NOV-2013)
+	Copyright (c) 2013-2014 Tho Pak Cheong
+	Version: 1.5 (23-MAY-2014)
 	Dual licensed under the MIT and GPL licenses.
 	Requires: jQuery v1.3 or later
 
@@ -70,6 +70,10 @@
 	v1.4.1
 	=========================
 	1. Change callback name from "complete" to "done" as the name "complete" is a reserved by jQuery.
+
+	v1.5
+	=========================
+	1. Add <div/> image container wrap images, so the original element that wraps the image will not be modified in terms of styling.
 */
 
 ;(function ( $, window, document, undefined ) {
@@ -100,10 +104,10 @@
 	function Plugin ( element, options ) {// The actual plugin constructor
 		this.element = element;
 		this.settings = $.extend( {}, defaults, options );
-			this.settings.width = this.settings.width.toString().replace(/px/g, '');
-			this.settings.height = this.settings.height.toString().replace(/px/g, '');
-			this.settings.position.top = this.settings.position.top.toString().replace(/px/g, '');
-			this.settings.position.left = this.settings.position.left.toString().replace(/px/g, '');
+			this.settings.width			= this.settings.width.toString().replace(/px/g, '');
+			this.settings.height		= this.settings.height.toString().replace(/px/g, '');
+			this.settings.position.top	= this.settings.position.top.toString().replace(/px/g, '');
+			this.settings.position.left	= this.settings.position.left.toString().replace(/px/g, '');
 		this._defaults = defaults;
 		this._name = pluginName;
 		this.init();
@@ -132,59 +136,64 @@
 				var tempImg = $("<img/>").attr("src", $(_this).attr("src"));
 				$(tempImg).load(function(){
 
-					var oriImg = {
-							obj: $(_this),
+					var newImg = {
+							obj: tempImg,
 							size: {
 								width: this.width,
 								height: this.height
 							}
 						},
 						pw = that.percentOrPixel(options.width),
-						ph = that.percentOrPixel(options.height);
+						ph = that.percentOrPixel(options.height),
+						imgContainer = $('<div />');
 				
-					$(_this).parent().css({
-						'position': 'relative',
-						'overflow': 'hidden',
-						'width': (pw == '%') ? options.width : options.width + 'px',
-						'height': (ph == '%') ? options.height : options.height + 'px'
-					});
-					
-					if(oriImg.size.width > oriImg.size.height){ // horizontal
-					
-						$(oriImg.obj).css({
-							'width' : 'auto',
-							'max-height' : 99999999,
-							'min-height' : 0,
-							'max-width' : 99999999,
-							'min-width' : 0,
-							'height' : $(oriImg.obj).parent().height() + 'px'
+					$(imgContainer)
+						.insertBefore($(_this))
+						.append($(newImg.obj))
+						.css({
+							'position'	: 'relative',
+							'overflow'	: 'hidden',
+							'width'		: (pw == '%') ? options.width : options.width + 'px',
+							'height'	: (ph == '%') ? options.height : options.height + 'px'
+						});
+
+					if(newImg.size.width > newImg.size.height){ // horizontal
+
+						$(newImg.obj).css({
+							'width'			: 'auto',
+							'max-height'	: 99999999,
+							'min-height'	: 0,
+							'max-width'		: 99999999,
+							'min-width'		: 0,
+							'height'		: $(newImg.obj).parent().height() + 'px'
 						});
 						
-						var ratio = $(oriImg.obj).height() / $(oriImg.obj).width(); // get ratio
+						var ratio = $(newImg.obj).height() / $(newImg.obj).width(); // get ratio
 						
-						if( $(oriImg.obj).width() < $(oriImg.obj).parent().width() ){
-							$(oriImg.obj).css({
-								'width': $(oriImg.obj).parent().width(),
-								'height': parseFloat($(oriImg.obj).parent().width() * ratio)
+						if( $(newImg.obj).width() < $(newImg.obj).parent().width() ){
+							$(newImg.obj).css({
+								'width': $(newImg.obj).parent().width(),
+								'height': parseFloat($(newImg.obj).parent().width() * ratio)
 							});
 						}
+
 					}else{ // vertical
 						
-						$(oriImg.obj).css({
-							'width' : $(oriImg.obj).parent().width() + 'px',
-							'max-height' : 99999999,
-							'min-height' : 0,
-							'max-width' : 99999999,
-							'min-width' : 0,
-							'height' : 'auto'
+						$(newImg.obj).css({
+							'width'			: $(newImg.obj).parent().width() + 'px',
+							'max-height'	: 99999999,
+							'min-height'	: 0,
+							'max-width'		: 99999999,
+							'min-width'		: 0,
+							'height'		: 'auto'
 						});
 						
-						var ratio = $(oriImg.obj).width() / $(oriImg.obj).height(); // get ratio
+						var ratio = $(newImg.obj).width() / $(newImg.obj).height(); // get ratio
 						
-						if( $(oriImg.obj).height() < $(oriImg.obj).parent().height() ){
-							$(oriImg.obj).css({
-								'width': parseFloat($(oriImg.obj).parent().height() * ratio),
-								'height': $(oriImg.obj).parent().height()
+						if( $(newImg.obj).height() < $(newImg.obj).parent().height() ){
+							$(newImg.obj).css({
+								'width': parseFloat($(newImg.obj).parent().height() * ratio),
+								'height': $(newImg.obj).parent().height()
 							});
 						}
 					}
@@ -192,29 +201,32 @@
 					posTop = (that.percentOrPixel(options.position.top) == '%') ? options.position.top : options.position.top + 'px';
 					posLeft = (that.percentOrPixel(options.position.left) == '%') ? options.position.left : options.position.left + 'px';
 					
-					$(oriImg.obj).css({
-						'position': 'absolute',
-						'top': posTop,
-						'margin-top': function(){
+					$(newImg.obj).css({
+						'position'		: 'absolute',
+						'top'			: posTop,
+						'margin-top'	: function(){
 							if(that.percentOrPixel(options.position.top) == '%'){
-								return '-' + parseFloat(($(oriImg.obj).height() / 100) * options.position.top.slice(0,-1)) + 'px'
+								return '-' + parseFloat(($(newImg.obj).height() / 100) * options.position.top.slice(0,-1)) + 'px'
 							}
 						},
-						'left': posLeft,
-						'margin-left': function(){
+						'left'			: posLeft,
+						'margin-left'	: function(){
 							if(that.percentOrPixel(options.position.left) == '%'){
-								return '-' + parseFloat(($(oriImg.obj).width() / 100) * options.position.left.slice(0,-1)) + 'px'
+								return '-' + parseFloat(($(newImg.obj).width() / 100) * options.position.left.slice(0,-1)) + 'px'
 							}
 						}
 					});
 					
-					$(oriImg.obj).addClass(options.classname);
-					if(options.showoncomplete == true){
-						$(oriImg.obj).show();
-					}
-					options.after.call(_this, $(oriImg.obj));
+					$(imgContainer)
+						.hide()
+						.addClass(options.classname);
 
-					that.updateGlobal(_this, $(oriImg.obj), options);
+					if(options.showoncomplete == true){
+						$(imgContainer).show();
+					}
+					options.after.call(_this, $(imgContainer));
+
+					that.updateGlobal(_this, $(imgContainer), options);
 			
 				}).each(function(){
 
@@ -239,38 +251,43 @@
 			$(_this).one('load',function() {
 				var pw = that.percentOrPixel(options.width),
 					ph = that.percentOrPixel(options.height),
+					featuredBgImgContainer,
 					featuredBgImg;
 
-				$(_this).parent().css({
-					'width': (pw == '%') ? options.width : options.width + 'px',
-					'height': (ph == '%') ? options.height : options.height + 'px'
-				});
-				
-				posTop = (that.percentOrPixel(options.position.top) == '%') ? options.position.top : options.position.top + 'px';
-				posLeft = (that.percentOrPixel(options.position.left) == '%') ? options.position.left : options.position.left + 'px';
+				featuredBgImgContainer = $('<div/>')
+											.css({
+												'width'   : (pw == '%') ? options.width : options.width + 'px',
+												'height'  : (ph == '%') ? options.height : options.height + 'px',
+												'display' : 'none'
+											})
+											.addClass(options.classname);
 				
 				featuredBgImg = $('<div/>').css({
-					'width': '100%',
-					'height': '100%',
-					'background-image': 'url("' + $(_this).attr(options.source) + '")',
-					'-ms-filter': '"progid:DXImageTransform.Microsoft.AlphaImageLoader(src="'+$(_this).attr(options.source)+'",sizingMethod="scale")',
-					'background-repeat': 'no-repeat',
-					'background-position': posTop + ' ' + posLeft,
-					'background-size': 'cover',
-					'display': 'none'
+					'width'              : '100%',
+					'height'             : '100%',
+					'background-image'   : 'url("' + $(_this).attr(options.source) + '")',
+					'-ms-filter'         : '"progid:DXImageTransform.Microsoft.AlphaImageLoader(src="'+$(_this).attr(options.source)+'",sizingMethod="scale")',
+					'background-repeat'  : 'no-repeat',
+					'background-position': (function(){
+						var posTop = (that.percentOrPixel(options.position.top) == '%') ? options.position.top : options.position.top + 'px',
+							posLeft = (that.percentOrPixel(options.position.left) == '%') ? options.position.left : options.position.left + 'px';
+						return posTop + ' ' + posLeft;
+					})(),
+					'background-size'    : 'cover'
 				})
-				.addClass(options.classname)
-				.insertBefore($(_this));
+				.appendTo($(featuredBgImgContainer));
+
+				$(featuredBgImgContainer).insertBefore($(_this));
 
 				if(options.showoncomplete == true){
-					$(featuredBgImg).show();
+					$(featuredBgImgContainer).show();
 				}
 
 				that.checkSrcAttrName(_this, options);
 
-				options.after.call(_this, $(featuredBgImg));
+				options.after.call(_this, $(featuredBgImgContainer));
 
-				that.updateGlobal(_this, $(featuredBgImg), options);
+				that.updateGlobal(_this, $(featuredBgImgContainer), options);
 
 			}).each(function(){
 
