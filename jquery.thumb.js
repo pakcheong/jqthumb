@@ -1,6 +1,6 @@
 /*
 	Copyright (c) 2013-2014 Tho Pak Cheong
-	Version: 1.5 (23-MAY-2014)
+	Version: 1.6 (23-MAY-2014)
 	Dual licensed under the MIT and GPL licenses.
 	Requires: jQuery v1.3 or later
 
@@ -74,6 +74,10 @@
 	v1.5
 	=========================
 	1. Add <div/> image container wrap images, so the original element that wraps the image will not be modified in terms of styling.
+
+	v1.6
+	=========================
+	1. Add "kill" method to undo everything of the element.
 */
 
 ;(function ( $, window, document, undefined ) {
@@ -110,7 +114,14 @@
 			this.settings.position.left	= this.settings.position.left.toString().replace(/px/g, '');
 		this._defaults = defaults;
 		this._name = pluginName;
-		this.init();
+
+		if(typeof options == 'string'){
+			if(options.toLowerCase() == 'kill'){
+				this.kill(this.element);
+			}
+		}else{
+			this.init();
+		}
 	}
 
 	Plugin.prototype = {
@@ -122,12 +133,25 @@
 			}
 		},
 
+		kill: function(_this){
+			if($.data( _this, "plugin_" + pluginName )){
+				$(_this).prev().remove();
+				$(_this)
+					.removeAttr('style') // first, remove all the styles first
+					.attr('style', $(_this).data('original-styles')) // then re-store the original styles
+					.removeData('original-styles') // remove data that stores the original stylings before the image being rendered
+					.removeData('plugin_' + pluginName); // remove data that stored during plugin initialization
+			}
+		},
+
 		nonCss3Supported_method: function(_this, options){
 			
 			options.before.call(_this, _this);
 			
 			var that = this;
 			
+			$(_this).data('original-styles', $(_this).attr('style')); // keep original styles into data
+
 			$(_this).hide();
 
 			$(_this).one('load',function() {
@@ -245,6 +269,8 @@
 			options.before.call(_this, _this);
 			
 			var that = this;
+			
+			$(_this).data('original-styles', $(_this).attr('style')); // keep original styles into data
 			
 			$(_this).hide();
 
@@ -370,9 +396,12 @@
 		global.totalElems = $(elems).length; // set total of elements for later use.
 
 		return this.each(function() {
-			
 			if ( !$.data( this, "plugin_" + pluginName ) ) {
 				$.data( this, "plugin_" + pluginName, new Plugin( this, options ) );
+			}else{
+				if(typeof options == 'string'){
+					new Plugin( this, options );
+				}
 			}
 		});
 	};

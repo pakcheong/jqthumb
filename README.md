@@ -1,7 +1,7 @@
-jQThumb V1.5
+jQThumb V1.6
 ======================================
 
-Create thumbnails from images proportionally. It even works on IE6 from jQuery V1.3 and above.
+Create thumbnails from images proportionally. It even works on IE6 from jQuery V1.3 and above. It is also a replacement for "background-cover" in older browsers.
 
 USAGE:
 
