@@ -44,7 +44,7 @@
 					height: 150,
 					source: 'data-src',
 					showoncomplete: true,
-					complete: function(objs){
+					done: function(objs){
 						$(objs[0]).parent().parent().append('<p>complete() callback is called!</p>');
 					}
 				});
@@ -69,8 +69,8 @@
 					</div>
 				</td>
 				<td align="center">
-					<div style="width: 200px; height: 200px;">
-						<div class="img-container">
+					<div>
+						<div class="img-container" style="width: 200px; height: 200px;">
 							<img class="example2" src="picture.jpg" />
 						</div>
 					</div>
