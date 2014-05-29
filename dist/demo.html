@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>DEMO - jQThumb Plugin</title>
+		<script type="text/javascript" src="jquery-1.3.min.js"></script>
+		<script type="text/javascript" src="jqthumb.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+
+				$('.example1').jqthumb({
+					classname: 'jqthumb',
+					width: 100,
+					height: 100,
+					position: {
+						top: '50%',
+						left: '50%'
+					},
+					showoncomplete: false,
+					before: function(oriImage){
+					},
+					after: function(imgObj){
+						$(imgObj).fadeIn(3000);
+					}
+				});
+
+				$('.example2').jqthumb({
+					classname: 'jqthumb',
+					width: '20%',
+					height: '50%',
+					showoncomplete: true
+				});
+
+				$('.example3').jqthumb({
+					classname: 'jqthumb',
+					width: 100,
+					height: 200,
+					showoncomplete: true
+				});
+
+				$('.example4').jqthumb({
+					classname: 'jqthumb',
+					width: 150,
+					height: 150,
+					source: 'data-src',
+					showoncomplete: true,
+					done: function(objs){
+						$(objs[0]).parent().parent().append('<p>complete() callback is called!</p>');
+					}
+				});
+
+			});
+		</script>
+	</head>
+	<body>
+		<table border="1">
+			<tr>
+				<td>Original Image</td>
+				<td>Example 1 - with "eachcomplete" callback</td>
+				<td>Example 2 - with percentage set in "width" and "height"</td>
+				<td>Example 3 - with fixed value in "width" and "height"</td>
+				<td>Example 4 - with "data-src" attribute</td>
+			</tr>
+			<tr>
+				<td><img src="picture.jpg" /></td>
+				<td align="center">
+					<div class="img-container">
+						<img id="imageToTest" class="example1" src="picture.jpg" />
+					</div>
+				</td>
+				<td align="center">
+					<div>
+						<div class="img-container" style="width: 200px; height: 200px;">
+							<img class="example2" src="picture.jpg" />
+						</div>
+					</div>
+				</td>
+				<td align="center">
+					<div class="img-container">
+						<img class="example3" src="picture.jpg" />
+					</div>
+				</td>
+				<td align="center">
+					<div class="img-container">
+						<img class="example4" data-src="picture.jpg" />
+					</div>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>

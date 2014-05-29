@@ -47,14 +47,38 @@ module.exports = function(grunt) {
                     document: true
                 }
             }
+        },
+        copy: {
+            main: {
+                files: [{
+                    expand: true,
+                    cwd: 'demo',
+                    src: ['demo.html', 'jquery-1.3.min.js', 'picture.jpg'],
+                    dest: 'dist'
+                }]
+            }
+        },
+        'screenshot-element': {
+            chart: {
+                options: {
+                    timeout: 10000
+                },
+                images: [
+                    {
+                        url: 'demo/demo.html',
+                        file: 'screenshot.png',
+                        selector: 'body'
+                    }
+                ]
+            }
         }
     });
 
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
-
-    grunt.registerTask('test', ['jshint', 'concat', 'uglify']);
-    grunt.registerTask('default', ['jshint', 'concat', 'uglify']);
-
+    grunt.loadNpmTasks('grunt-screenshot-element');
+    grunt.loadNpmTasks('grunt-contrib-copy');
+    
+    grunt.registerTask('default', ['jshint', 'concat', 'uglify', 'copy', 'screenshot-element']);
 };
