@@ -1,13 +1,13 @@
 /*!
-    jQThumb 1.7.1
+    jQThumb 1.7.2
     Copyright (c) 2013-2014
     Dual licensed under the MIT and GPL licenses.
 
     Author       : Pak Cheong
-    Version      : 1.7.1
+    Version      : 1.7.2
     Repo         : https://github.com/pakcheong/jqthumb
     Demo         : http://pakcheong.github.io/jqthumb/
-    Last Updated : Thursday, May 29th, 2014, 6:04:56 PM
+    Last Updated : Thursday, May 29th, 2014, 9:59:29 PM
     Requirements : jQuery v1.3 or later
 */
 /*!
