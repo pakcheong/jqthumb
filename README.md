@@ -1,4 +1,4 @@
-jQThumb V1.7.1
+jQThumb V1.7.2
 ======================================
 
 Create thumbnails from images proportionally. It even works on IE6 from jQuery V1.3 and above.

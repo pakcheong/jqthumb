@@ -2,9 +2,11 @@
     "name"            : "jQThumb",
     "filename"        : "jqthumb",
     "author"          : "Pak Cheong",
-    "version"         : "1.7.1",
+    "version"         : "1.7.2",
     "repo"            : "https://github.com/pakcheong/jqthumb",
     "demo"            : "http://pakcheong.github.io/jqthumb/",
+    "src"             : "demo/",
+    "dist"            : "dist/",
     "dependencies"    : {},
     "devDependencies" : {
         "grunt"                    : "~0.4.5",
