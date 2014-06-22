@@ -85,6 +85,12 @@
     1. Added Grunt to the project.
     2. Fix potential errors and warnings reported by jshint.
     3. Big change of the file structure. Demo files are in demo directory now.
+
+    v1.7.3
+    =========================
+    1. Fix "done" callback.
+    2. Change addBack() function to native for-loop method.
+    3. Start using Bower from now one.
 */
 
 ;(function ( $, window, document, undefined ) {
@@ -106,8 +112,7 @@
         },
         global = {
             elemCounter: 0,
-            totalElems: 0,
-            inputElems: {}, // store all the elements before executing
+            inputElems: [], // store all the elements before executing
             outputElems: []
         };
 
@@ -349,7 +354,7 @@
         updateGlobal: function(_this, obj, options){
             global.outputElems.push($(obj));
             global.elemCounter = global.elemCounter + 1;
-            if(global.elemCounter == global.totalElems){
+            if(global.elemCounter == global.inputElems.length){
                 options.done.call(_this, global.outputElems);
             }
         },
@@ -401,23 +406,17 @@
 
     $.fn[ pluginName ] = function ( options ) {
 
-        if($.isFunction($.fn.addBack) === false){ // we need to use addBack functions which only exists from jQuery v1.3 and above.
-            $.fn.extend({
-                addBack: function( selector ) {
-                    return this.add( selector === null ?
-                        this.prevObject : this.prevObject.filter(selector)
-                    );
-                }
-            });
-        }
-
-        var elems = $(this).find('*').addBack();
-
-
         global.elemCounter = 0; // must always set to zero for every initialization
-        global.outputElems = []; // must clear before doing anythong
-        global.inputElems = $(elems);
-        global.totalElems = $(elems).length; // set total of elements for later use.
+        global.outputElems = []; // must clear before doing anything
+        global.inputElems  = (function(_this){
+            var $this = $(_this),
+                total = $this.length,
+                tempArr = [];
+            for(var i=0; i<total; i++){
+                tempArr.push($this.get(i));
+            }
+            return tempArr;
+        })($(this));
 
         return this.each(function() {
             if(typeof options == 'string'){

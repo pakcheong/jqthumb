@@ -52,18 +52,38 @@ module.exports = function(grunt) {
         },
         copy: {
             main: {
-                files: [{
-                    expand: true,
-                    cwd: '<%= pkg.src %>',
-                    src: ['demo.html', 'jquery-1.3.min.js', 'picture.jpg'],
-                    dest: '<%= pkg.dist %>'
-                }]
+                files: [
+                    {
+                        expand: true,
+                        cwd: '<%= pkg.src %>',
+                        src: ['picture.jpg'],
+                        dest: '<%= pkg.dist %>'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/jquery',
+                        src: ['jquery.js'],
+                        dest: '<%= pkg.dist %>'
+                    }
+                ]
+            }
+        },
+        replace: {
+            example: {
+                src: '<%= pkg.src %>demo.html',
+                dest: '<%= pkg.dist %>demo.html',
+                replacements: [
+                    {
+                        from: '../bower_components/jquery/jquery.js',
+                        to: 'jquery.js'
+                    }
+                ]
             }
         },
         'screenshot-element': {
             demo: {
                 options: {
-                    timeout: 10000
+                    timeout: 6000 /* wait for animation to be done */
                 },
                 images: [
                     {
@@ -80,7 +100,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-text-replace');
     grunt.loadNpmTasks('grunt-screenshot-element');
 
-    grunt.registerTask('default', ['jshint', 'concat', 'uglify', 'copy', 'screenshot-element']);
+    grunt.registerTask('default', ['jshint', 'concat', 'uglify', 'copy', 'replace', 'screenshot-element']);
 };
