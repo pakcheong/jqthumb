@@ -1,0 +1,8 @@
+{
+    "name"         : "jQThumb",
+    "private"      : true,
+    "dependencies" : {
+        "jquery" : "1.3.0",
+        "bower"  : "latest"
+    }
+}
