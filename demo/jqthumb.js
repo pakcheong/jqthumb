@@ -96,12 +96,17 @@
     =========================
     1. Support Zepto from now on
     2. Fix "done" callback
+
+    v1.9.0
+    =========================
+    1. Added $.jqthumb() with the method "killall" to kill all rendered images
 */
 
 ;(function ( $, window, document, undefined ) {
 
-    var pluginName = "jqthumb",
-        defaults = {
+    var pluginName  = "jqthumb",
+        grandGlobal = { outputElems: [], inputElems: [] },
+        defaults    = {
             classname      : 'jqthumb',
             width          : 100,
             height         : 100,
@@ -148,6 +153,28 @@
                     console.error('We could not find the element created by jqthumb. It is probably due to one or more element has been added right before the image element after the plugin initialization, or it was removed.');
                     return false;
                 }
+
+                /* START: remove output elements */
+                var tempArr = [];
+                $.each(grandGlobal.outputElems, function(index, obj){
+                    if($(obj)[0] == $(_this).prev()[0]){
+                    }else{
+                        tempArr.push(grandGlobal.outputElems[index]);
+                    }
+                });
+                grandGlobal.outputElems = tempArr;
+                /* END: remove output elements */
+
+                /* START: remove input elements */
+                tempArr = [];
+                $.each(grandGlobal.inputElems, function(index, obj){
+                    if($(obj)[0] == $(_this)[0]){
+                    }else{
+                        tempArr.push(grandGlobal.inputElems[index]);
+                    }
+                });
+                grandGlobal.inputElems = tempArr;
+                /* END: remove input elements */
 
                 $(_this).prev().remove();
 
@@ -339,6 +366,7 @@
         updateGlobal: function(_this, obj, options){
             _this.global.outputElems.push( $(obj)[0] );
             _this.global.elemCounter++;
+            grandGlobal.outputElems.push( $(obj)[0] );
             if(_this.global.elemCounter == _this.global.inputElems.length){
                 options.done.call(_this, _this.global.outputElems);
             }
@@ -404,11 +432,27 @@
                                 return tempArr;
                             })($(this))
         };
+        obj = {};
+        obj[pluginName] = function(action){
+            if(typeof action == 'undefined'){
+                console.error('Please specify an action like $.jqthumb("killall")');
+                return;
+            }
+            action = action.toLowerCase();
+            if(action == 'killall'){
+                $.each(grandGlobal.inputElems, function(){
+                    new Plugin(this, 'kill');
+                });
+            }
+        };
+        $.extend($, obj);
 
         return this.each(function() {
 
             var $eachImg = $(this);
             this.global = global;
+
+            grandGlobal.inputElems.push($eachImg);
 
             if(typeof options == 'string'){
                 new Plugin(this, options);
