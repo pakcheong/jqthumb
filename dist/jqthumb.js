@@ -1,14 +1,14 @@
 /*!
-    jQThumb 1.7.2
+    jQThumb 1.8.0
     Copyright (c) 2013-2014
     Dual licensed under the MIT and GPL licenses.
 
     Author       : Pak Cheong
-    Version      : 1.7.2
+    Version      : 1.8.0
     Repo         : https://github.com/pakcheong/jqthumb
     Demo         : http://pakcheong.github.io/jqthumb/
-    Last Updated : Thursday, May 29th, 2014, 9:59:29 PM
-    Requirements : jQuery v1.3 or later
+    Last Updated : Tuesday, June 24th, 2014, 11:22:55 AM
+    Requirements : jQuery >=v1.3 or Zepto (with zepto-data plugin) >=v1.1.3
 */
 /*!
     Change Log:
@@ -97,43 +97,44 @@
     1. Added Grunt to the project.
     2. Fix potential errors and warnings reported by jshint.
     3. Big change of the file structure. Demo files are in demo directory now.
+
+    v1.7.3
+    =========================
+    1. Fix "done" callback.
+    2. Change addBack() function to native for-loop method.
+    3. Start using Bower from now one.
+
+    v1.8.0
+    =========================
+    1. Support Zepto from now on
+    2. Fix "done" callback
 */
 
 ;(function ( $, window, document, undefined ) {
 
     var pluginName = "jqthumb",
         defaults = {
-            classname: 'jqthumb',
-            width: 100,
-            height: 100,
-            position: {
-                top: '50%',
-                left: '50%'
-            },
-            source: 'src',
-            showoncomplete: true,
-            before: function(){},
-            after: function(){},
-            done: function(){}
-        },
-        global = {
-            elemCounter: 0,
-            totalElems: 0,
-            inputElems: {}, // store all the elements before executing
-            outputElems: []
+            classname      : 'jqthumb',
+            width          : 100,
+            height         : 100,
+            position       : { top: '50%', left: '50%' },
+            source         : 'src',
+            showoncomplete : true,
+            before         : function(){},
+            after          : function(){},
+            done           : function(){}
         };
 
 
     function Plugin ( element, options ) {// The actual plugin constructor
-        this.element = element;
-        this.settings = $.extend( {}, defaults, options );
-            this.settings.width            = this.settings.width.toString().replace(/px/g, '');
-            this.settings.height        = this.settings.height.toString().replace(/px/g, '');
-            this.settings.position.top    = this.settings.position.top.toString().replace(/px/g, '');
-            this.settings.position.left    = this.settings.position.left.toString().replace(/px/g, '');
-        this._defaults = defaults;
-        this._name = pluginName;
-
+        this.element                = element;
+        this.settings               = $.extend( {}, defaults, options );
+        this.settings.width         = this.settings.width.toString().replace(/px/g, '');
+        this.settings.height        = this.settings.height.toString().replace(/px/g, '');
+        this.settings.position.top  = this.settings.position.top.toString().replace(/px/g, '');
+        this.settings.position.left = this.settings.position.left.toString().replace(/px/g, '');
+        this._defaults              = defaults;
+        this._name                  = pluginName;
         if(typeof options == 'string'){
             if(options.toLowerCase() == 'kill'){
                 this.kill(this.element);
@@ -153,9 +154,9 @@
         },
 
         kill: function(_this){
-            if( $.data( _this, "plugin_" + pluginName )){
+            if( $(_this).data(pluginName)){
 
-                if($(_this).prev().data('plugin') !== pluginName){
+                if($(_this).prev().data(pluginName) !== pluginName){
                     console.error('We could not find the element created by jqthumb. It is probably due to one or more element has been added right before the image element after the plugin initialization, or it was removed.');
                     return false;
                 }
@@ -163,16 +164,16 @@
                 $(_this).prev().remove();
 
                 $(_this).removeAttr('style'); // first, remove all the styles first
-                if(typeof $(_this).data('original-styles') !== 'undefined'){
-                    $(_this).attr('style', $(_this).data('original-styles')); // then re-store the original styles
+                if(typeof $(_this).data(pluginName + '-original-styles') !== 'undefined'){
+                    $(_this).attr('style', $(_this).data(pluginName + '-original-styles')); // then re-store the original styles
                 }
 
-                if(typeof $(_this).data('original-styles') !== 'undefined'){
-                    $(_this).removeData('original-styles'); // remove data that stores the original stylings before the image being rendered
+                if(typeof $(_this).data(pluginName + '-original-styles') !== 'undefined'){
+                    $(_this).removeData(pluginName + '-original-styles'); // remove data that stores the original stylings before the image being rendered
                 }
 
-                if(typeof $(_this).data('plugin_' + pluginName) !== 'undefined'){
-                    $(_this).removeData('plugin_' + pluginName); // remove data that stored during plugin initialization
+                if(typeof $(_this).data(pluginName) !== 'undefined'){
+                    $(_this).removeData(pluginName); // remove data that stored during plugin initialization
                 }
             }
         },
@@ -181,188 +182,177 @@
 
             options.before.call(_this, _this);
 
-            var that = this;
+            var that = this,
+                $this = $(_this);
 
-            $(_this).data('original-styles', $(_this).attr('style')); // keep original styles into data
+            $this.data(pluginName + '-original-styles', $this.attr('style')); // keep original styles into data
 
-            $(_this).hide();
+            $this.hide();
 
-            $(_this).one('load',function() {
-                that.checkSrcAttrName(_this, options);
+            var $tempImg = $("<img/>");
 
-                var tempImg = $("<img/>").attr("src", $(_this).attr("src"));
-                $(tempImg).load(function(){
-
-                    var newImg = {
-                            obj: tempImg,
-                            size: {
-                                width: this.width,
-                                height: this.height
-                            }
-                        },
-                        pw = that.percentOrPixel(options.width),
-                        ph = that.percentOrPixel(options.height),
-                        imgContainer = $('<div />'),
-                        ratio = 0;
-
-                    $(imgContainer)
-                        .insertBefore($(_this))
-                        .append($(newImg.obj))
-                        .css({
-                            'position'    : 'relative',
-                            'overflow'    : 'hidden',
-                            'width'        : (pw == '%') ? options.width : options.width + 'px',
-                            'height'    : (ph == '%') ? options.height : options.height + 'px'
-                        })
-                        .data('plugin', pluginName); // it would be easy to kill later
-
-                    if(newImg.size.width > newImg.size.height){ // horizontal
-
-                        $(newImg.obj).css({
-                            'width'            : 'auto',
-                            'max-height'    : 99999999,
-                            'min-height'    : 0,
-                            'max-width'        : 99999999,
-                            'min-width'        : 0,
-                            'height'        : $(newImg.obj).parent().height() + 'px'
-                        });
-
-                        ratio = $(newImg.obj).height() / $(newImg.obj).width(); // get ratio
-
-                        if( $(newImg.obj).width() < $(newImg.obj).parent().width() ){
-                            $(newImg.obj).css({
-                                'width': $(newImg.obj).parent().width(),
-                                'height': parseFloat($(newImg.obj).parent().width() * ratio)
-                            });
+            $tempImg.bind('load', function(){
+                var newImg = {
+                        obj: $tempImg,
+                        size: {
+                            width: this.width,
+                            height: this.height
                         }
+                    },
+                    pw = that.percentOrPixel(options.width),
+                    ph = that.percentOrPixel(options.height),
+                    imgContainer = $('<div />'),
+                    ratio = 0;
 
-                    }else{ // vertical
+                $(imgContainer)
+                    .insertBefore($this)
+                    .append($(newImg.obj))
+                    .css({
+                        'position' : 'relative',
+                        'overflow' : 'hidden',
+                        'width'    : (pw == '%') ? options.width : options.width + 'px',
+                        'height'   : (ph == '%') ? options.height : options.height + 'px'
+                    })
+                    .data(pluginName, pluginName); // it would be easy to kill later
 
-                        $(newImg.obj).css({
-                            'width'            : $(newImg.obj).parent().width() + 'px',
-                            'max-height'    : 99999999,
-                            'min-height'    : 0,
-                            'max-width'        : 99999999,
-                            'min-width'        : 0,
-                            'height'        : 'auto'
-                        });
-
-                        ratio = $(newImg.obj).width() / $(newImg.obj).height(); // get ratio
-
-                        if( $(newImg.obj).height() < $(newImg.obj).parent().height() ){
-                            $(newImg.obj).css({
-                                'width': parseFloat($(newImg.obj).parent().height() * ratio),
-                                'height': $(newImg.obj).parent().height()
-                            });
-                        }
-                    }
-
-                    posTop = (that.percentOrPixel(options.position.top) == '%') ? options.position.top : options.position.top + 'px';
-                    posLeft = (that.percentOrPixel(options.position.left) == '%') ? options.position.left : options.position.left + 'px';
+                if(newImg.size.width > newImg.size.height){ // horizontal
 
                     $(newImg.obj).css({
-                        'position'        : 'absolute',
-                        'top'            : posTop,
-                        'margin-top'    : function(){
-                            if(that.percentOrPixel(options.position.top) == '%'){
-                                return '-' + parseFloat(($(newImg.obj).height() / 100) * options.position.top.slice(0,-1)) + 'px';
-                            }
-                        },
-                        'left'            : posLeft,
-                        'margin-left'    : function(){
-                            if(that.percentOrPixel(options.position.left) == '%'){
-                                return '-' + parseFloat(($(newImg.obj).width() / 100) * options.position.left.slice(0,-1)) + 'px';
-                            }
-                        }
+                        'width'      : 'auto',
+                        'max-height' : 99999999,
+                        'min-height' : 0,
+                        'max-width'  : 99999999,
+                        'min-width'  : 0,
+                        'height'     : $(newImg.obj).parent().height() + 'px'
                     });
 
-                    $(imgContainer)
-                        .hide()
-                        .addClass(options.classname);
+                    ratio = $(newImg.obj).height() / $(newImg.obj).width(); // get ratio
 
-                    if(options.showoncomplete === true){
-                        $(imgContainer).show();
+                    if( $(newImg.obj).width() < $(newImg.obj).parent().width() ){
+                        $(newImg.obj).css({
+                            'width': $(newImg.obj).parent().width(),
+                            'height': parseFloat($(newImg.obj).parent().width() * ratio)
+                        });
                     }
-                    options.after.call(_this, $(imgContainer));
 
-                    that.updateGlobal(_this, $(imgContainer), options);
+                }else{ // vertical
 
-                }).each(function(){
+                    $(newImg.obj).css({
+                        'width'      : $(newImg.obj).parent().width() + 'px',
+                        'max-height' : 99999999,
+                        'min-height' : 0,
+                        'max-width'  : 99999999,
+                        'min-width'  : 0,
+                        'height'     : 'auto'
+                    });
 
-                    $(tempImg).load();
+                    ratio = $(newImg.obj).width() / $(newImg.obj).height(); // get ratio
 
+                    if( $(newImg.obj).height() < $(newImg.obj).parent().height() ){
+                        $(newImg.obj).css({
+                            'width': parseFloat($(newImg.obj).parent().height() * ratio),
+                            'height': $(newImg.obj).parent().height()
+                        });
+                    }
+                }
+
+                posTop = (that.percentOrPixel(options.position.top) == '%') ? options.position.top : options.position.top + 'px';
+                posLeft = (that.percentOrPixel(options.position.left) == '%') ? options.position.left : options.position.left + 'px';
+
+                $(newImg.obj).css({
+                    'position'    : 'absolute',
+                    'top'         : posTop,
+                    'margin-top'  : (function(){
+                                        if(that.percentOrPixel(options.position.top) == '%'){
+                                            return '-' + parseFloat(($(newImg.obj).height() / 100) * options.position.top.slice(0,-1)) + 'px';
+                                        }
+                                    })(),
+                    'left'        : posLeft,
+                    'margin-left' : (function(){
+                                        if(that.percentOrPixel(options.position.left) == '%'){
+                                            return '-' + parseFloat(($(newImg.obj).width() / 100) * options.position.left.slice(0,-1)) + 'px';
+                                        }
+                                    })()
                 });
-            }).each(function(){
 
-                $(_this).load();
+                $(imgContainer)
+                    .hide()
+                    .addClass(options.classname);
 
-            });
+                if(options.showoncomplete === true){
+                    $(imgContainer).show();
+                }
+                options.after.call(_this, $(imgContainer));
+
+                that.updateGlobal(_this, $(imgContainer), options);
+
+            }).attr("src", $this.attr(options.source)); // for older browsers, must bind events first then set attr later (IE7, IE8)
         },
 
         css3Supported_method: function (_this, options) {
-
             options.before.call(_this, _this);
 
-            var that = this;
+            var that = this,
+                $oriImage = $(_this),
+                $tempImg = $('<img />').attr('src', $oriImage.attr(options.source));
 
-            $(_this).data('original-styles', $(_this).attr('style')); // keep original styles into data
+            $oriImage.data(pluginName + '-original-styles', $oriImage.attr('style')); // keep original styles into data
 
-            $(_this).hide();
+            $oriImage.hide();
 
-            $(_this).one('load',function() {
-                var pw = that.percentOrPixel(options.width),
-                    ph = that.percentOrPixel(options.height),
-                    featuredBgImgContainer,
-                    featuredBgImg;
+            $.each($tempImg, function(index, obj){
+                var $tempImg = $(obj);
 
-                featuredBgImgContainer = $('<div/>')
-                                            .css({
-                                                'width'   : (pw == '%') ? options.width : options.width + 'px',
-                                                'height'  : (ph == '%') ? options.height : options.height + 'px',
-                                                'display' : 'none'
-                                            })
-                                            .addClass(options.classname)
-                                            .data('plugin', pluginName); // it would be easy to kill later
+                $tempImg.one('load', function() {
+                    var pw = that.percentOrPixel(options.width),
+                        ph = that.percentOrPixel(options.height),
+                        featuredBgImgContainer = null,
+                        featuredBgImg = null;
 
-                featuredBgImg = $('<div/>').css({
-                    'width'              : '100%',
-                    'height'             : '100%',
-                    'background-image'   : 'url("' + $(_this).attr(options.source) + '")',
-                    '-ms-filter'         : '"progid:DXImageTransform.Microsoft.AlphaImageLoader(src="'+$(_this).attr(options.source)+'",sizingMethod="scale")',
-                    'background-repeat'  : 'no-repeat',
-                    'background-position': (function(){
-                        var posTop = (that.percentOrPixel(options.position.top) == '%') ? options.position.top : options.position.top + 'px',
-                            posLeft = (that.percentOrPixel(options.position.left) == '%') ? options.position.left : options.position.left + 'px';
-                        return posTop + ' ' + posLeft;
-                    })(),
-                    'background-size'    : 'cover'
-                })
-                .appendTo($(featuredBgImgContainer));
+                    featuredBgImgContainer = $('<div/>')
+                                                .css({
+                                                    'width'   : (pw == '%') ? options.width : options.width + 'px',
+                                                    'height'  : (ph == '%') ? options.height : options.height + 'px',
+                                                    'display' : 'none'
+                                                })
+                                                .addClass(options.classname)
+                                                .data(pluginName, pluginName); // it would be easy to kill later
 
-                $(featuredBgImgContainer).insertBefore($(_this));
+                    featuredBgImg = $('<div/>').css({
+                        'width'              : '100%',
+                        'height'             : '100%',
+                        'background-image'   : 'url("' + $oriImage.attr(options.source) + '")',
+                        // '-ms-filter'         : '"progid:DXImageTransform.Microsoft.AlphaImageLoader(src="' + $oriImage.attr(options.source) + '",sizingMethod="scale")', // this does not work in Zepto
+                        'background-repeat'  : 'no-repeat',
+                        'background-position': (function(){
+                            var posTop = (that.percentOrPixel(options.position.top) == '%') ? options.position.top : options.position.top + 'px',
+                                posLeft = (that.percentOrPixel(options.position.left) == '%') ? options.position.left : options.position.left + 'px';
+                            return posTop + ' ' + posLeft;
+                        })(),
+                        'background-size'    : 'cover'
+                    })
+                    .appendTo($(featuredBgImgContainer));
 
-                if(options.showoncomplete === true){
-                    $(featuredBgImgContainer).show();
-                }
+                    $(featuredBgImgContainer).insertBefore($(_this));
 
-                that.checkSrcAttrName(_this, options);
+                    if(options.showoncomplete === true){
+                        $(featuredBgImgContainer).show();
+                    }
 
-                options.after.call(_this, $(featuredBgImgContainer));
+                    that.checkSrcAttrName(_this, options);
 
-                that.updateGlobal(_this, $(featuredBgImgContainer), options);
+                    options.after.call(_this, $(featuredBgImgContainer));
 
-            }).each(function(){
-
-                $(_this).load();
-
+                    that.updateGlobal(_this, $(featuredBgImgContainer), options);
+                });
             });
         },
 
         updateGlobal: function(_this, obj, options){
-            global.outputElems.push($(obj));
-            global.elemCounter = global.elemCounter + 1;
-            if(global.elemCounter == global.totalElems){
-                options.done.call(_this, global.outputElems);
+            _this.global.outputElems.push( $(obj)[0] );
+            _this.global.elemCounter++;
+            if(_this.global.elemCounter == _this.global.inputElems.length){
+                options.done.call(_this, _this.global.outputElems);
             }
         },
 
@@ -413,36 +403,36 @@
 
     $.fn[ pluginName ] = function ( options ) {
 
-        if($.isFunction($.fn.addBack) === false){ // we need to use addBack functions which only exists from jQuery v1.3 and above.
-            $.fn.extend({
-                addBack: function( selector ) {
-                    return this.add( selector === null ?
-                        this.prevObject : this.prevObject.filter(selector)
-                    );
-                }
-            });
-        }
-
-        var elems = $(this).find('*').addBack();
-
-
-        global.elemCounter = 0; // must always set to zero for every initialization
-        global.outputElems = []; // must clear before doing anythong
-        global.inputElems = $(elems);
-        global.totalElems = $(elems).length; // set total of elements for later use.
+        var global = {
+            elemCounter : 0,
+            outputElems : [],
+            inputElems  : (function(_this){
+                                var $this   = $(_this),
+                                    total   = $this.length,
+                                    tempArr = [];
+                                for(var i=0; i<total; i++){
+                                    tempArr.push($this.get(i));
+                                }
+                                return tempArr;
+                            })($(this))
+        };
 
         return this.each(function() {
+
+            var $eachImg = $(this);
+            this.global = global;
+
             if(typeof options == 'string'){
-                new Plugin( this, options );
+                new Plugin(this, options);
             }else{
-                if ( !$.data( this, "plugin_" + pluginName ) ) {
-                    $.data( this, "plugin_" + pluginName, new Plugin( this, options ) );
+                if (!$eachImg.data(pluginName)){
+                    $eachImg.data(pluginName, new Plugin( this, options ));
                 }else{ // re-rendered without killing it
-                    new Plugin( this, 'kill' );
-                    $.data( this, "plugin_" + pluginName, new Plugin( this, options ) );
+                    new Plugin(this, 'kill');
+                    $eachImg.data(pluginName, new Plugin( this, options ));
                 }
             }
         });
     };
 
-})( jQuery, window, document );
+})( (window.jQuery || window.Zepto), window, document );

@@ -10,7 +10,7 @@ module.exports = function(grunt) {
                     '\n    Repo         : <%= pkg.repo %>' +
                     '\n    Demo         : <%= pkg.demo %>' +
                     '\n    Last Updated : <%= grunt.template.today("dddd, mmmm dS, yyyy, h:MM:ss TT") %>' +
-                    '\n    Requirements : jQuery v1.3 or later' +
+                    '\n    Requirements : jQuery >=v1.3 or Zepto (with zepto-data plugin) >=v1.1.3' +
                     '\n' +
                 '*/\n'
     };
@@ -52,23 +52,74 @@ module.exports = function(grunt) {
         },
         copy: {
             main: {
-                files: [{
-                    expand: true,
-                    cwd: '<%= pkg.src %>',
-                    src: ['demo.html', 'jquery-1.3.min.js', 'picture.jpg'],
-                    dest: '<%= pkg.dist %>'
-                }]
+                files: [
+                    {
+                        expand: true,
+                        cwd: '<%= pkg.src %>',
+                        src: ['picture.jpg'],
+                        dest: '<%= pkg.dist %>'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/jquery',
+                        src: ['jquery.js'],
+                        dest: '<%= pkg.dist %>'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/zepto',
+                        src: ['zepto.js'],
+                        dest: '<%= pkg.dist %>'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/zepto-data',
+                        src: ['zepto.data.js'],
+                        dest: '<%= pkg.dist %>'
+                    }
+                ]
+            }
+        },
+        replace: {
+            jquery: {
+                src: '<%= pkg.src %>demo.jquery.html',
+                dest: '<%= pkg.dist %>demo.jquery.html',
+                replacements: [
+                    {
+                        from: '../bower_components/jquery/jquery.js',
+                        to: 'jquery.js'
+                    }
+                ]
+            },
+            zepto: {
+                src: '<%= pkg.src %>demo.zepto.html',
+                dest: '<%= pkg.dist %>demo.zepto.html',
+                replacements: [
+                    {
+                        from: '../bower_components/zepto/zepto.js',
+                        to: 'zepto.js'
+                    },
+                    {
+                        from: '../bower_components/zepto-data/zepto.data.js',
+                        to: 'zepto.data.js'
+                    }
+                ]
             }
         },
         'screenshot-element': {
             demo: {
                 options: {
-                    timeout: 10000
+                    timeout: 2000 /* wait for animation to be done */
                 },
                 images: [
                     {
-                        url: '<%= pkg.dist %>demo.html',
-                        file: 'screenshot.png',
+                        url: '<%= pkg.dist %>demo.jquery.html',
+                        file: 'screenshots/screenshot.jquery.png',
+                        selector: 'body'
+                    },
+                    {
+                        url: '<%= pkg.dist %>demo.zepto.html',
+                        file: 'screenshots/screenshot.zepto.png',
                         selector: 'body'
                     }
                 ]
@@ -80,7 +131,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-text-replace');
     grunt.loadNpmTasks('grunt-screenshot-element');
 
-    grunt.registerTask('default', ['jshint', 'concat', 'uglify', 'copy', 'screenshot-element']);
+    grunt.registerTask('default', ['jshint', 'concat', 'uglify', 'copy', 'replace', 'screenshot-element']);
 };
