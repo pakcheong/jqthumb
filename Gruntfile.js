@@ -143,24 +143,99 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-text-replace');
     grunt.loadNpmTasks('grunt-screenshot-element');
     
-    grunt.registerTask('readme', '', function () {
-        var readMeFile = 'README.md',
-            data = grunt.file.read(readMeFile);
+    /* Update version in readme file by checking if the first line of the file contains the latest version. */
+    grunt.registerTask('update-readme', '', function () {
+        var readMeFile     = 'README.md',
+            replaceLineOne = pkg.name + ' V' + pkg.version,
+            data           = grunt.file.read(readMeFile).toString(),
+            firstLine      = data.substr(data.indexOf('\n'), data.length);
 
-        var lineArr = data.toString().split('\n'),
-                newStr  = '';
-
-        for(var i=0; i<lineArr.length-1; i++){
-            if(i === 0){
-                newStr += pkg.name + ' V' + pkg.version + '\n';
-            }else{
-                newStr += lineArr[i] + '\n';
-            }
+        if(data.indexOf(replaceLineOne) > -1){
+            console.log(readMeFile + ' is updated.');
+        }else{
+            var newData = pkg.name + ' V' + pkg.version + data.substr(data.indexOf('\n'), data.length);
+            grunt.file.write(readMeFile, newData);
+            console.log(readMeFile + '\'s version has been updated to ' + pkg.version);
         }
+    });
 
-        grunt.file.write(readMeFile, newStr);
+    /* Check if you have already updated change log with latest version by searching the latest version from the file. */
+    grunt.registerTask('check-changelog', '', function () {
+        var changeLogFile = 'CHANGELOG.txt',
+            data          = grunt.file.read(changeLogFile).toString(),
+            lineArr       = data.split('\n'),
+            search        = '# V' + pkg.version,
+            newData       = '';
+
+        if(data.indexOf(search) > -1){
+            for(var i=0; i<lineArr.length-1; i++){
+                if(lineArr[i].indexOf(search) > -1){
+                    newData += search + ' (' + grunt.template.today("dddd, mmmm dS, yyyy, h:MM:ss TT") + ')\n';
+                }else{
+                    newData += lineArr[i] + '\n';
+                }
+            }
+            grunt.file.write(changeLogFile, newData);
+            console.log('Change log is updated.');
+        }else{
+            throw new Error('You have not updated ' + changeLogFile);
+        }
+    });
+
+    grunt.registerTask('check-bowerjson', '', function () {
+        var filePath = 'bower.json',
+            obj  = grunt.file.readJSON(filePath);
+
+        if(obj.version != pkg.version){
+            var data = grunt.file.read(filePath, 'utf8').toString(),
+                lineArr = data.split('\n'),
+                newData = '';
+
+            for(var i=0; i<lineArr.length-1; i++){
+                if(lineArr[i].indexOf('version') > -1 && lineArr[i].indexOf(obj.version)){
+                    newData += lineArr[i].replace(obj.version, pkg.version) + '\n';
+                }else{
+                    newData += lineArr[i] + '\n';
+                }
+            }
+            if(newData.length > 0){
+                grunt.file.write(filePath, newData, 'utf8');
+                console.log(filePath + '\'s version has been updated to ' + pkg.version);
+            }else{
+                throw new Error('Error in updating ' + filePath);
+            }
+        }else{
+            console.log(filePath + ' is updated.');
+        }
+    });
+
+    grunt.registerTask('check-jqueryjson', '', function () {
+        var filePath = pkg.filename + '.jquery.json',
+            obj  = grunt.file.readJSON(filePath);
+
+        if(obj.version != pkg.version){
+            var data = grunt.file.read(filePath, 'utf8').toString(),
+                lineArr = data.split('\n'),
+                newData = '';
+
+            for(var i=0; i<lineArr.length-1; i++){
+                if(lineArr[i].indexOf('version') > -1 && lineArr[i].indexOf(obj.version)){
+                    newData += lineArr[i].replace(obj.version, pkg.version) + '\n';
+                }else{
+                    newData += lineArr[i] + '\n';
+                }
+            }
+            if(newData.length > 0){
+                grunt.file.write(filePath, newData, 'utf8');
+                console.log(filePath + '\'s version has been updated to ' + pkg.version);
+            }else{
+                throw new Error('Error in updating ' + filePath);
+            }
+        }else{
+            console.log(filePath + ' is updated.');
+        }
     });
 
     grunt.registerTask('dev', ['jshint', 'concat', 'uglify', 'copy', 'replace']);
-    grunt.registerTask('default', ['jshint', 'concat', 'uglify', 'copy', 'replace', 'readme', 'screenshot-element']);
+    grunt.registerTask('default', ['jshint', 'concat', 'uglify', 'copy', 'replace', 'update-readme', 'check-changelog', 'check-bowerjson', 'check-jqueryjson', 'screenshot-element']);
 };
