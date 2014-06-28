@@ -100,6 +100,12 @@
     v1.9.0
     =========================
     1. Added $.jqthumb() with the method "killall" to kill all rendered images
+
+    v1.9.1
+    =========================
+    1. Change Zepto version from 1.1.3 to 1.0.0
+    2. Change demo folder name to "src".
+    3. Better file structure in dist folder now.
 */
 
 ;(function ( $, window, document, undefined ) {

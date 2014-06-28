@@ -1,14 +1,14 @@
 /*!
-    jQThumb 1.9.0
+    jQThumb V1.9.1
     Copyright (c) 2013-2014
     Dual licensed under the MIT and GPL licenses.
 
     Author       : Pak Cheong
-    Version      : 1.9.0
+    Version      : 1.9.1
     Repo         : https://github.com/pakcheong/jqthumb
     Demo         : http://pakcheong.github.io/jqthumb/
-    Last Updated : Tuesday, June 24th, 2014, 6:16:12 PM
-    Requirements : jQuery >=v1.3 or Zepto (with zepto-data plugin) >=v1.1.3
+    Last Updated : Saturday, June 28th, 2014, 9:32:46 AM
+    Requirements : jQuery >=v1.3.0 or Zepto (with zepto-data plugin) >=v1.0.0
 */
 /*!
     Change Log:
@@ -112,6 +112,12 @@
     v1.9.0
     =========================
     1. Added $.jqthumb() with the method "killall" to kill all rendered images
+
+    v1.9.1
+    =========================
+    1. Change Zepto version from 1.1.3 to 1.0.0
+    2. Change demo folder name to "src".
+    3. Better file structure in dist folder now.
 */
 
 ;(function ( $, window, document, undefined ) {
