@@ -131,3 +131,10 @@ Change Log:
 # V1.9.2 (Saturday, June 28th, 2014, 9:35:37 AM)
 ===================================================
 1. Better file structure in Gruntfile.js
+
+
+# V1.9.3 (Thursday, July 10th, 2014, 4:32:44 PM)
+===================================================
+1. Added comments to Gruntfile.js
+2. Updated jqthumb.jquery.json
+3. Remove unwanted variables.

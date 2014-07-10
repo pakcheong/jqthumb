@@ -147,15 +147,14 @@ module.exports = function(grunt) {
     grunt.registerTask('update-readme', '', function () {
         var readMeFile     = 'README.md',
             replaceLineOne = pkg.name + ' V' + pkg.version,
-            data           = grunt.file.read(readMeFile).toString(),
-            firstLine      = data.substr(data.indexOf('\n'), data.length);
+            data           = grunt.file.read(readMeFile).toString();
 
         if(data.indexOf(replaceLineOne) > -1){
             console.log(readMeFile + ' is updated.');
         }else{
             var newData = pkg.name + ' V' + pkg.version + data.substr(data.indexOf('\n'), data.length);
             grunt.file.write(readMeFile, newData);
-            console.log(readMeFile + '\'s version has been updated to ' + pkg.version);
+            console.log(readMeFile + ' version has been updated to ' + pkg.version);
         }
     });
 
@@ -182,6 +181,7 @@ module.exports = function(grunt) {
         }
     });
 
+    /* Update version in bower.json file by checking if the file contains the latest version. */
     grunt.registerTask('check-bowerjson', '', function () {
         var filePath = 'bower.json',
             obj  = grunt.file.readJSON(filePath);
@@ -200,7 +200,7 @@ module.exports = function(grunt) {
             }
             if(newData.length > 0){
                 grunt.file.write(filePath, newData, 'utf8');
-                console.log(filePath + '\'s version has been updated to ' + pkg.version);
+                console.log(filePath + ' version has been updated to ' + pkg.version);
             }else{
                 throw new Error('Error in updating ' + filePath);
             }
@@ -209,6 +209,7 @@ module.exports = function(grunt) {
         }
     });
 
+    /* Update version in jqthumb.jquery.json file by checking if the file contains the latest version. */
     grunt.registerTask('check-jqueryjson', '', function () {
         var filePath = pkg.filename + '.jquery.json',
             obj  = grunt.file.readJSON(filePath);
@@ -227,7 +228,7 @@ module.exports = function(grunt) {
             }
             if(newData.length > 0){
                 grunt.file.write(filePath, newData, 'utf8');
-                console.log(filePath + '\'s version has been updated to ' + pkg.version);
+                console.log(filePath + ' version has been updated to ' + pkg.version);
             }else{
                 throw new Error('Error in updating ' + filePath);
             }
