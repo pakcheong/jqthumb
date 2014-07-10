@@ -143,3 +143,9 @@ Change Log:
 # V1.9.4 (Thursday, July 10th, 2014, 4:55:04 PM)
 ===================================================
 1. Updated bower.json
+
+
+# V1.9.5 (Thursday, July 10th, 2014, 5:18:48 PM)
+===================================================
+1. Updated bower.json
+2. Changed minimum zepta-data version to 1.0.0
