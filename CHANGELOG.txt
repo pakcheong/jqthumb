@@ -138,3 +138,8 @@ Change Log:
 1. Added comments to Gruntfile.js
 2. Updated jqthumb.jquery.json
 3. Remove unwanted variables.
+
+
+# V1.9.4 (Thursday, July 10th, 2014, 4:55:04 PM)
+===================================================
+1. Updated bower.json
