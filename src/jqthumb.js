@@ -238,7 +238,7 @@
                         'background-position': (function(){
                             var posTop = (that.percentOrPixel(options.position.top) == '%') ? options.position.top : options.position.top + 'px',
                                 posLeft = (that.percentOrPixel(options.position.left) == '%') ? options.position.left : options.position.left + 'px';
-                            return posTop + ' ' + posLeft;
+                            return posLeft + ' ' + posTop;
                         })(),
                         'background-size'    : 'cover'
                     })

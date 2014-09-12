@@ -145,7 +145,12 @@ Change Log:
 1. Updated bower.json
 
 
-# V1.9.5 (Thursday, July 10th, 2014, 5:18:48 PM)
+# V1.9.5 (Friday, September 12th, 2014, 3:18:36 PM)
 ===================================================
 1. Updated bower.json
 2. Changed minimum zepta-data version to 1.0.0
+
+
+# V1.9.6 (Friday, September 12th, 2014, 3:20:43 PM)
+===================================================
+1. Fix background-position issue for css3 supported method
