@@ -1,0 +1,154 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="chrome=1">
+		<title>jQThumb by pakcheong</title>
+		<!-- <link href='http://fonts.googleapis.com/css?family=Gochi+Hand' rel='stylesheet' type='text/css'> -->
+		<link rel="stylesheet" href="stylesheets/styles.css">
+		<link rel="stylesheet" href="stylesheets/pygment_trac.css">
+		<link rel="stylesheet" href="demo/demo.css">
+		<script src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
+		<script src="javascripts/scale.fix.js"></script>
+		<script src="demo/jqthumb.min.js"></script>
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+		<script>
+			$(document).ready(function(){
+				$('#example1 img').jqthumb({
+					classname: 'jqthumb',
+					width: 200,
+					height: 200,
+					source: 'src',
+					showoncomplete: false,
+					before: function(oriImg){
+					},
+					after: function(imgObj){
+						$(imgObj).fadeIn();
+					}
+				});
+				$('#example2 img').jqthumb({
+					classname: 'jqthumb',
+					width: 250,
+					height: 100,
+					source: 'src',
+					showoncomplete: false,
+					after: function(imgObj){
+						$(imgObj).fadeIn();
+						$(imgObj).parent().next().text('after() callback is called!');
+					}
+				});
+				$('#example3 img').jqthumb({
+					classname: 'jqthumb',
+					width: 250,
+					height: 500,
+					source: 'src',
+					showoncomplete: false,
+					done: function(imgObjs){
+						$.each(imgObjs, function(){
+							$(this).fadeIn();
+							$(this).parent().next().text('done() callback is called!');
+						});
+					}
+				});
+			});
+		</script>
+		<!--[if lt IE 9]>
+		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+	<div class="wrapper">
+		<header>
+			<h1>jQThumb v1.9.7</h1>
+			<p>
+				Create thumbnails from images proportionally. It even works on IE6 from jQuery >=v1.3 or Zepto (with zepto-data plugin) >=v1.1.3.
+			</p>
+			<p class="view">
+				<a href="https://github.com/pakcheong/jQThumb">View the Project on GitHub <small>pakcheong/jQThumb</small></a>
+			</p>
+			<ul>
+				<li><a href="https://github.com/pakcheong/jQThumb/zipball/master">Download <strong>ZIP File</strong></a></li>
+				<li><a href="https://github.com/pakcheong/jQThumb/tarball/master">Download <strong>TAR Ball</strong></a></li>
+				<li><a href="https://github.com/pakcheong/jQThumb">View On <strong>GitHub</strong></a></li>
+			</ul>
+		</header>
+		<section>
+			<h3>
+			<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to jQThumb Official Demo Page.</h3>
+			<p>This is a <strong><u>jQuery</u></strong> & <strong><a href="http://zeptojs.com/" target="_display">Zepto</a></strong> plugin that allows developers create thumbnails from images proportionally and also an alternative for background-size in older browsers. It even works on IE6 from jQuery V1.3 and above.</p>
+            <p>PS: <strong>Responsive</strong> feature is on its way~!</p>
+			<pre><code>$('img').jqthumb({
+    classname      : 'jqthumb',        // class name. DEFUALT IS jqthumb
+    width          : 100,              // new image width after cropping. DEFAULT IS 100px.
+    height         : 100,              // new image height after cropping. DEFAULT IS 100px.
+    position: {
+        top  : '50%',                  // position of the image. DEFAULT is 50%. 50% also means centerize the image.
+        left : '50%'                   // position of the image. DEFAULT is 50%. 50% also means centerize the image.
+    },
+    source         : 'src',            // to specify the image source attribute. DEFAULT IS src.
+    showoncomplete : false,            // TRUE = show immediately after processing. FALSE = do not show it. DEFAULT IS TRUE.
+    before         : function(){       // callback before processing.
+        alert("I'm about to start processing now...");
+    },
+    after          : function(imgObj){ // callback when ONE image is cropped.
+        $(imgObj).fadeIn();
+    },
+    done           : function(){       // callback when ALL images are cropped.
+        alert('Done!');
+    }
+});</code></pre>
+			<h3>
+			<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+			<p>
+				Found a bug or you have any suggestions? Please do not hesitate to create issues <a href="https://github.com/pakcheong/jQThumb/issues">here</a>. I will get back to you as soon as possible.
+			</p>
+			<h3>
+			<a name="demo" class="anchor" href="#demo"><span class="octicon octicon-link"></span></a>Demo</h3>
+			<div class="demo">
+				<div class="ori">
+					<div class="frame">
+						<img src="demo/picture.jpg"/>
+						<p>
+							Before processing...
+						</p>
+					</div>
+				</div>
+				<div class="arrow"></div>
+				<div class="results">
+					<div id="example1" class="frame">
+						<div>
+							<img src="demo/picture.jpg"/>
+						</div>
+						<p>
+							It is now a square shape!
+						</p>
+					</div>
+					<div id="example2" class="frame">
+						<div>
+							<img src="demo/picture.jpg"/>
+						</div>
+						<p>
+						</p>
+					</div>
+					<div id="example3" class="frame">
+						<div>
+							<img src="demo/picture.jpg"/>
+						</div>
+						<p>
+						</p>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+	<footer>
+		<p>
+			Project maintained by <a href="https://github.com/pakcheong">pakcheong</a>
+		</p>
+		<p>
+			Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a>
+		</p>
+	</footer>
+	<!--[if !IE]><script>fixScale(document);</script><![endif]-->
+	</body>
+</html>
