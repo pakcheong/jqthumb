@@ -65,6 +65,18 @@ module.exports = function(grunt) {
                     {
                         expand: true,
                         cwd: '<%= global.src %>',
+                        src: ['style.css'],
+                        dest: '<%= global.dist.root %>'
+                    },
+                    {
+                        expand: true,
+                        cwd: '<%= global.src %>',
+                        src: ['main.js'],
+                        dest: '<%= global.dist.root %>'
+                    },
+                    {
+                        expand: true,
+                        cwd: '<%= global.src %>',
                         src: ['picture.jpg'],
                         dest: '<%= global.dist.root %>'
                     },
@@ -124,7 +136,8 @@ module.exports = function(grunt) {
                     {
                         url: '<%= global.dist.root %>demo.jquery.html',
                         file: 'screenshots/screenshot.jquery.png',
-                        selector: 'body'
+                        css: 'body { background-color: #FFF; }',
+                        selector: '.screenshot-area'
                     },
                     {
                         url: '<%= global.dist.root %>demo.zepto.html',
@@ -142,7 +155,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-text-replace');
     grunt.loadNpmTasks('grunt-screenshot-element');
-    
+
     /* Update version in readme file by checking if the first line of the file contains the latest version. */
     grunt.registerTask('update-readme', '', function () {
         var readMeFile     = 'README.md',

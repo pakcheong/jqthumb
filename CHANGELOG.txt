@@ -151,6 +151,11 @@ Change Log:
 2. Changed minimum zepta-data version to 1.0.0
 
 
-# V1.9.6 (Friday, September 12th, 2014, 3:20:43 PM)
+# V1.9.6 (Thursday, September 18th, 2014, 9:27:33 PM)
 ===================================================
 1. Fix background-position issue for css3 supported method
+
+
+# V1.9.7 (Thursday, September 18th, 2014, 10:39:19 PM)
+===================================================
+1. Re-design demo page and add playground
