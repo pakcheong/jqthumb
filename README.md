@@ -1,9 +1,11 @@
-jQThumb V1.9.6
-======================================
+![screenshot.jquery.png](http://pakcheong.github.io/jqthumb/demo/demo.jpg)
+
+# jQThumb V1.9.7 #
+*******
 
 Create thumbnails from images proportionally. It even works on IE6 from jQuery >=v1.3 or Zepto (with zepto-data plugin) >=v1.1.3.
 
-USAGE:
+## USAGE: ##
 
     $('img').jqthumb({
         classname      : 'jqthumb',        // class name. DEFUALT IS jqthumb
@@ -26,24 +28,24 @@ USAGE:
         }
     });
 
-KILL:
+## KILL: ##
 
     $('img').jqthumb('kill');
 
-KILL ALL:
+## KILL ALL: ##
 
     $.jqthumb('killall');
 
 
 
-Tested Browsers:
-======================================
+# Tested Browsers: #
+*******
 1. Google Chrome
 2. Mozilla Firefox
 3. Safari
 4. Internet Explorer 6, 7, 8, 9 and 10
 
 
-Demo:
-======================================
+# Demo: #
+*******
 http://pakcheong.github.io/jqthumb/

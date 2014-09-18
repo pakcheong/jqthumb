@@ -2,90 +2,119 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>DEMO - jQThumb Plugin</title>
-        <script src="vendor/jquery.js"></script>
-        <script src="jqthumb.js"></script>
-        <script type="text/javascript">
-            $(function(){
-                $('.example1').jqthumb({
-                    classname      : 'jqthumb',
-                    width          : 100,
-                    height         : 100,
-                    position       : { top: '50%', left: '50%' },
-                    showoncomplete : false,
-                    before         : function(oriImage){},
-                    after          : function(imgObj){
-                        $(imgObj)
-                            .css('opacity', 0)
-                            .show()
-                            .animate({
-                                opacity: 1
-                            }, 2000);
-                    }
-                });
-
-                $('.example2').jqthumb({
-                    classname      : 'jqthumb',
-                    width          : '20%',
-                    height         : '50%',
-                    showoncomplete : true
-                });
-
-                $('.example3').jqthumb({
-                    classname      : 'jqthumb',
-                    width          : 100,
-                    height         : 200,
-                    showoncomplete : true
-                });
-
-                $('.example4').jqthumb({
-                    classname      : 'jqthumb',
-                    width          : 150,
-                    height         : 150,
-                    source         : 'data-src',
-                    showoncomplete : true,
-                    done           : function(objs){
-                        $(objs[0]).parent().parent().append('<p>done() callback is called!</p>');
-                    }
-                });
-
-            });
-        </script>
+        <meta http-equiv="X-UA-Compatible" content="chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+        <title>DEMO | jQThumb Plugin</title>
+        <link rel="stylesheet" type="text/css" href="style.css">
     </head>
     <body>
-        <table border="1">
-            <tr>
-                <td>Original Image</td>
-                <td>Example 1 - with "eachcomplete" callback</td>
-                <td>Example 2 - with percentage set in "width" and "height"</td>
-                <td>Example 3 - with fixed value in "width" and "height"</td>
-                <td>Example 4 - with "data-src" attribute</td>
-            </tr>
-            <tr>
-                <td><img src="picture.jpg" /></td>
-                <td align="center">
-                    <div class="img-container">
-                        <img id="imageToTest" class="example1" src="picture.jpg" />
-                    </div>
-                </td>
-                <td align="center">
-                    <div>
-                        <div class="img-container" style="width: 200px; height: 200px;">
-                            <img class="example2" src="picture.jpg" />
+        <div class="container centerize">
+            <div class="ptb screenshot-area">
+                <div class="row mg screenshot-area">
+                    <div class="span6 tc">
+                        <div class="plr">
+                            <div class="frame">
+                                <div class="frame-pad"><img src="picture.jpg" /></div>
+                            </div>
                         </div>
                     </div>
-                </td>
-                <td align="center">
-                    <div class="img-container">
-                        <img class="example3" src="picture.jpg" />
+                    <div class="span6">
+                        <div class="plr mb">
+                            <div class="frame">
+                                <div class="frame-pad"><img id="imageToTest" class="example1" src="picture.jpg" /></div>
+                            </div>
+                        </div>
                     </div>
-                </td>
-                <td align="center">
-                    <div class="img-container">
-                        <img class="example4" data-src="picture.jpg" />
+                    <div class="span6">
+                        <div class="plr mb">
+                            <div class="frame">
+                                <div class="frame-pad"><img id="imageToTest" class="example2" src="picture.jpg" /></div>
+                            </div>
+                        </div>
                     </div>
-                </td>
-            </tr>
-        </table>
+                    <div class="span4">
+                        <div class="plr">
+                            <div class="frame">
+                                <div class="frame-pad"><img id="imageToTest" class="example3" src="picture.jpg" /></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="span3">
+                        <div class="plr">
+                            <div class="frame">
+                                <div class="frame-pad"><img id="imageToTest" class="example4" src="picture.jpg" /></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="span3">
+                        <div class="plr">
+                            <div class="frame">
+                                <div class="frame-pad"><img id="imageToTest" class="example5" src="picture.jpg" /></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="span2">
+                        <div class="plr mb">
+                            <div class="frame">
+                                <div class="frame-pad"><img id="imageToTest" class="example6" src="picture.jpg" /></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="span2">
+                        <div class="plr">
+                            <div class="frame">
+                                <div class="frame-pad"><img id="imageToTest" class="example7" src="picture.jpg" /></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr/>
+
+            <h1 class="tc">Play Ground | jQThumb</h1>
+
+            <div class="row mg">
+                <div class="span6">
+                    <form class="plr">
+                        <div class="row mb">
+                            <label class="tr">Width:</label>
+                            <div class="input"><div class="plr"><input type="text" id="width" placeholder="100px" value="200" /></div></div>
+                        </div>
+                        <div class="row mb">
+                            <label class="tr">Height:</label>
+                            <div class="input"><div class="plr"><input type="text" id="height" placeholder="100px" value="200" /></div></div>
+                        </div>
+                        <div class="row mb">
+                            <label class="tr">Top Position:</label>
+                            <div class="input"><div class="plr"><input type="text" id="top" placeholder="50%" value="50%" /></div></div>
+                        </div>
+                        <div class="row mb">
+                            <label class="tr">Left Position:</label>
+                            <div class="input"><div class="plr"><input type="text" id="left" placeholder="50%" value="50%" /></div></div>
+                        </div>
+                        <div class="row">
+                            <label class="tr"></label>
+                            <div class="input">
+                                <div class="plr tr">
+                                    <button id="generate" type="button">Generate</button>
+                                    <button id="kill" type="button">Kill</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="span6 tc">
+                    <div class="plr tc">
+                        <div class="frame" style="width: auto;">
+                            <div class="frame-pad"><img src="picture.jpg" id="demo" /></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
+    <script src="vendor/jquery.js"></script>
+    <script src="jqthumb.js"></script>
+    <script src="main.js"></script>
 </html>
