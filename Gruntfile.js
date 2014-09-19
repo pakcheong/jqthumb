@@ -167,7 +167,7 @@ module.exports = function(grunt) {
             console.log(readMeFile + ' is updated.');
         }else{
             var readMeScreenshot = '![screenshot.jquery.png](http://pakcheong.github.io/jqthumb/demo/demo.jpg)',
-                newData = readMeScreenshot + '\n\n# ' + pkg.name + ' V' + pkg.version + ' #' + data.substr(data.indexOf('\n'), data.length);
+                newData = readMeScreenshot + '\n\n# ' + pkg.name + ' V' + pkg.version + ' #\n' + data.substr(data.indexOf('*******'), data.length);
             grunt.file.write(readMeFile, newData);
             console.log(readMeFile + ' version has been updated to ' + pkg.version);
         }

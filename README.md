@@ -1,8 +1,6 @@
 ![screenshot.jquery.png](http://pakcheong.github.io/jqthumb/demo/demo.jpg)
 
-# jQThumb V2.0.0 #
-
-# jQThumb V1.9.8 #
+# jQThumb V2.0.1 #
 *******
 
 Create thumbnails from images proportionally. It even works on IE6 from jQuery >=v1.3 or Zepto (with zepto-data plugin) >=v1.1.3.
