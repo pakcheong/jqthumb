@@ -1,5 +1,31 @@
 ;(function ( $, window, document, undefined ) {
 
+    function log(param){
+        if(!window.console){
+            window.console = (function () {
+                var console             = function(){};
+                console.prototype.error = function(){};
+                console.prototype.log   = function(){};
+                console.prototype.warn  = function(){};
+                return new console();
+            });
+        }
+        if(typeof param != 'undefined' && typeof(param) == 'object'){
+            if(typeof param.type != 'undefined' && param.type && typeof param.msg != 'undefined' && param.msg){
+                param.type = param.type.toLowerCase();
+                if(param.type == 'error'){
+                    console.error(param.msg);
+                }else if(param.type == 'log'){
+                    console.log(param.msg);
+                }else if(param.type == 'warn'){
+                    console.warn(param.msg);
+                }else{
+                    console.error('"' + param.type + '" is not supported as console type.');
+                }
+            }
+        }
+    }
+
     var pluginName  = "jqthumb",
         grandGlobal = { outputElems: [], inputElems: [] },
         defaults    = {
@@ -13,7 +39,6 @@
             after          : function(){},
             done           : function(){}
         };
-
 
     function Plugin ( element, options ) {// The actual plugin constructor
         this.element                = element;
@@ -46,7 +71,7 @@
             if( $(_this).data(pluginName)){
 
                 if($(_this).prev().data(pluginName) !== pluginName){
-                    console.error('We could not find the element created by jqthumb. It is probably due to one or more element has been added right before the image element after the plugin initialization, or it was removed.');
+                    log({type: 'error', msg: 'We could not find the element created by jqthumb. It is probably due to one or more element has been added right before the image element after the plugin initialization, or it was removed.'});
                     return false;
                 }
 
@@ -329,9 +354,10 @@
                             })($(this))
         };
         obj = {};
+
         obj[pluginName] = function(action){
             if(typeof action == 'undefined'){
-                console.error('Please specify an action like $.jqthumb("killall")');
+                log({type: 'error', msg: 'Please specify an action like $.jqthumb("killall")'});
                 return;
             }
             action = action.toLowerCase();

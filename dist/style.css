@@ -127,4 +127,6 @@ form .input{
         background-color: black;
         color: white;
         min-width: 100px;
+        margin-left: 10px;
+        margin-right: 10px;
     }

@@ -1,16 +1,42 @@
 /*!
-    jQThumb V1.9.7
+    jQThumb V1.9.8
     Copyright (c) 2013-2014
     Dual licensed under the MIT and GPL licenses.
 
     Author       : Pak Cheong
-    Version      : 1.9.7
+    Version      : 1.9.8
     Repo         : https://github.com/pakcheong/jqthumb
     Demo         : http://pakcheong.github.io/jqthumb/
-    Last Updated : Thursday, September 18th, 2014, 10:39:19 PM
+    Last Updated : Friday, September 19th, 2014, 3:34:18 PM
     Requirements : jQuery >=v1.3.0 or Zepto (with zepto-data plugin) >=v1.0.0
 */
 ;(function ( $, window, document, undefined ) {
+
+    function log(param){
+        if(!window.console){
+            window.console = (function () {
+                var console             = function(){};
+                console.prototype.error = function(){};
+                console.prototype.log   = function(){};
+                console.prototype.warn  = function(){};
+                return new console();
+            });
+        }
+        if(typeof param != 'undefined' && typeof(param) == 'object'){
+            if(typeof param.type != 'undefined' && param.type && typeof param.msg != 'undefined' && param.msg){
+                param.type = param.type.toLowerCase();
+                if(param.type == 'error'){
+                    console.error(param.msg);
+                }else if(param.type == 'log'){
+                    console.log(param.msg);
+                }else if(param.type == 'warn'){
+                    console.warn(param.msg);
+                }else{
+                    console.error('"' + param.type + '" is not supported as console type.');
+                }
+            }
+        }
+    }
 
     var pluginName  = "jqthumb",
         grandGlobal = { outputElems: [], inputElems: [] },
@@ -25,7 +51,6 @@
             after          : function(){},
             done           : function(){}
         };
-
 
     function Plugin ( element, options ) {// The actual plugin constructor
         this.element                = element;
@@ -58,7 +83,7 @@
             if( $(_this).data(pluginName)){
 
                 if($(_this).prev().data(pluginName) !== pluginName){
-                    console.error('We could not find the element created by jqthumb. It is probably due to one or more element has been added right before the image element after the plugin initialization, or it was removed.');
+                    log({type: 'error', msg: 'We could not find the element created by jqthumb. It is probably due to one or more element has been added right before the image element after the plugin initialization, or it was removed.'});
                     return false;
                 }
 
@@ -341,9 +366,10 @@
                             })($(this))
         };
         obj = {};
+
         obj[pluginName] = function(action){
             if(typeof action == 'undefined'){
-                console.error('Please specify an action like $.jqthumb("killall")');
+                log({type: 'error', msg: 'Please specify an action like $.jqthumb("killall")'});
                 return;
             }
             action = action.toLowerCase();

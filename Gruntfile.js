@@ -63,40 +63,40 @@ module.exports = function(grunt) {
             main: {
                 files: [
                     {
-                        expand: true,
-                        cwd: '<%= global.src %>',
-                        src: ['style.css'],
-                        dest: '<%= global.dist.root %>'
+                        expand : true,
+                        cwd    : '<%= global.src %>',
+                        src    : ['style.css', 'main.js', 'picture.jpg'],
+                        dest   : '<%= global.dist.root %>'
+                    },
+                    // {
+                    //     expand : true,
+                    //     cwd    : '<%= global.src %>',
+                    //     src    : ['main.js'],
+                    //     dest   : '<%= global.dist.root %>'
+                    // },
+                    // {
+                    //     expand : true,
+                    //     cwd    : '<%= global.src %>',
+                    //     src    : ['picture.jpg'],
+                    //     dest   : '<%= global.dist.root %>'
+                    // },
+                    {
+                        expand : true,
+                        cwd    : 'bower_components/jquery',
+                        src    : ['jquery.js'],
+                        dest   : '<%= global.dist.root %><%= global.dist.vendor %>'
                     },
                     {
-                        expand: true,
-                        cwd: '<%= global.src %>',
-                        src: ['main.js'],
-                        dest: '<%= global.dist.root %>'
+                        expand : true,
+                        cwd    : 'bower_components/zepto',
+                        src    : ['zepto.js'],
+                        dest   : '<%= global.dist.root %><%= global.dist.vendor %>'
                     },
                     {
-                        expand: true,
-                        cwd: '<%= global.src %>',
-                        src: ['picture.jpg'],
-                        dest: '<%= global.dist.root %>'
-                    },
-                    {
-                        expand: true,
-                        cwd: 'bower_components/jquery',
-                        src: ['jquery.js'],
-                        dest: '<%= global.dist.root %><%= global.dist.vendor %>'
-                    },
-                    {
-                        expand: true,
-                        cwd: 'bower_components/zepto',
-                        src: ['zepto.js'],
-                        dest: '<%= global.dist.root %><%= global.dist.vendor %>'
-                    },
-                    {
-                        expand: true,
-                        cwd: 'bower_components/zepto-data',
-                        src: ['zepto.data.js'],
-                        dest: '<%= global.dist.root %><%= global.dist.vendor %>'
+                        expand : true,
+                        cwd    : 'bower_components/zepto-data',
+                        src    : ['zepto.data.js'],
+                        dest   : '<%= global.dist.root %><%= global.dist.vendor %>'
                     }
                 ]
             }
@@ -107,8 +107,8 @@ module.exports = function(grunt) {
                 dest: '<%= global.dist.root %>demo.jquery.html',
                 replacements: [
                     {
-                        from: '../bower_components/jquery/jquery.js',
-                        to: '<%= global.dist.vendor %>jquery.js'
+                        from : '../bower_components/jquery/jquery.js',
+                        to   : '<%= global.dist.vendor %>jquery.js'
                     }
                 ]
             },
@@ -117,12 +117,12 @@ module.exports = function(grunt) {
                 dest: '<%= global.dist.root %>demo.zepto.html',
                 replacements: [
                     {
-                        from: '../bower_components/zepto/zepto.js',
-                        to: '<%= global.dist.vendor %>zepto.js'
+                        from : '../bower_components/zepto/zepto.js',
+                        to   : '<%= global.dist.vendor %>zepto.js'
                     },
                     {
-                        from: '../bower_components/zepto-data/zepto.data.js',
-                        to: '<%= global.dist.vendor %>zepto.data.js'
+                        from : '../bower_components/zepto-data/zepto.data.js',
+                        to   : '<%= global.dist.vendor %>zepto.data.js'
                     }
                 ]
             }
@@ -134,15 +134,16 @@ module.exports = function(grunt) {
                 },
                 images: [
                     {
-                        url: '<%= global.dist.root %>demo.jquery.html',
-                        file: 'screenshots/screenshot.jquery.png',
-                        css: 'body { background-color: #FFF; }',
-                        selector: '.screenshot-area'
+                        url      : '<%= global.dist.root %>demo.jquery.html',
+                        file     : 'screenshots/screenshot.jquery.png',
+                        css      : 'body { background-color: #FFF; }',
+                        selector : '.screenshot-area'
                     },
                     {
-                        url: '<%= global.dist.root %>demo.zepto.html',
-                        file: 'screenshots/screenshot.zepto.png',
-                        selector: 'body'
+                        url      : '<%= global.dist.root %>demo.zepto.html',
+                        file     : 'screenshots/screenshot.zepto.png',
+                        css      : 'body { background-color: #FFF; }',
+                        selector : '.screenshot-area'
                     }
                 ]
             }
@@ -159,13 +160,14 @@ module.exports = function(grunt) {
     /* Update version in readme file by checking if the first line of the file contains the latest version. */
     grunt.registerTask('update-readme', '', function () {
         var readMeFile     = 'README.md',
-            replaceLineOne = pkg.name + ' V' + pkg.version,
+            replaceLineOne = '# ' + pkg.name + ' V' + pkg.version + ' #',
             data           = grunt.file.read(readMeFile).toString();
 
         if(data.indexOf(replaceLineOne) > -1){
             console.log(readMeFile + ' is updated.');
         }else{
-            var newData = pkg.name + ' V' + pkg.version + data.substr(data.indexOf('\n'), data.length);
+            var readMeScreenshot = '![screenshot.jquery.png](http://pakcheong.github.io/jqthumb/demo/demo.jpg)',
+                newData = readMeScreenshot + '\n\n# ' + pkg.name + ' V' + pkg.version + ' #' + data.substr(data.indexOf('\n'), data.length);
             grunt.file.write(readMeFile, newData);
             console.log(readMeFile + ' version has been updated to ' + pkg.version);
         }
