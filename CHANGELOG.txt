@@ -161,10 +161,15 @@ Change Log:
 1. Re-design demo page and add playground
 
 
-# V1.9.8 (Friday, September 19th, 2014, 3:34:18 PM)
+# V1.9.8 (Friday, September 19th, 2014, 3:40:23 PM)
 ===================================================
 1. Fix console.log() in older browsers.
 2. Fix screenshot taking area in Gruntfile.js.
 3. Update readme structure in Gruntfile.js.
 4. Update copy structure in Gruntfile.js.
 5. Change bower component "jquery-1.3" folder back to "jquery".
+
+
+# V2.0.0 (Friday, September 19th, 2014, 3:41:56 PM)
+===================================================
+1. Add responsive feature to older browsers.

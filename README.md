@@ -1,5 +1,7 @@
 ![screenshot.jquery.png](http://pakcheong.github.io/jqthumb/demo/demo.jpg)
 
+# jQThumb V2.0.0 #
+
 # jQThumb V1.9.8 #
 *******
 

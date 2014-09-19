@@ -34,6 +34,7 @@
             height         : 100,
             position       : { top: '50%', left: '50%' },
             source         : 'src',
+            responsive     : 20,
             showoncomplete : true,
             before         : function(){},
             after          : function(){},
@@ -97,6 +98,12 @@
                 grandGlobal.inputElems = tempArr;
                 /* END: remove input elements */
 
+                /* START: remove attached custom event */
+                if($(_this).prev().data(pluginName + 'resize')){
+                    $(window).unbind('resize', $(_this).prev().data(pluginName + 'resize'));
+                }
+                /* END: remove attached custom event */
+
                 $(_this).prev().remove();
 
                 $(_this).removeAttr('style'); // first, remove all the styles first
@@ -138,7 +145,73 @@
                     pw = that.percentOrPixel(options.width),
                     ph = that.percentOrPixel(options.height),
                     imgContainer = $('<div />'),
-                    ratio = 0;
+                    ratio = 0,
+                    resizeThumb = function(){
+                        setTimeout(function(){
+                            calculateReso();
+                        }, options.responsive);
+                    },
+                    calculateReso = function(){
+                        if(newImg.size.width > newImg.size.height){ // horizontal
+
+                            $(newImg.obj).css({
+                                'width'      : 'auto',
+                                'max-height' : 99999999,
+                                'min-height' : 0,
+                                'max-width'  : 99999999,
+                                'min-width'  : 0,
+                                'height'     : $(newImg.obj).parent().height() + 'px'
+                            });
+
+                            ratio = $(newImg.obj).height() / $(newImg.obj).width(); // get ratio
+
+                            if( $(newImg.obj).width() < $(newImg.obj).parent().width() ){
+                                $(newImg.obj).css({
+                                    'width': $(newImg.obj).parent().width(),
+                                    'height': parseFloat($(newImg.obj).parent().width() * ratio)
+                                });
+                            }
+
+                        }else{ // vertical
+
+                            $(newImg.obj).css({
+                                'width'      : $(newImg.obj).parent().width() + 'px',
+                                'max-height' : 99999999,
+                                'min-height' : 0,
+                                'max-width'  : 99999999,
+                                'min-width'  : 0,
+                                'height'     : 'auto'
+                            });
+
+                            ratio = $(newImg.obj).width() / $(newImg.obj).height(); // get ratio
+
+                            if( $(newImg.obj).height() < $(newImg.obj).parent().height() ){
+                                $(newImg.obj).css({
+                                    'width': parseFloat($(newImg.obj).parent().height() * ratio),
+                                    'height': $(newImg.obj).parent().height()
+                                });
+                            }
+                        }
+
+                        posTop = (that.percentOrPixel(options.position.top) == '%') ? options.position.top : options.position.top + 'px';
+                        posLeft = (that.percentOrPixel(options.position.left) == '%') ? options.position.left : options.position.left + 'px';
+
+                        $(newImg.obj).css({
+                            'position'    : 'absolute',
+                            'top'         : posTop,
+                            'margin-top'  : (function(){
+                                                if(that.percentOrPixel(options.position.top) == '%'){
+                                                    return '-' + parseFloat(($(newImg.obj).height() / 100) * options.position.top.slice(0,-1)) + 'px';
+                                                }
+                                            })(),
+                            'left'        : posLeft,
+                            'margin-left' : (function(){
+                                                if(that.percentOrPixel(options.position.left) == '%'){
+                                                    return '-' + parseFloat(($(newImg.obj).width() / 100) * options.position.left.slice(0,-1)) + 'px';
+                                                }
+                                            })()
+                        });
+                    };
 
                 $(imgContainer)
                     .insertBefore($this)
@@ -151,65 +224,12 @@
                     })
                     .data(pluginName, pluginName); // it would be easy to kill later
 
-                if(newImg.size.width > newImg.size.height){ // horizontal
+                calculateReso();
 
-                    $(newImg.obj).css({
-                        'width'      : 'auto',
-                        'max-height' : 99999999,
-                        'min-height' : 0,
-                        'max-width'  : 99999999,
-                        'min-width'  : 0,
-                        'height'     : $(newImg.obj).parent().height() + 'px'
-                    });
-
-                    ratio = $(newImg.obj).height() / $(newImg.obj).width(); // get ratio
-
-                    if( $(newImg.obj).width() < $(newImg.obj).parent().width() ){
-                        $(newImg.obj).css({
-                            'width': $(newImg.obj).parent().width(),
-                            'height': parseFloat($(newImg.obj).parent().width() * ratio)
-                        });
-                    }
-
-                }else{ // vertical
-
-                    $(newImg.obj).css({
-                        'width'      : $(newImg.obj).parent().width() + 'px',
-                        'max-height' : 99999999,
-                        'min-height' : 0,
-                        'max-width'  : 99999999,
-                        'min-width'  : 0,
-                        'height'     : 'auto'
-                    });
-
-                    ratio = $(newImg.obj).width() / $(newImg.obj).height(); // get ratio
-
-                    if( $(newImg.obj).height() < $(newImg.obj).parent().height() ){
-                        $(newImg.obj).css({
-                            'width': parseFloat($(newImg.obj).parent().height() * ratio),
-                            'height': $(newImg.obj).parent().height()
-                        });
-                    }
+                if(options.responsive > 0){
+                    $(imgContainer).data(pluginName + 'resize', resizeThumb); // keep function into data for killing purpose later
+                    $(window).bind('resize', $(imgContainer).data(pluginName + 'resize'));
                 }
-
-                posTop = (that.percentOrPixel(options.position.top) == '%') ? options.position.top : options.position.top + 'px';
-                posLeft = (that.percentOrPixel(options.position.left) == '%') ? options.position.left : options.position.left + 'px';
-
-                $(newImg.obj).css({
-                    'position'    : 'absolute',
-                    'top'         : posTop,
-                    'margin-top'  : (function(){
-                                        if(that.percentOrPixel(options.position.top) == '%'){
-                                            return '-' + parseFloat(($(newImg.obj).height() / 100) * options.position.top.slice(0,-1)) + 'px';
-                                        }
-                                    })(),
-                    'left'        : posLeft,
-                    'margin-left' : (function(){
-                                        if(that.percentOrPixel(options.position.left) == '%'){
-                                            return '-' + parseFloat(($(newImg.obj).width() / 100) * options.position.left.slice(0,-1)) + 'px';
-                                        }
-                                    })()
-                });
 
                 $(imgContainer)
                     .hide()
