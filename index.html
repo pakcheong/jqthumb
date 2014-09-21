@@ -59,7 +59,7 @@
 	<body>
 	<div class="wrapper">
 		<header>
-			<h1>jQThumb v2.0.1</h1>
+			<h1>jQThumb v2.1.0</h1>
 			<p>
 				Create thumbnails from images proportionally. It even works on IE6 from jQuery >=v1.3 or Zepto (with zepto-data plugin) >=v1.1.3.
 			</p>
@@ -77,23 +77,28 @@
 			<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to jQThumb Official Demo Page.</h3>
 			<p>This is a <strong><u>jQuery</u></strong> & <strong><a href="http://zeptojs.com/" target="_display">Zepto</a></strong> plugin that allows developers create thumbnails from images proportionally and also an alternative for background-size in older browsers. It even works on IE6 from jQuery V1.3 and above.</p>
 			<pre><code>$('img').jqthumb({
-    classname      : 'jqthumb',        // class name. DEFUALT IS jqthumb
-    width          : 100,              // new image width after cropping. DEFAULT IS 100px.
-    height         : 100,              // new image height after cropping. DEFAULT IS 100px.
-    position: {
-        top  : '50%',                  // position of the image. DEFAULT is 50%. 50% also means centerize the image.
-        left : '50%'                   // position of the image. DEFAULT is 50%. 50% also means centerize the image.
+    classname      : 'jqthumb',             // class name. DEFUALT IS jqthumb
+    width          : 100,                   // new image width after cropping. DEFAULT IS 100px.
+    height         : 100,                   // new image height after cropping. DEFAULT IS 100px.
+    position       : {
+        x : '50%',                          // x position of the image. DEFAULT is 50%. 50% also means centerize the image.
+        y : '50%'                           // y position of the image. DEFAULT is 50%. 50% also means centerize the image.
     },
-    source         : 'src',            // to specify the image source attribute. DEFAULT IS src.
-    showoncomplete : false,            // TRUE = show immediately after processing. FALSE = do not show it. DEFAULT IS TRUE.
-    before         : function(){       // callback before processing.
+    source         : 'src',                 // to specify the image source attribute. DEFAULT IS src.
+    showoncomplete : false,                 // TRUE = show immediately after processing. FALSE = do not show it. DEFAULT IS TRUE.
+    responsove     : 20,                    // used by older browsers only. 0 to disable. DEFAULT IS 20
+    zoom           : 1,                     // zoom the output, 2 would double of the actual image size. DEFAULT IS 1
+    method         : 'auto',                // 3 methods available: "auto", "css3" and "modern". DEFAULT IS auto
+    before         : function(oriImage){    // callback before each image starts processing.
         alert("I'm about to start processing now...");
     },
-    after          : function(imgObj){ // callback when ONE image is cropped.
-        $(imgObj).fadeIn();
+    after          : function(imgObj){      // callback when each image is cropped.
+        console.log(imgObj);
     },
-    done           : function(){       // callback when ALL images are cropped.
-        alert('Done!');
+    done           : function(imgArray){    // callback when all images are cropped.
+        for(var i=0; i < imgArray.length; i++){
+            $(imgArray[i]).fadeIn();
+        }
     }
 });</code></pre>
 			<h3>
