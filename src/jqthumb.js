@@ -32,10 +32,12 @@
             classname      : 'jqthumb',
             width          : 100,
             height         : 100,
-            position       : { top: '50%', left: '50%' },
+            position       : { y: '50%', x: '50%' },
             source         : 'src',
             responsive     : 20,
+            zoom           : 1,
             showoncomplete : true,
+            method         : 'auto', // auto, css3, native
             before         : function(){},
             after          : function(){},
             done           : function(){}
@@ -46,8 +48,8 @@
         this.settings               = $.extend( {}, defaults, options );
         this.settings.width         = this.settings.width.toString().replace(/px/g, '');
         this.settings.height        = this.settings.height.toString().replace(/px/g, '');
-        this.settings.position.top  = this.settings.position.top.toString().replace(/px/g, '');
-        this.settings.position.left = this.settings.position.left.toString().replace(/px/g, '');
+        this.settings.position.y    = this.settings.position.y.toString().replace(/px/g, '');
+        this.settings.position.x    = this.settings.position.x.toString().replace(/px/g, '');
         this._defaults              = defaults;
         this._name                  = pluginName;
         if(typeof options == 'string'){
@@ -61,10 +63,18 @@
 
     Plugin.prototype = {
         init: function () {
-            if(this.support_css3_attr('backgroundSize') === false){ // old browsers need to do calculation to perform same output like "background-size: cover"
-                this.nonCss3Supported_method(this.element, this.settings);
-            }else{ // modern browsers that support CSS3 would be easier
+            if(this.settings.method.toLowerCase() == 'auto'){
+                if(this.support_css3_attr('backgroundSize') === false){ // old browsers need to do calculation to perform same output like "background-size: cover"
+                    this.nonCss3Supported_method(this.element, this.settings);
+                }else{ // modern browsers that support CSS3 would be easier
+                    this.css3Supported_method(this.element, this.settings);
+                }
+            }else if(this.settings.method.toLowerCase() == 'css3'){
                 this.css3Supported_method(this.element, this.settings);
+            }else if(this.settings.method.toLowerCase() == 'native'){
+                this.nonCss3Supported_method(this.element, this.settings);
+            }else{
+                log({type: 'error', msg: 'Wrong method defined. Only "auto", "css3" and "native" are allowed.'});
             }
         },
 
@@ -101,6 +111,7 @@
                 /* START: remove attached custom event */
                 if($(_this).prev().data(pluginName + 'resize')){
                     $(window).unbind('resize', $(_this).prev().data(pluginName + 'resize'));
+                    $(_this).prev().removeData(pluginName + 'resize');
                 }
                 /* END: remove attached custom event */
 
@@ -167,8 +178,13 @@
 
                             if( $(newImg.obj).width() < $(newImg.obj).parent().width() ){
                                 $(newImg.obj).css({
-                                    'width': $(newImg.obj).parent().width(),
-                                    'height': parseFloat($(newImg.obj).parent().width() * ratio)
+                                    'width': $(newImg.obj).parent().width() * options.zoom,
+                                    'height': parseFloat($(newImg.obj).parent().width() * ratio) * options.zoom
+                                });
+                            }else{
+                                $(newImg.obj).css({
+                                    'width': $(newImg.obj).width() * options.zoom,
+                                    'height': parseFloat($(newImg.obj).width() * ratio) * options.zoom
                                 });
                             }
 
@@ -187,29 +203,31 @@
 
                             if( $(newImg.obj).height() < $(newImg.obj).parent().height() ){
                                 $(newImg.obj).css({
-                                    'width': parseFloat($(newImg.obj).parent().height() * ratio),
-                                    'height': $(newImg.obj).parent().height()
+                                    'width': parseFloat($(newImg.obj).parent().height() * ratio) * options.zoom,
+                                    'height': $(newImg.obj).parent().height() * options.zoom
                                 });
                             }
                         }
 
-                        posTop = (that.percentOrPixel(options.position.top) == '%') ? options.position.top : options.position.top + 'px';
-                        posLeft = (that.percentOrPixel(options.position.left) == '%') ? options.position.left : options.position.left + 'px';
+                        posTop = (that.percentOrPixel(options.position.y) == '%') ? options.position.y : options.position.y + 'px';
+                        posLeft = (that.percentOrPixel(options.position.x) == '%') ? options.position.x : options.position.x + 'px';
 
                         $(newImg.obj).css({
                             'position'    : 'absolute',
-                            'top'         : posTop,
-                            'margin-top'  : (function(){
-                                                if(that.percentOrPixel(options.position.top) == '%'){
-                                                    return '-' + parseFloat(($(newImg.obj).height() / 100) * options.position.top.slice(0,-1)) + 'px';
-                                                }
-                                            })(),
-                            'left'        : posLeft,
-                            'margin-left' : (function(){
-                                                if(that.percentOrPixel(options.position.left) == '%'){
-                                                    return '-' + parseFloat(($(newImg.obj).width() / 100) * options.position.left.slice(0,-1)) + 'px';
-                                                }
-                                            })()
+                            'top'         : (function(){
+                                if(that.percentOrPixel(options.position.y) == '%'){
+                                    return '-' + parseFloat(($(newImg.obj).height() - $(imgContainer).height()) / 100 * options.position.y.replace('%', '')) + 'px';
+                                }else if(that.percentOrPixel(options.position.y) == 'px' || isNaN(options.position.y) === false){
+                                    return options.position.y.replace('px', '') + 'px';
+                                }
+                            })(),
+                            'left'        : (function(){
+                                if(that.percentOrPixel(options.position.x) == '%'){
+                                    return '-' + parseFloat(($(newImg.obj).width() - $(imgContainer).width()) / 100 * options.position.x.replace('%', '')) + 'px';
+                                }else if(that.percentOrPixel(options.position.x) == 'px' || isNaN(options.position.x) === false){
+                                    return options.position.x.replace('px', '') + 'px';
+                                }
+                            })()
                         });
                     };
 
@@ -267,9 +285,11 @@
 
                     featuredBgImgContainer = $('<div/>')
                                                 .css({
-                                                    'width'   : (pw == '%') ? options.width : options.width + 'px',
-                                                    'height'  : (ph == '%') ? options.height : options.height + 'px',
-                                                    'display' : 'none'
+                                                    'width'    : (pw == '%') ? options.width : options.width + 'px',
+                                                    'height'   : (ph == '%') ? options.height : options.height + 'px',
+                                                    'display'  : 'none',
+                                                    'position' : 'relative',
+                                                    'overflow' : 'hidden'
                                                 })
                                                 .addClass(options.classname)
                                                 .data(pluginName, pluginName); // it would be easy to kill later
@@ -281,8 +301,8 @@
                         // '-ms-filter'         : '"progid:DXImageTransform.Microsoft.AlphaImageLoader(src="' + $oriImage.attr(options.source) + '",sizingMethod="scale")', // this does not work in Zepto
                         'background-repeat'  : 'no-repeat',
                         'background-position': (function(){
-                            var posTop = (that.percentOrPixel(options.position.top) == '%') ? options.position.top : options.position.top + 'px',
-                                posLeft = (that.percentOrPixel(options.position.left) == '%') ? options.position.left : options.position.left + 'px';
+                            var posTop = (that.percentOrPixel(options.position.y) == '%') ? options.position.y : options.position.y + 'px',
+                                posLeft = (that.percentOrPixel(options.position.x) == '%') ? options.position.x : options.position.x + 'px';
                             return posLeft + ' ' + posTop;
                         })(),
                         'background-size'    : 'cover'
@@ -290,6 +310,35 @@
                     .appendTo($(featuredBgImgContainer));
 
                     $(featuredBgImgContainer).insertBefore($(_this));
+
+                    if(options.zoom != 1){
+                        $(featuredBgImgContainer).show(); // must show to get resolution
+                        $(featuredBgImg)
+                            .css({
+                                'width'    : parseFloat(100 * options.zoom) + '%',
+                                'height'   : parseFloat(100 * options.zoom) + '%',
+                                'position' : 'absolute'
+                            })
+                            .css({
+                                'top'      : (function(){
+                                    // (cH - pH) / pH * 100 / percentage
+                                    var cH = $(featuredBgImgContainer).height(),
+                                        pH = $(featuredBgImg).height();
+                                    if(that.percentOrPixel(options.position.y) == '%'){
+                                        return '-' + parseFloat((pH - cH) / cH * 100 / (100 / options.position.y.replace('%', '')) ) + '%';
+                                    }
+                                })(),
+                                'left'     : (function(){
+                                    // (cW - pW) / pH * 100 / percentage
+                                    var cW = $(featuredBgImgContainer).width(),
+                                        pW = $(featuredBgImg).width();
+                                    if(that.percentOrPixel(options.position.x) == '%'){
+                                        return '-' + parseFloat((pW - cW) / cW * 100 / (100 / options.position.x.replace('%', '')) ) + '%';
+                                    }
+                                })()
+                            });
+                        $(featuredBgImgContainer).hide();
+                    }
 
                     if(options.showoncomplete === true){
                         $(featuredBgImgContainer).show();

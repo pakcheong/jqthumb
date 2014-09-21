@@ -77,19 +77,29 @@ module.exports = function(grunt) {
                     {
                         expand : true,
                         cwd    : 'bower_components/zepto',
-                        src    : ['zepto.js'],
+                        src    : ['zepto.min.js'],
                         dest   : '<%= global.dist.root %><%= global.dist.vendor %>'
                     },
                     {
                         expand : true,
                         cwd    : 'bower_components/zepto-data',
-                        src    : ['zepto.data.js'],
+                        src    : ['zepto.data.min.js'],
                         dest   : '<%= global.dist.root %><%= global.dist.vendor %>'
                     }
                 ]
             }
         },
         replace: {
+            src_tabs_to_spaces: {
+                src: ['<%= global.src %>*.js', '<%= global.src %>*.css', '<%= global.src %>*.html'],
+                dest: '<%= global.src %>',
+                replacements: [
+                    {
+                        from : '\t',
+                        to   : '    '
+                    }
+                ]
+            },
             jquery: {
                 src: '<%= global.src %>demo.jquery.html',
                 dest: '<%= global.dist.root %>demo.jquery.html',
@@ -105,12 +115,12 @@ module.exports = function(grunt) {
                 dest: '<%= global.dist.root %>demo.zepto.html',
                 replacements: [
                     {
-                        from : '../bower_components/zepto/zepto.js',
-                        to   : '<%= global.dist.vendor %>zepto.js'
+                        from : '../bower_components/zepto/zepto.min.js',
+                        to   : '<%= global.dist.vendor %>zepto.min.js'
                     },
                     {
-                        from : '../bower_components/zepto-data/zepto.data.js',
-                        to   : '<%= global.dist.vendor %>zepto.data.js'
+                        from : '../bower_components/zepto-data/zepto.data.min.js',
+                        to   : '<%= global.dist.vendor %>zepto.data.min.js'
                     }
                 ]
             }
@@ -154,8 +164,7 @@ module.exports = function(grunt) {
         if(data.indexOf(replaceLineOne) > -1){
             console.log(readMeFile + ' is updated.');
         }else{
-            var readMeScreenshot = '![screenshot.jquery.png](http://pakcheong.github.io/jqthumb/demo/demo.jpg)',
-                newData = readMeScreenshot + '\n\n# ' + pkg.name + ' V' + pkg.version + ' #\n' + data.substr(data.indexOf('*******'), data.length);
+            var newData = replaceLineOne + '\n' + data.substr(data.indexOf('\n'), data.length);
             grunt.file.write(readMeFile, newData);
             console.log(readMeFile + ' version has been updated to ' + pkg.version);
         }
