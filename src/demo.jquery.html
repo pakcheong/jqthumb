@@ -8,6 +8,7 @@
         <link rel="stylesheet" type="text/css" href="style.css">
     </head>
     <body>
+        <h1 class="tc">jQThumb</h1>
         <div class="container centerize">
             <div class="ptb screenshot-area">
                 <div class="row mg screenshot-area">
@@ -21,49 +22,49 @@
                     <div class="span6">
                         <div class="plr mb">
                             <div class="frame">
-                                <div class="frame-pad"><img id="imageToTest" class="example1" src="picture.jpg" /></div>
+                                <div class="frame-pad"><img class="example1" src="picture.jpg" /></div>
                             </div>
                         </div>
                     </div>
                     <div class="span6">
                         <div class="plr mb">
                             <div class="frame">
-                                <div class="frame-pad"><img id="imageToTest" class="example2" src="picture.jpg" /></div>
+                                <div class="frame-pad"><img class="example2" src="picture.jpg" /></div>
                             </div>
                         </div>
                     </div>
                     <div class="span4">
                         <div class="plr">
                             <div class="frame">
-                                <div class="frame-pad"><img id="imageToTest" class="example3" src="picture.jpg" /></div>
+                                <div class="frame-pad"><img class="example3" src="picture.jpg" /></div>
                             </div>
                         </div>
                     </div>
                     <div class="span3">
                         <div class="plr">
                             <div class="frame">
-                                <div class="frame-pad"><img id="imageToTest" class="example4" src="picture.jpg" /></div>
+                                <div class="frame-pad"><img class="example4" src="picture.jpg" /></div>
                             </div>
                         </div>
                     </div>
                     <div class="span3">
                         <div class="plr">
                             <div class="frame">
-                                <div class="frame-pad"><img id="imageToTest" class="example5" src="picture.jpg" /></div>
+                                <div class="frame-pad"><img class="example5" src="picture.jpg" /></div>
                             </div>
                         </div>
                     </div>
                     <div class="span2">
                         <div class="plr mb">
                             <div class="frame">
-                                <div class="frame-pad"><img id="imageToTest" class="example6" src="picture.jpg" /></div>
+                                <div class="frame-pad"><img class="example6" src="picture.jpg" /></div>
                             </div>
                         </div>
                     </div>
                     <div class="span2">
                         <div class="plr">
                             <div class="frame">
-                                <div class="frame-pad"><img id="imageToTest" class="example7" src="picture.jpg" /></div>
+                                <div class="frame-pad"><img class="example7" src="picture.jpg" /></div>
                             </div>
                         </div>
                     </div>
@@ -72,26 +73,112 @@
 
             <hr/>
 
-            <h1 class="tc">Play Ground | jQThumb</h1>
+            <h2 class="tc">Play Ground</h2>
 
-            <div class="row mg">
+            <div id="playground" class="row mg">
                 <div class="span6">
                     <form class="plr">
-                        <div class="row mb">
+                        <div class="row">
                             <label class="tr">Width:</label>
-                            <div class="input"><div class="plr"><input type="text" id="width" placeholder="100px" value="200" /></div></div>
+                            <div class="input">
+                                <div class="plr">
+                                    <div class="row">
+                                        <div class="span8">
+                                            <div class="pr">
+                                                <input type="text" id="width" placeholder="100px" value="200" />
+                                            </div>
+                                        </div>
+                                        <div class="span4">
+                                            <div class="pr">
+                                                <select id="width-type">
+                                                    <option value="px" selected>PX</option>
+                                                    <option value="%">%</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="row mb">
+                        <div class="row">
                             <label class="tr">Height:</label>
-                            <div class="input"><div class="plr"><input type="text" id="height" placeholder="100px" value="200" /></div></div>
+                            <div class="input">
+                                <div class="plr">
+                                    <div class="row">
+                                        <div class="span8">
+                                            <div class="pr">
+                                                <input type="text" id="height" placeholder="100px" value="200" />
+                                            </div>
+                                        </div>
+                                        <div class="span4">
+                                            <div class="pr">
+                                                <select id="height-type">
+                                                    <option value="px" selected>PX</option>
+                                                    <option value="%">%</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="row mb">
-                            <label class="tr">Top Position:</label>
-                            <div class="input"><div class="plr"><input type="text" id="top" placeholder="50%" value="50%" /></div></div>
+                        <div class="row">
+                            <label class="tr">Y Position:</label>
+                            <div class="input">
+                                <div class="plr">
+                                    <div class="row">
+                                        <div class="span8">
+                                            <div class="pr">
+                                                <input type="text" id="y" placeholder="50" value="50" />
+                                            </div>
+                                        </div>
+                                        <div class="span4">
+                                            <div class="pr">
+                                                <select id="y-type">
+                                                    <option value="px">PX</option>
+                                                    <option value="%" selected>%</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="row mb">
-                            <label class="tr">Left Position:</label>
-                            <div class="input"><div class="plr"><input type="text" id="left" placeholder="50%" value="50%" /></div></div>
+                        <div class="row">
+                            <label class="tr">X Position:</label>
+                            <div class="input">
+                                <div class="plr">
+                                    <div class="row">
+                                        <div class="span8">
+                                            <div class="pr">
+                                                <input type="text" id="x" placeholder="50" value="50" />
+                                            </div>
+                                        </div>
+                                        <div class="span4">
+                                            <div class="pr">
+                                                <select id="x-type">
+                                                    <option value="px">PX</option>
+                                                    <option value="%" selected>%</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="tr">Zoom:</label>
+                            <div class="input"><div class="plr"><input type="text" id="zoom" placeholder="1" value="1" /></div></div>
+                        </div>
+                        <div class="row">
+                            <label class="tr">Method:</label>
+                            <div class="input"><div class="plr">
+                                <select id="method">
+                                    <option value="auto">Auto</option>
+                                    <option value="css3">CSS3 (modern browsers)</option>
+                                    <option value="native">Native (older browsers)</option>
+                                </select>
+                            </div></div>
                         </div>
                         <div class="row">
                             <label class="tr"></label>
@@ -114,7 +201,7 @@
             </div>
         </div>
     </body>
-    <script src="../bower_components/jquery/jquery.js"></script>
-    <script src="jqthumb.js"></script>
-    <script src="main.js"></script>
+    <script type="text/javascript" src="../bower_components/jquery/jquery.js"></script>
+    <script type="text/javascript" src="jqthumb.js"></script>
+    <script type="text/javascript" src="main.js"></script>
 </html>
