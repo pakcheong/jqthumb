@@ -5,7 +5,7 @@ Create thumbnails from images proportionally. It even works on IE6 from jQuery >
 ![screenshot.jquery.png](http://pakcheong.github.io/jqthumb/demo/demo.jpg)
 
 
-#USAGE:
+#USAGE
 ```
 <!DOCTYPE html>
 <html lang="en">
@@ -54,10 +54,10 @@ This is a plugin helps creating thumbnails proportionally from images. As many o
 
 Ever wonder how to support full-width billboard in older browsers that works the same as modern browser? This plugin helps exactly in this. Never assume this plugin only generates thumbnails, in fact this works perfectly with big images like billboards.
 
-#Bower:
+#Bower
 ```bower install jqthumb```
 
-#Demo:
+#Demo
 http://pakcheong.github.io/jqthumb/
 
 #OPTION REFERENCES
@@ -69,7 +69,7 @@ The class name of the generated thumbnail. This is useful when you want to attac
 **Default**: ```jqthumb```
 ***
 
-####width / height
+####width & height
 The width of the generated thumbnail. This accepts both integer and string data types. Integer input would mean the width of the thumbnail is in pixel rather than percentage and vice versa. **Note: if you define width and/or height in percentage, make sure you have a container with width and/or height defined in pixels.**
 
 **Example**: ```width: 100``` / ```height: 50%```
