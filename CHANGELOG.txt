@@ -180,9 +180,14 @@ Change Log:
 1. Fix readme structure in Gruntfile.js.
 
 
-# V2.1.0 (Sunday, September 21st, 2014, 3:19:42 PM)
+# V2.1.0 (Sunday, September 21st, 2014, 10:43:00 PM)
 ===================================================
 1. Add "zoom" option.
 2. Add "method" option.
 3. Change position.left and position.top to position.x to position.y respectively.
 4. Update demo page.
+
+
+# V2.1.1 (Sunday, September 21st, 2014, 10:45:30 PM)
+===================================================
+1. Fix log().

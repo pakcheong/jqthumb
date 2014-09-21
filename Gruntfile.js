@@ -164,7 +164,7 @@ module.exports = function(grunt) {
         if(data.indexOf(replaceLineOne) > -1){
             console.log(readMeFile + ' is updated.');
         }else{
-            var newData = replaceLineOne + '\n' + data.substr(data.indexOf('\n'), data.length);
+            var newData = replaceLineOne + data.substr(data.indexOf('\n'), data.length);
             grunt.file.write(readMeFile, newData);
             console.log(readMeFile + ' version has been updated to ' + pkg.version);
         }
