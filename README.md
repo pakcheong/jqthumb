@@ -30,7 +30,7 @@ Create thumbnails from images proportionally. It even works on IE6 from jQuery >
             },
             source         : 'src',                 // to specify the image source attribute. DEFAULT IS src.
             showoncomplete : false,                 // TRUE = show immediately after processing. FALSE = do not show it. DEFAULT IS TRUE.
-            responsove     : 20,                    // used by older browsers only. 0 to disable. DEFAULT IS 20
+            responsive     : 20,                    // used by older browsers only. 0 to disable. DEFAULT IS 20
             zoom           : 1,                     // zoom the output, 2 would double of the actual image size. DEFAULT IS 1
             method         : 'auto',                // 3 methods available: "auto", "css3" and "native". DEFAULT IS auto
             before         : function(oriImage){    // callback before each image starts processing.
