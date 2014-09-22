@@ -1,13 +1,13 @@
 /*!
-    jQThumb V2.1.1
+    jQThumb V2.1.2
     Copyright (c) 2013-2014
     Dual licensed under the MIT and GPL licenses.
 
     Author       : Pak Cheong
-    Version      : 2.1.1
+    Version      : 2.1.2
     Repo         : https://github.com/pakcheong/jqthumb
     Demo         : http://pakcheong.github.io/jqthumb/
-    Last Updated : Sunday, September 21st, 2014, 10:45:29 PM
+    Last Updated : Monday, September 22nd, 2014, 10:45:45 AM
     Requirements : jQuery >=v1.3.0 or Zepto (with zepto-data plugin) >=v1.0.0
 */
 ;(function ( $, window, document, undefined ) {
@@ -212,23 +212,26 @@
                             }
                         }
 
-                        posTop = (that.percentOrPixel(options.position.y) == '%') ? options.position.y : options.position.y + 'px';
-                        posLeft = (that.percentOrPixel(options.position.x) == '%') ? options.position.x : options.position.x + 'px';
-
                         $(newImg.obj).css({
                             'position'    : 'absolute',
-                            'top'         : (function(){
-                                if(that.percentOrPixel(options.position.y) == '%'){
-                                    return '-' + parseFloat(($(newImg.obj).height() - $imgContainer.height()) / 100 * options.position.y.replace('%', '')) + 'px';
-                                }else if(that.percentOrPixel(options.position.y) == 'px' || isNaN(options.position.y) === false){
-                                    return options.position.y.replace('px', '') + 'px';
+                            'left'        : (function(){
+                                var x = 0;
+                                if(that.percentOrPixel(options.position.x) == '%'){
+                                    x = parseFloat(($(newImg.obj).width() - $imgContainer.width()) / 100 * options.position.x.replace('%', ''));
+                                    return (x <= 0) ? x : '-' + x;
+                                }else if(that.percentOrPixel(options.position.x) == 'px' || isNaN(options.position.x) === false){
+                                    x = options.position.x.replace('px', '');
+                                    return x;
                                 }
                             })(),
-                            'left'        : (function(){
-                                if(that.percentOrPixel(options.position.x) == '%'){
-                                    return '-' + parseFloat(($(newImg.obj).width() - $imgContainer.width()) / 100 * options.position.x.replace('%', '')) + 'px';
-                                }else if(that.percentOrPixel(options.position.x) == 'px' || isNaN(options.position.x) === false){
-                                    return options.position.x.replace('px', '') + 'px';
+                            'top'         : (function(){
+                                var y = 0;
+                                if(that.percentOrPixel(options.position.y) == '%'){
+                                    y = parseFloat(($(newImg.obj).height() - $imgContainer.height()) / 100 * options.position.y.replace('%', ''));
+                                    return (y <= 0) ? y : '-' + y;
+                                }else if(that.percentOrPixel(options.position.y) == 'px' || isNaN(options.position.y) === false){
+                                    y = options.position.y.replace('px', '');
+                                    return y;
                                 }
                             })()
                         });
@@ -304,9 +307,9 @@
                         // '-ms-filter'         : '"progid:DXImageTransform.Microsoft.AlphaImageLoader(src="' + $oriImage.attr(options.source) + '",sizingMethod="scale")', // this does not work in Zepto
                         'background-repeat'  : 'no-repeat',
                         'background-position': (function(){
-                            var posTop = (that.percentOrPixel(options.position.y) == '%') ? options.position.y : options.position.y + 'px',
-                                posLeft = (that.percentOrPixel(options.position.x) == '%') ? options.position.x : options.position.x + 'px';
-                            return posLeft + ' ' + posTop;
+                            var x = (that.percentOrPixel(options.position.x) == '%') ? options.position.x : options.position.x + 'px',
+                                y = (that.percentOrPixel(options.position.y) == '%') ? options.position.y : options.position.y + 'px';
+                            return x + ' ' + y;
                         })(),
                         'background-size'    : 'cover'
                     })
