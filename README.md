@@ -23,7 +23,7 @@ Create thumbnails from images proportionally. It even works on IE6 from jQuery >
         $('img').jqthumb({
             classname      : 'jqthumb',             // class name. DEFUALT IS jqthumb
             width          : '100%',                // new image width after cropping. DEFAULT IS 100px.
-            height         : '100%',             // new image height after cropping. DEFAULT IS 100px.
+            height         : '100%',                // new image height after cropping. DEFAULT IS 100px.
             position       : {
                 x : '50%',                          // x position of the image. DEFAULT is 50%. 50% also means centerize the image.
                 y : '50%'                           // y position of the image. DEFAULT is 50%. 50% also means centerize the image.
