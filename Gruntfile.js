@@ -105,6 +105,10 @@ module.exports = function(grunt) {
                 dest: '<%= global.dist.root %>demo.jquery.html',
                 replacements: [
                     {
+                        from : 'src="jqthumb.js"',
+                        to   : 'src="jqthumb.min.js"'
+                    },
+                    {
                         from : '../bower_components/jquery/jquery.js',
                         to   : '<%= global.dist.vendor %>jquery.js'
                     }
@@ -114,6 +118,10 @@ module.exports = function(grunt) {
                 src: '<%= global.src %>demo.zepto.html',
                 dest: '<%= global.dist.root %>demo.zepto.html',
                 replacements: [
+                    {
+                        from : 'src="jqthumb.js"',
+                        to   : 'src="jqthumb.min.js"'
+                    },
                     {
                         from : '../bower_components/zepto/zepto.min.js',
                         to   : '<%= global.dist.vendor %>zepto.min.js'

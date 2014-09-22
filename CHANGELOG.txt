@@ -191,3 +191,8 @@ Change Log:
 # V2.1.1 (Sunday, September 21st, 2014, 10:45:30 PM)
 ===================================================
 1. Fix log().
+
+
+# V2.1.2 (Monday, September 22nd, 2014, 10:45:46 AM)
+===================================================
+1. Fix major calculation bugs for css3Supported_method()

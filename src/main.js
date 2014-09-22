@@ -57,7 +57,6 @@ $(function(){
         height         : 121,
         position       : { y: '0%', x: '100%' },
         showoncomplete : false,
-        method         : 'auto',
         before         : function(oriImage){},
         after          : function(imgObj){
             fadeIn($(imgObj));
@@ -70,7 +69,6 @@ $(function(){
         width          : '100%',
         height         : 121,
         position       : { y: '100%', x: '100%' },
-        method         : 'css3',
         showoncomplete : false,
         before         : function(oriImage){},
         after          : function(imgObj){
