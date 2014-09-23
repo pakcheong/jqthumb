@@ -162,14 +162,10 @@ $('img').jqthumb({
 
 ***
 
-##Kill the plugin
+##COMMANDS
 ```javascript
-$('img').jqthumb('kill');
-```
-
-##Kill all thumbnails in one go
-```javascript
-$.jqthumb('killall');
+$('img').jqthumb('kill'); // DESTROY THE PLUGIN
+$.jqthumb('killall');     // DESTROY ALL GENERATED THUMBNAILS ON THE PAGE
 ```
 
 ***
