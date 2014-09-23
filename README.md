@@ -63,7 +63,7 @@ http://pakcheong.github.io/jqthumb/
 
 ####source
 The image path attribute of the HTML tag. The source for `<img src="path/image.jpg" />` would be `src`.
-> ```javascript
+```javascript
 $('img').jqthumb({
     source: 'attr-src' // DEFAULT: src
 });
@@ -71,7 +71,7 @@ $('img').jqthumb({
 
 ####classname
 The class name of the generated thumbnail. This is useful when you want to attach extra stylings to the thumbnail.
-> ```javascript
+```javascript
 $('img').jqthumb({
     classname: 'jqthumb-class-name' // DEFAULT: jqthumb
 });
@@ -79,7 +79,7 @@ $('img').jqthumb({
 
 ####width & height
 The width of the generated thumbnail. This accepts both integer and string data types. Integer input would mean the width of the thumbnail is in pixel rather than percentage and vice versa. **Note: if you define width and/or height in percentage, make sure you have a container with width and/or height defined in pixels.**
-> ```javascript
+```javascript
 $('img').jqthumb({
     width  : 200,   // DEFAULT: 100
     height : '100%' // DEFAULT: 100
@@ -88,7 +88,7 @@ $('img').jqthumb({
 
 ####position
 This has to be defined as an object with **x** and **y** as its keys. **y** would be used to adjust the top-bottom position of the thumbnail and **x** adjusts left and right.
-> ```javascript
+```javascript
 $('img').jqthumb({
     position: {
         x : 20,   // DEFAULT: '50%'
@@ -99,7 +99,7 @@ $('img').jqthumb({
 
 ####showoncomplete
 Whether to show the thumbnail right after processing.
-> ```javascript
+```javascript
 $('img').jqthumb({
     showoncomplete: false // DEFAULT: true
 });
@@ -107,7 +107,7 @@ $('img').jqthumb({
 
 ####responsive
 This is only needed by browsers that don't support CSS3. To accomplish responsive effect on older browsers, this plugin needs to do a re-calculation when `$(window).resize()` event is fired. The higher the number is the slower thumbnail gets re-calculated. 0 (zero) disables responsive feature in older browsers.
-> ```javascript
+```javascript
 $('img').jqthumb({
     responsive: 10 // DEFAULT: 20
 });
@@ -115,7 +115,7 @@ $('img').jqthumb({
 
 ####zoom
 To zoom-in and out the thumbnail.
-> ```javascript
+```javascript
 $('img').jqthumb({
     zoom: 3 // DEFAULT: 1
 });
@@ -123,7 +123,7 @@ $('img').jqthumb({
 
 ####method
 This plugin was built in two methods which one is for browsers that support CSS3 and another one is a native method that is fully done in mathematical calculation and it's for older browsers like IE6+ and browsers that don't support CSS3. Either one would have an identical result. In some cases, you might want to change the method to test or whatever. By default, the plugin detects your browsers compatability and assign method accordingly.
-> ```javascript
+```javascript
 $('img').jqthumb({
     method: 'native' // DEFAULT: auto
 });
@@ -131,7 +131,7 @@ $('img').jqthumb({
 
 ####before
 This is a callback function which will be called right before calculation started. This function returns the original image source/object as its parameter. If you initialize the plugins with multiple-objects classname then this would be called for multiple times.
-> ```javascript
+```javascript
 $('img').jqthumb({
     before: function(originalImage){
         console.log(originalImage);
@@ -141,7 +141,7 @@ $('img').jqthumb({
 
 ####after
 This is a callback function which will be called after everything is finished. This function returns the new generated thumbnail object as its parameter. If you initialize the plugin with multiple-objects classname then this would be called for multiple times.
-> ```javascript
+```javascript
 $('img').jqthumb({
     done: function(newThumb){
         $(newThumb).fadeIn();
@@ -151,7 +151,7 @@ $('img').jqthumb({
 
 ####done
 This is a callback function which will be called when all objects have finished processing in a single plugin initialization. This returns an array type parameter that contains the object of all generated thumbnails.
-> ```javascript
+```javascript
 $('img').jqthumb({
     done: function(thumbnails){
         for(i in thumbnails)
@@ -163,12 +163,12 @@ $('img').jqthumb({
 ***
 
 ##Kill the plugin
-> ```javascript
+```javascript
 $('img').jqthumb('kill');
 ```
 
 ##Kill all thumbnails in one go
-> ```javascript
+```javascript
 $.jqthumb('killall');
 ```
 
