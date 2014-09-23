@@ -145,7 +145,7 @@ This is a callback function which will be called after everything is finished. T
 This is a callback function which will be called when all objects have finished processing in a single plugin initialization. This returns an array type parameter that contains the object of all generated thumbnails.
 
 **Example**:
-```
+```javascript
 done: function(thumbnails){
     for(var i=0; i<thumbnails.length; i++){
         $(thumbnails[i]).fadeIn();
