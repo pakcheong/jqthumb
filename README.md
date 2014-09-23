@@ -6,7 +6,7 @@ Create thumbnails from images proportionally. It even works on IE6 from jQuery >
 
 
 #USAGE
-```
+```html
 <!DOCTYPE html>
 <html lang="en">
     <body>
