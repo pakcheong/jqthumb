@@ -186,7 +186,7 @@ $.jqthumb('killall');     // DESTROY ALL GENERATED THUMBNAILS ON THE PAGE
 
 ***
 
-##Tested Browsers:
+##TESTED BROWSERS
 1. Google Chrome
 2. Mozilla Firefox
 3. Safari
