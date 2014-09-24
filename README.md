@@ -141,7 +141,7 @@ $('img').jqthumb({
 This plugin was built in two methods which one is for browsers that support CSS3 and another one is a native method that is fully done in mathematical calculation and it's for older browsers like IE6+ and browsers that don't support CSS3. Either one would have an identical result. In some cases, you might want to change the method to test or whatever. By default, the plugin detects your browsers compatability and assign method accordingly.
 ```javascript
 $('img').jqthumb({
-    method: 'native' // Availability: "auto", "modern", "css3". DEFAULT: auto
+    method: 'native' // Availability: "auto", "modern", "native". DEFAULT: auto
 });
 ```
 
