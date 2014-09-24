@@ -203,3 +203,8 @@ Change Log:
 1. Change option name from "showoncomplete" to "show".
 2. Change method option name from "css3" to "modern".
 3. Optimize codes to reduce bytes.
+
+
+# V2.1.4 (Wednesday, September 24th, 2014, 6:10:51 PM)
+===================================================
+1. Append 'px' to the values of "top" and "left" for native method.

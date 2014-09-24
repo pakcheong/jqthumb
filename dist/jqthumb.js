@@ -1,13 +1,13 @@
 /*!
-    jQThumb V2.1.3
+    jQThumb V2.1.4
     Copyright (c) 2013-2014
     Dual licensed under the MIT and GPL licenses.
 
     Author       : Pak Cheong
-    Version      : 2.1.3
+    Version      : 2.1.4
     Repo         : https://github.com/pakcheong/jqthumb
     Demo         : http://pakcheong.github.io/jqthumb/
-    Last Updated : Wednesday, September 24th, 2014, 12:11:05 PM
+    Last Updated : Wednesday, September 24th, 2014, 6:10:51 PM
     Requirements : jQuery >=v1.3.0 or Zepto (with zepto-data plugin) >=v1.0.0
 */
 ;(function ( $, window, document, undefined ) {
@@ -220,20 +220,20 @@
                                                 var x = 0;
                                                 if(that.percOrPix(options.position.x) == '%'){
                                                     x = parseFloat(($newImgObj.width() - $imgContainer.width()) / 100 * options.position.x.replace('%', ''));
-                                                    return (x <= 0) ? x : '-' + x;
+                                                    return (x <= 0) ? x + 'px' : '-' + x + 'px';
                                                 }else if(that.percOrPix(options.position.x) == 'px' || isNaN(options.position.x) === false){
                                                     x = options.position.x.replace('px', '');
-                                                    return x;
+                                                    return x + 'px';
                                                 }
                                             })(),
                                             'top'         : (function(){
                                                 var y = 0;
                                                 if(that.percOrPix(options.position.y) == '%'){
                                                     y = parseFloat(($newImgObj.height() - $imgContainer.height()) / 100 * options.position.y.replace('%', ''));
-                                                    return (y <= 0) ? y : '-' + y;
+                                                    return (y <= 0) ? y + 'px' : '-' + y + 'px';
                                                 }else if(that.percOrPix(options.position.y) == 'px' || isNaN(options.position.y) === false){
                                                     y = options.position.y.replace('px', '');
-                                                    return y;
+                                                    return y + 'px';
                                                 }
                                             })()
                                         });
