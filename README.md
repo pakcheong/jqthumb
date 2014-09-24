@@ -1,4 +1,4 @@
-#jQThumb V2.1.2
+#jQThumb V2.1.3
 
 Create thumbnails from images proportionally. It even works on IE6 from jQuery >=v1.3 or Zepto (with zepto-data plugin) >=v1.1.3.
 
@@ -10,39 +10,55 @@ Create thumbnails from images proportionally. It even works on IE6 from jQuery >
 <html lang="en">
     <body>
         <div style="width: 100%; height: 400px;">
-            <img src="path/picture.jpg" />
+            <img src="path/picture.jpg" class="example1" />
         </div>
         <div style="width: 400px; height: 400px;">
-            <img src="path/picture.jpg" />
+            <img src="path/picture.jpg" class="example2" />
         </div>
+        <button id="kill">Kill</button>
+        <button id="kill-all">Kill All</button>
     </body>
     <script type="text/javascript" src="scripts/jquery.min.js"></script>
     <script type="text/javascript" src="scripts/jqthumb.min.js"></script>
     <script type="text/javascript">
-        $('img').jqthumb({
-            classname      : 'jqthumb',             // class name. DEFUALT IS jqthumb
-            width          : '100%',                // new image width after cropping. DEFAULT IS 100px.
-            height         : '100%',                // new image height after cropping. DEFAULT IS 100px.
-            position       : {
-                x : '50%',                          // x position of the image. DEFAULT is 50%. 50% also means centerize the image.
-                y : '50%'                           // y position of the image. DEFAULT is 50%. 50% also means centerize the image.
-            },
-            source         : 'src',                 // to specify the image source attribute. DEFAULT IS src.
-            showoncomplete : false,                 // TRUE = show immediately after processing. FALSE = do not show it. DEFAULT IS TRUE.
-            responsive     : 20,                    // used by older browsers only. 0 to disable. DEFAULT IS 20
-            zoom           : 1,                     // zoom the output, 2 would double of the actual image size. DEFAULT IS 1
-            method         : 'auto',                // 3 methods available: "auto", "css3" and "native". DEFAULT IS auto
-            before         : function(oriImage){    // callback before each image starts processing.
-                alert("I'm about to start processing now...");
-            },
-            after          : function(imgObj){      // callback when each image is cropped.
-                console.log(imgObj);
-            },
-            done           : function(imgArray){    // callback when all images are cropped.
-                for(var i=0; i<imgArray.length; i++){
-                    $(imgArray[i]).fadeIn();
+        $(function(){
+
+            // plugin initialization
+            $('img').jqthumb({
+                classname      : 'jqthumb',             // class name. DEFUALT IS jqthumb
+                width          : '100%',                // new image width after cropping. DEFAULT IS 100px.
+                height         : '100%',                // new image height after cropping. DEFAULT IS 100px.
+                position       : {
+                    x : '50%',                          // x position of the image. DEFAULT is 50%. 50% also means centerize the image.
+                    y : '50%'                           // y position of the image. DEFAULT is 50%. 50% also means centerize the image.
+                },
+                source         : 'src',                 // to specify the image source attribute. DEFAULT IS src.
+                showoncomplete : false,                 // TRUE = show immediately after processing. FALSE = do not show it. DEFAULT IS TRUE.
+                responsive     : 20,                    // used by older browsers only. 0 to disable. DEFAULT IS 20
+                zoom           : 1,                     // zoom the output, 2 would double of the actual image size. DEFAULT IS 1
+                method         : 'auto',                // 3 methods available: "auto", "modern" and "native". DEFAULT IS auto
+                before         : function(oriImage){    // callback before each image starts processing.
+                    alert("I'm about to start processing now...");
+                },
+                after          : function(imgObj){      // callback when each image is cropped.
+                    console.log(imgObj);
+                },
+                done           : function(imgArray){    // callback when all images are cropped.
+                    for(var i=0; i<imgArray.length; i++){
+                        $(imgArray[i]).fadeIn();
+                    }
                 }
-            }
+            });
+
+            // kill command
+            $('#kill').click(function(){
+                $('.example1').jqthumb('kill');
+            });
+
+            // kill all command
+            $('#kill').click(function(){
+                $.jqthumb('killall');
+            });
         });
     </script>
 </html>
@@ -125,7 +141,7 @@ $('img').jqthumb({
 This plugin was built in two methods which one is for browsers that support CSS3 and another one is a native method that is fully done in mathematical calculation and it's for older browsers like IE6+ and browsers that don't support CSS3. Either one would have an identical result. In some cases, you might want to change the method to test or whatever. By default, the plugin detects your browsers compatability and assign method accordingly.
 ```javascript
 $('img').jqthumb({
-    method: 'native' // DEFAULT: auto
+    method: 'native' // Availability: "auto", "modern", "css3". DEFAULT: auto
 });
 ```
 

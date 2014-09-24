@@ -166,7 +166,7 @@ module.exports = function(grunt) {
     /* Update version in readme file by checking if the first line of the file contains the latest version. */
     grunt.registerTask('update-readme', '', function () {
         var readMeFile     = 'README.md',
-            replaceLineOne = '# ' + pkg.name + ' V' + pkg.version + ' #',
+            replaceLineOne = '#' + pkg.name + ' V' + pkg.version,
             data           = grunt.file.read(readMeFile).toString();
 
         if(data.indexOf(replaceLineOne) > -1){

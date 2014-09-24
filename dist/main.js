@@ -52,94 +52,93 @@ $(function(){
 
 
     $('.example1').jqthumb({
-        classname      : 'jqthumb',
-        width          : '100%',
-        height         : 121,
-        position       : { y: '0%', x: '100%' },
-        showoncomplete : false,
-        before         : function(oriImage){},
-        after          : function(imgObj){
+        classname : 'jqthumb',
+        width     : '100%',
+        height    : 121,
+        position  : { y: '0%', x: '100%' },
+        show      : false,
+        before    : function(oriImage){},
+        after     : function(imgObj){
             fadeIn($(imgObj));
         }
     });
 
 
     $('.example2').jqthumb({
-        classname      : 'jqthumb',
-        width          : '100%',
-        height         : 121,
-        position       : { y: '100%', x: '100%' },
-        showoncomplete : false,
-        before         : function(oriImage){},
-        after          : function(imgObj){
+        classname : 'jqthumb',
+        width     : '100%',
+        height    : 121,
+        position  : { y: '100%', x: '100%' },
+        show      : false,
+        before    : function(oriImage){},
+        after     : function(imgObj){
             fadeIn($(imgObj));
         }
     });
 
 
     $('.example3').jqthumb({
-        classname      : 'jqthumb',
-        width          : '100%',
-        height         : 295,
-        position       : { y: '50%', x: '50%' },
-        showoncomplete : false,
-        before         : function(oriImage){},
-        after          : function(imgObj){
+        classname : 'jqthumb',
+        width     : '100%',
+        height    : 295,
+        position  : { y: '50%', x: '50%' },
+        show      : false,
+        before    : function(oriImage){},
+        after     : function(imgObj){
             fadeIn($(imgObj));
         }
     });
 
 
     $('.example4').jqthumb({
-        classname      : 'jqthumb',
-        width          : '100%',
-        height         : 295,
-        position       : { y: '50%', x: '0%' },
-        showoncomplete : false,
-        before         : function(oriImage){},
-        after          : function(imgObj){
+        classname : 'jqthumb',
+        width     : '100%',
+        height    : 295,
+        position  : { y: '50%', x: '0%' },
+        show      : false,
+        before    : function(oriImage){},
+        after     : function(imgObj){
             fadeIn($(imgObj));
         }
     });
 
 
     $('.example5').jqthumb({
-        classname      : 'jqthumb',
-        width          : '100%',
-        height         : 295,
-        position       : { y: '50%', x: '100%' },
-        showoncomplete : false,
-        before         : function(oriImage){},
-        after          : function(imgObj){
+        classname : 'jqthumb',
+        width     : '100%',
+        height    : 295,
+        position  : { y: '50%', x: '100%' },
+        show      : false,
+        before    : function(oriImage){},
+        after     : function(imgObj){
             fadeIn($(imgObj));
         }
     });
 
 
     $('.example6').jqthumb({
-        classname      : 'jqthumb',
-        width          : '100%',
-        height         : 122,
-        position       : { y: '50%', x: '50%' },
-        zoom           : 1,
-        showoncomplete : false,
-        before         : function(oriImage){},
-        after          : function(imgObj){
+        classname : 'jqthumb',
+        width     : '100%',
+        height    : 122,
+        position  : { y: '50%', x: '50%' },
+        zoom      : 1,
+        show      : false,
+        before    : function(oriImage){},
+        after     : function(imgObj){
             fadeIn($(imgObj));
         }
     });
 
 
-
     $('.example7').jqthumb({
-        classname      : 'jqthumb',
-        width          : '100%',
-        height         : 122,
-        position       : { y: '35%', x: '43%' },
-        zoom           : 3,
-        showoncomplete : false,
-        before         : function(oriImage){},
-        after          : function(imgObj){
+        classname : 'jqthumb',
+        width     : '100%',
+        height    : 122,
+        position  : { y: '35%', x: '43%' },
+        zoom      : 3,
+        show      : false,
+        before    : function(oriImage){},
+        after     : function(imgObj){
             fadeIn($(imgObj));
         }
     });

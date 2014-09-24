@@ -196,3 +196,10 @@ Change Log:
 # V2.1.2 (Monday, September 22nd, 2014, 10:45:46 AM)
 ===================================================
 1. Fix major calculation bugs for css3Supported_method()
+
+
+# V2.1.3 (Wednesday, September 24th, 2014, 12:11:06 PM)
+===================================================
+1. Change option name from "showoncomplete" to "show".
+2. Change method option name from "css3" to "modern".
+3. Optimize codes to reduce bytes.
