@@ -44,7 +44,7 @@ Create thumbnails from images proportionally. It even works on IE6 from jQuery >
                     console.log(imgObj);
                 },
                 done       : function(imgArray){ // callback when all images are cropped.
-                    for(var i=0; i<imgArray.length; i++){
+                    for(i in imgArray){
                         $(imgArray[i]).fadeIn();
                     }
                 }
