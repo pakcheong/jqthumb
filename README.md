@@ -25,25 +25,25 @@ Create thumbnails from images proportionally. It even works on IE6 from jQuery >
 
             // plugin initialization
             $('img').jqthumb({
-                classname  : 'jqthumb',             // class name. DEFUALT IS jqthumb
-                width      : '100%',                // new image width after cropping. DEFAULT IS 100px.
-                height     : '100%',                // new image height after cropping. DEFAULT IS 100px.
+                classname  : 'jqthumb',          // class name. DEFUALT IS jqthumb
+                width      : '100%',             // new image width after cropping. DEFAULT IS 100px.
+                height     : '100%',             // new image height after cropping. DEFAULT IS 100px.
                 position   : {
-                    x : '50%',                          // x position of the image. DEFAULT is 50%. 50% also means centerize the image.
-                    y : '50%'                           // y position of the image. DEFAULT is 50%. 50% also means centerize the image.
+                    x : '50%',                   // x position of the image. DEFAULT is 50%. 50% also means centerize the image.
+                    y : '50%'                    // y position of the image. DEFAULT is 50%. 50% also means centerize the image.
                 },
-                source     : 'src',                 // to specify the image source attribute. DEFAULT IS src.
-                show       : false,                 // TRUE = show immediately after processing. FALSE = do not show it. DEFAULT IS TRUE.
-                responsive : 20,                    // used by older browsers only. 0 to disable. DEFAULT IS 20
-                zoom       : 1,                     // zoom the output, 2 would double of the actual image size. DEFAULT IS 1
-                method     : 'auto',                // 3 methods available: "auto", "modern" and "native". DEFAULT IS auto
-                before     : function(oriImage){    // callback before each image starts processing.
+                source     : 'src',              // to specify the image source attribute. DEFAULT IS src.
+                show       : false,              // TRUE = show immediately after processing. FALSE = do not show it. DEFAULT IS TRUE.
+                responsive : 20,                 // used by older browsers only. 0 to disable. DEFAULT IS 20
+                zoom       : 1,                  // zoom the output, 2 would double of the actual image size. DEFAULT IS 1
+                method     : 'auto',             // 3 methods available: "auto", "modern" and "native". DEFAULT IS auto
+                before     : function(oriImage){ // callback before each image starts processing.
                     alert("I'm about to start processing now...");
                 },
-                after      : function(imgObj){      // callback when each image is cropped.
+                after      : function(imgObj){   // callback when each image is cropped.
                     console.log(imgObj);
                 },
-                done       : function(imgArray){    // callback when all images are cropped.
+                done       : function(imgArray){ // callback when all images are cropped.
                     for(var i=0; i<imgArray.length; i++){
                         $(imgArray[i]).fadeIn();
                     }
