@@ -69,10 +69,10 @@ This is a plugin helps creating thumbnails proportionally from images. As many o
 
 Ever wonder how to support full-width billboard in older browsers that works the same as modern browser? This plugin helps exactly in this. Never assume this plugin only generates thumbnails, in fact this works perfectly with big images like billboards.
 
-##Bower
+##BOWER
 `bower install jqthumb`
 
-##Demo
+##DEMO
 http://pakcheong.github.io/jqthumb/
 
 ##OPTION REFERENCES
