@@ -39,7 +39,8 @@ module.exports = function(grunt) {
         },
         uglify: {
             options: {
-                banner: '<%= meta.banner %>'
+                banner: '<%= meta.banner %>',
+                report: 'gzip'
             },
             dist: {
                 files: {

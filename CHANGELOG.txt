@@ -208,3 +208,13 @@ Change Log:
 # V2.1.4 (Wednesday, September 24th, 2014, 6:10:51 PM)
 ===================================================
 1. Append 'px' to the values of "top" and "left" for native method.
+
+
+# V2.1.5 (Friday, September 26th, 2014, 4:19:55 PM)
+===================================================
+1. Fix zooming-less-than-1 bug for native method.
+2. Force position negative values (px) within the range of width and height.
+3. Force position negative values (%) within 0 and 100.
+4. Optimize codes to reduce file size.
+5. Remove checkSrcAttrName().
+6. Add strToNum(), validateXYperc(), getMeasurement() functions.

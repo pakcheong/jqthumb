@@ -1,4 +1,4 @@
-#jQThumb V2.1.4
+#jQThumb V2.1.5
 
 Create thumbnails from images proportionally. It even works on IE6 from jQuery >=v1.3 or Zepto (with zepto-data plugin) >=v1.1.3.
 
@@ -103,7 +103,7 @@ $('img').jqthumb({
 ```
 
 ####position
-This has to be defined as an object with **x** and **y** as its keys. **y** would be used to adjust the top-bottom position of the thumbnail and **x** adjusts left and right.
+This has to be defined as an object with **x** and **y** as its keys. **y** would be used to adjust the top-bottom position of the thumbnail and **x** adjusts left and right. **Note: both position.x and position.y must be within the range of the defined `width` and `height` respectively. If you are defining `position.x` and/or `position.y` in percenrage values instead, make sure it is within 0 to 100%**
 ```javascript
 $('img').jqthumb({
     position: {
@@ -122,10 +122,17 @@ $('img').jqthumb({
 ```
 
 ####responsive
-This is only needed by browsers that don't support CSS3. To accomplish responsive effect on older browsers, this plugin needs to do a re-calculation when `$(window).resize()` event is fired. The higher the number is the slower thumbnail gets re-calculated. 0 (zero) disables responsive feature in older browsers.
+This is only needed by browsers that don't support CSS3. To accomplish responsive effect on older browsers, this plugin needs to do a re-calculation when `$(window).resize()` event is fired. The higher the number is the slower thumbnail gets re-calculated. 0 (zero) disables responsive feature in older browsers. **`modern` method does not support disabling responsive feature, use `method :"native"` would disable it.**
 ```javascript
+/* responsive only works for native method / older browsers */
 $('img').jqthumb({
     responsive: 10 // DEFAULT: 20
+});
+
+/* to disable responsive feature in modern method / browsers, switch method to native */
+$('img').jqthumb({
+    method     : 'native', // DEFAULT: auto
+    responsive : 0         // DEFAULT: 20
 });
 ```
 
@@ -176,15 +183,10 @@ $('img').jqthumb({
 });
 ```
 
-***
-
 ##COMMANDS
 ```javascript
-$('img').jqthumb('kill'); // DESTROY THE PLUGIN
-$.jqthumb('killall');     // DESTROY ALL GENERATED THUMBNAILS ON THE PAGE
-```
-
-***
+$('img').jqthumb('kill'); // destroy the plugin
+$.jqthumb('killall');     // destroy all generated thumbnails on the page
 
 ##Tested Browsers:
 1. Google Chrome
