@@ -187,6 +187,7 @@ $('img').jqthumb({
 ```javascript
 $('img').jqthumb('kill'); // destroy the plugin
 $.jqthumb('killall');     // destroy all generated thumbnails on the page
+```
 
 ##TESTED BROWSERS
 1. Google Chrome
