@@ -2,8 +2,8 @@
     "name"            : "jQThumb",
     "version"         : "2.1.5",
     "main"            : [
-        "dist/vendor/*.*",
-        "dist/*.*"
+        "dist/jqthumb.js",
+        "dist/jqthumb.min.js"
     ],
     "ignore"          : [
         "src",
