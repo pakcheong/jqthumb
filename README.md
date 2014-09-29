@@ -81,7 +81,7 @@ http://pakcheong.github.io/jqthumb/
 The image path attribute of the HTML tag. The source for `<img src="path/image.jpg" />` would be `src`.
 ```javascript
 $('img').jqthumb({
-    source: 'attr-src' // DEFAULT: src
+    source : 'attr-src' // DEFAULT: src
 });
 ```
 
@@ -89,7 +89,7 @@ $('img').jqthumb({
 The class name of the generated thumbnail. This is useful when you want to attach extra stylings to the thumbnail.
 ```javascript
 $('img').jqthumb({
-    classname: 'jqthumb-class-name' // DEFAULT: jqthumb
+    classname : 'jqthumb-class-name' // DEFAULT: jqthumb
 });
 ```
 
@@ -117,7 +117,7 @@ $('img').jqthumb({
 Whether to show the thumbnail right after processing.
 ```javascript
 $('img').jqthumb({
-    show: false // DEFAULT: true
+    show : false // DEFAULT: true
 });
 ```
 
@@ -126,7 +126,7 @@ This is only needed by browsers that don't support CSS3. To accomplish responsiv
 ```javascript
 /* responsive only works for native method / older browsers */
 $('img').jqthumb({
-    responsive: 10 // DEFAULT: 20
+    responsive : 10 // DEFAULT: 20
 });
 
 /* to disable responsive feature in modern method / browsers, switch method to native */
@@ -194,3 +194,109 @@ $.jqthumb('killall');     // destroy all generated thumbnails on the page
 2. Mozilla Firefox
 3. Safari
 4. Internet Explorer 6, 7, 8, 9 and 10
+
+##EVEN MORE SAMPLE USAGE
+```html
+...
+<img src="path/image.jpg" />
+...
+<script type="text/javascript>
+    $(function(){
+        $('img').jqthumb({
+            width  : 300,
+            height : 200
+        });
+    });
+</script>
+```
+
+```html
+...
+<div data-jqthumb-src="path/image.jpg"></div>
+...
+<script type="text/javascript>
+    $(function(){
+        $('div').jqthumb({
+            source : 'data-jqthumb-src'
+        });
+    });
+</script>
+```
+
+```html
+...
+<div style="width: 100%; height:500px;">
+    <img src="path/image.png" />
+</div>
+...
+<script type="text/javascript>
+    $(function(){
+        $('div').jqthumb({
+            width  : '100%',
+            height : '100%'
+        });
+    });
+</script>
+```
+
+```html
+...
+<img class="my-img" data-jqthumb-src="path/image1.png" data-jqthumb-width="200" data-jqthumb-height="200" />
+<img class="my-img" data-jqthumb-src="path/image2.png" data-jqthumb-width="200" data-jqthumb-height="180" />
+<img class="my-img" data-jqthumb-src="path/image3.png" data-jqthumb-width="200" data-jqthumb-height="160" />
+<img class="my-img" data-jqthumb-src="path/image4.png" data-jqthumb-width="200" data-jqthumb-height="140" />
+<img class="my-img" data-jqthumb-src="path/image5.png" data-jqthumb-width="200" data-jqthumb-height="120" />
+...
+<script type="text/javascript>
+    $(function(){
+        $('.my-img').each(function(){
+            var $img = $(this);
+            $img.jqthumb({
+                source : $img.attr('data-jqthumb-src'),
+                width  : $img.attr('data-jqthumb-width'),
+                height : $img.attr('data-jqthumb-height')
+            });
+        });
+    });
+</script>
+```
+
+```html
+...
+<img class="my-img" src="path/image.jpg" />
+...
+<script type="text/javascript>
+    $(function(){
+        $('.my-img').jqthumb({
+            width  : 300,
+            height : 300,
+            show   : false, // By default the image would be shown immediately after processing. To disable, set it to false
+            after  : function(croppedImg){ // This callback returns an object
+                $(croppedImg).fadeIn(); // This would fade in the cropped image
+            }
+        });
+    });
+</script>
+```
+
+```html
+...
+<img class="my-img" src="path/image1.jpg" />
+<img class="my-img" src="path/image2.jpg" />
+<img class="my-img" src="path/image3.jpg" />
+...
+<script type="text/javascript>
+    $(function(){
+        $('.my-img').jqthumb({
+            width  : 300,
+            height : 300,
+            show   : false, // By default the image would be shown immediately after processing. To disable, set it to false
+            done   : function(allCroppedImgs){ // This callback returns an array
+                for(i in allCroppedImgs){
+                    $(allCroppedImgs[i]).fadeIn(); // This would fade in the cropped images one by one
+                }
+            }
+        });
+    });
+</script>
+```
