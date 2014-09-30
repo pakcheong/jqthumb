@@ -140,7 +140,7 @@ $('img').jqthumb({
 To zoom-in and out the thumbnail.
 ```javascript
 $('img').jqthumb({
-    zoom: 3 // DEFAULT: 1
+    zoom : 3 // DEFAULT: 1
 });
 ```
 
@@ -148,7 +148,7 @@ $('img').jqthumb({
 This plugin was built in two methods which one is for browsers that support CSS3 and another one is a native method that is fully done in mathematical calculation and it's for older browsers like IE6+ and browsers that don't support CSS3. Either one would have an identical result. In some cases, you might want to change the method to test or whatever. By default, the plugin detects your browsers compatability and assign method accordingly.
 ```javascript
 $('img').jqthumb({
-    method: 'native' // Availability: "auto", "modern", "native". DEFAULT: auto
+    method : 'native' // Availability: "auto", "modern", "native". DEFAULT: auto
 });
 ```
 
@@ -156,7 +156,7 @@ $('img').jqthumb({
 This is a callback function which will be called right before calculation started. This function returns the original image source/object as its parameter. If you initialize the plugins with multiple-objects classname then this would be called for multiple times.
 ```javascript
 $('img').jqthumb({
-    before: function(originalImage){
+    before : function(originalImage){
         console.log(originalImage);
     }
 });
@@ -166,7 +166,7 @@ $('img').jqthumb({
 This is a callback function which will be called after everything is finished. This function returns the new generated thumbnail object as its parameter. If you initialize the plugin with multiple-objects classname then this would be called for multiple times.
 ```javascript
 $('img').jqthumb({
-    done: function(newThumb){
+    after : function(newThumb){
         $(newThumb).fadeIn();
     }
 });
@@ -176,7 +176,7 @@ $('img').jqthumb({
 This is a callback function which will be called when all objects have finished processing in a single plugin initialization. This returns an array type parameter that contains the object of all generated thumbnails.
 ```javascript
 $('img').jqthumb({
-    done: function(thumbnails){
+    done : function(thumbnails){
         for(i in thumbnails)
             $(thumbnails[i]).fadeIn();
     }
