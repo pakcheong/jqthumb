@@ -200,7 +200,7 @@ $.jqthumb('killall');     // destroy all generated thumbnails on the page
 ...
 <img src="path/image.jpg" />
 ...
-<script type="text/javascript>
+<script type="text/javascript">
     $(function(){
         $('img').jqthumb({
             width  : 300,
@@ -214,7 +214,7 @@ $.jqthumb('killall');     // destroy all generated thumbnails on the page
 ...
 <div data-jqthumb-src="path/image.jpg"></div>
 ...
-<script type="text/javascript>
+<script type="text/javascript">
     $(function(){
         $('div').jqthumb({
             source : 'data-jqthumb-src'
@@ -229,7 +229,7 @@ $.jqthumb('killall');     // destroy all generated thumbnails on the page
     <img src="path/image.png" />
 </div>
 ...
-<script type="text/javascript>
+<script type="text/javascript">
     $(function(){
         $('div').jqthumb({
             width  : '100%',
@@ -247,7 +247,7 @@ $.jqthumb('killall');     // destroy all generated thumbnails on the page
 <img class="my-img" data-jqthumb-src="path/image4.png" data-jqthumb-width="200" data-jqthumb-height="140" />
 <img class="my-img" data-jqthumb-src="path/image5.png" data-jqthumb-width="200" data-jqthumb-height="120" />
 ...
-<script type="text/javascript>
+<script type="text/javascript">
     $(function(){
         $('.my-img').each(function(){
             var $img = $(this);
@@ -265,7 +265,7 @@ $.jqthumb('killall');     // destroy all generated thumbnails on the page
 ...
 <img class="my-img" src="path/image.jpg" />
 ...
-<script type="text/javascript>
+<script type="text/javascript">
     $(function(){
         $('.my-img').jqthumb({
             width  : 300,
@@ -285,7 +285,7 @@ $.jqthumb('killall');     // destroy all generated thumbnails on the page
 <img class="my-img" src="path/image2.jpg" />
 <img class="my-img" src="path/image3.jpg" />
 ...
-<script type="text/javascript>
+<script type="text/javascript">
     $(function(){
         $('.my-img').jqthumb({
             width  : 300,
