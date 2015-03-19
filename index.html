@@ -89,6 +89,7 @@ $('img').jqthumb({
     responsive : 20,                 // used by older browsers only. 0 to disable. DEFAULT IS 20
     zoom       : 1,                  // zoom the output, 2 would double of the actual image size. DEFAULT IS 1
     method     : 'auto',             // 3 methods available: "auto", "modern" and "native". DEFAULT IS auto
+    reinit     : true,               // TRUE = to re-init when images is re-initialized for the second time. FALSE = nothing would happen.
     before     : function(oriImage){ // callback before each image starts processing.
         alert("I'm about to start processing now...");
     },
