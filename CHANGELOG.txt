@@ -210,7 +210,7 @@ Change Log:
 1. Append 'px' to the values of "top" and "left" for native method.
 
 
-# V2.1.5 (Friday, September 26th, 2014, 4:19:55 PM)
+# V2.1.5 (Thursday, March 19th, 2015, 7:20:47 PM)
 ===================================================
 1. Fix zooming-less-than-1 bug for native method.
 2. Force position negative values (px) within the range of width and height.
@@ -218,3 +218,9 @@ Change Log:
 4. Optimize codes to reduce file size.
 5. Remove checkSrcAttrName().
 6. Add strToNum(), validateXYperc(), getMeasurement() functions.
+
+
+# V2.1.6 (Thursday, March 19th, 2015, 7:44:40 PM)
+===================================================
+1. Add "reinit" option to identify whether to re-render the image when initialization happens for the second time.
+2. Remove "gzip" option from Uglify module in Gruntfile.js, as it causes warning during grunt process.

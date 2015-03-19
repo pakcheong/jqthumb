@@ -81,6 +81,7 @@
     var pluginName       = 'jqthumb',
         resizeDataName   = pluginName + '-resize',
         oriStyleDataName = pluginName + '-original-styles',
+        dtOption         = pluginName + '-options',
         grandGlobal      = { outputElems: [], inputElems: [] },
         defaults         = {
             classname  : pluginName,
@@ -92,6 +93,7 @@
             zoom       : 1,
             show       : true,
             method     : 'auto', // auto, modern, native
+            reinit     : true, // true, false
             before     : function(){},
             after      : function(){},
             done       : function(){}
@@ -110,6 +112,7 @@
                 this.kill(this.element);
             }
         }else{
+            $(this.element).data(dtOption, this.settings);
             this.init();
         }
     }
@@ -181,6 +184,10 @@
 
                 if(typeof $this.data(pluginName) !== 'undefined'){
                     $this.removeData(pluginName); // remove data that stored during plugin initialization
+                }
+
+                if(typeof $this.data(dtOption) !== 'undefined'){
+                    $this.removeData(dtOption); // remove data that stored during plugin initialization
                 }
             }
         },
@@ -486,8 +493,14 @@
                 if (!$eachImg.data(pluginName)){
                     $eachImg.data(pluginName, new Plugin( this, options ));
                 }else{ // re-rendered without killing it
-                    new Plugin(this, 'kill');
-                    $eachImg.data(pluginName, new Plugin( this, options ));
+                    if($eachImg.data(dtOption) && $eachImg.data(dtOption).reinit === true){
+                        console.log(1);
+                        new Plugin(this, 'kill');
+                       $eachImg.data(pluginName, new Plugin( this, options ));
+                    }else{
+                        console.log(2);
+
+                    }
                 }
             }
         });

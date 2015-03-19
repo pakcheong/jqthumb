@@ -1,4 +1,4 @@
-#jQThumb V2.1.5
+#jQThumb V2.1.6
 
 Create thumbnails from images proportionally. It even works on IE6 from jQuery >=v1.3 or Zepto (with zepto-data plugin) >=v1.1.3.
 
@@ -37,6 +37,7 @@ Create thumbnails from images proportionally. It even works on IE6 from jQuery >
                 responsive : 20,                 // used by older browsers only. 0 to disable. DEFAULT IS 20
                 zoom       : 1,                  // zoom the output, 2 would double of the actual image size. DEFAULT IS 1
                 method     : 'auto',             // 3 methods available: "auto", "modern" and "native". DEFAULT IS auto
+                reinit     : true,               // TRUE = to re-init when images is re-initialized for the second time. FALSE = nothing would happen.
                 before     : function(oriImage){ // callback before each image starts processing.
                     alert("I'm about to start processing now...");
                 },
@@ -149,6 +150,14 @@ This plugin was built in two methods which one is for browsers that support CSS3
 ```javascript
 $('img').jqthumb({
     method : 'native' // Availability: "auto", "modern", "native". DEFAULT: auto
+});
+```
+
+####reinit
+This lets the plugin know what to do when an image is intialized for the second time. By default, reinitiallization is enabled and the image will be killed and re-rendered. If set to `false`, nothing would happen.
+```javascript
+$('img').jqthumb({
+    reinit : true // Availability: true / false. DEFAULT: true
 });
 ```
 
