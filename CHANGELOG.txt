@@ -224,3 +224,8 @@ Change Log:
 ===================================================
 1. Add "reinit" option to identify whether to re-render the image when initialization happens for the second time.
 2. Remove "gzip" option from Uglify module in Gruntfile.js, as it causes warning during grunt process.
+
+
+# V2.1.7 (Monday, March 30th, 2015, 9:50:06 AM)
+===================================================
+1. Remove unnecessary console.log()

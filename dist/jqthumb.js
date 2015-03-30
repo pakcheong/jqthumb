@@ -1,13 +1,13 @@
 /*!
-    jQThumb V2.1.6
+    jQThumb V2.1.7
     Copyright (c) 2013-2015
     Dual licensed under the MIT and GPL licenses.
 
     Author       : Pak Cheong
-    Version      : 2.1.6
+    Version      : 2.1.7
     Repo         : https://github.com/pakcheong/jqthumb
     Demo         : http://pakcheong.github.io/jqthumb/
-    Last Updated : Thursday, March 19th, 2015, 7:44:39 PM
+    Last Updated : Monday, March 30th, 2015, 9:50:06 AM
     Requirements : jQuery >=v1.3.0 or Zepto (with zepto-data plugin) >=v1.0.0
 */
 ;(function ( $, window, document, undefined ) {
@@ -506,12 +506,8 @@
                     $eachImg.data(pluginName, new Plugin( this, options ));
                 }else{ // re-rendered without killing it
                     if($eachImg.data(dtOption) && $eachImg.data(dtOption).reinit === true){
-                        console.log(1);
                         new Plugin(this, 'kill');
                        $eachImg.data(pluginName, new Plugin( this, options ));
-                    }else{
-                        console.log(2);
-
                     }
                 }
             }
