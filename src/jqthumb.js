@@ -494,12 +494,8 @@
                     $eachImg.data(pluginName, new Plugin( this, options ));
                 }else{ // re-rendered without killing it
                     if($eachImg.data(dtOption) && $eachImg.data(dtOption).reinit === true){
-                        console.log(1);
                         new Plugin(this, 'kill');
                        $eachImg.data(pluginName, new Plugin( this, options ));
-                    }else{
-                        console.log(2);
-
                     }
                 }
             }
