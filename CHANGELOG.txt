@@ -226,6 +226,11 @@ Change Log:
 2. Remove "gzip" option from Uglify module in Gruntfile.js, as it causes warning during grunt process.
 
 
-# V2.1.7 (Monday, March 30th, 2015, 9:50:06 AM)
+# V2.1.7 (Thursday, December 17th, 2015, 3:11:06 PM)
 ===================================================
 1. Remove unnecessary console.log()
+
+
+# V2.1.8 (Thursday, December 17th, 2015, 3:16:50 PM)
+===================================================
+1. Add AMD support

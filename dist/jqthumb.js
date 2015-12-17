@@ -1,17 +1,27 @@
 /*!
-    jQThumb V2.1.7
+    jQThumb V2.1.8
     Copyright (c) 2013-2015
     Dual licensed under the MIT and GPL licenses.
 
     Author       : Pak Cheong
-    Version      : 2.1.7
+    Version      : 2.1.8
     Repo         : https://github.com/pakcheong/jqthumb
     Demo         : http://pakcheong.github.io/jqthumb/
-    Last Updated : Monday, March 30th, 2015, 9:50:06 AM
+    Last Updated : Thursday, December 17th, 2015, 3:16:50 PM
     Requirements : jQuery >=v1.3.0 or Zepto (with zepto-data plugin) >=v1.0.0
 */
-;(function ( $, window, document, undefined ) {
-
+(function (factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD (Register as an anonymous module)
+        define(['jquery'], factory);
+    } else if (typeof exports === 'object') {
+        // Node/CommonJS
+        module.exports = factory(require('jquery'));
+    } else {
+        // Browser globals
+        factory(jQuery);
+    }
+}(function ($) {
     function log(type, msg){
         if(window.console){
             if(typeof type != 'undefined' && type && typeof msg != 'undefined' && msg){
@@ -513,5 +523,4 @@
             }
         });
     };
-
-})( (window.jQuery || window.Zepto), window, document );
+}));
