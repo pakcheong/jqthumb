@@ -1,0 +1,53 @@
+{
+    "name": "jqthumb",
+    "title": "jQThumb",
+    "description": "Create thumbnails from images proportionally. This is also a replacement for CSS3's background-size in older browsers in IE6, IE7 and IE8.",
+    "keywords": [
+        "thumb",
+        "thumbnail",
+        "jquery",
+        "zepto",
+        "css",
+        "css3",
+        "zoom",
+        "responsive",
+        "ie6",
+        "internet-explorer-6",
+        "ie7",
+        "internet-explorer-7",
+        "ie8",
+        "internet-explorer-8",
+        "full-width",
+        "background-size",
+        "backgroundsize",
+        "cover"
+    ],
+    "version": "2.1.7",
+    "author": {
+        "name": "Pak Cheong",
+        "email": "jqthumb@gmail.com",
+        "url": "https://github.com/pakcheong/"
+    },
+    "maintainers": [
+        {
+            "name": "Pak Cheong",
+            "email": "jqthumb@gmail.com",
+            "url": "https://github.com/pakcheong/"
+        }
+    ],
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "http://opensource.org/licenses/MIT"
+        }
+    ],
+    "bugs": "https://github.com/pakcheong/jqthumb/issues",
+    "homepage": "http://pakcheong.github.io/jqthumb/",
+    "docs": "https://github.com/pakcheong/jqthumb",
+    "download": "https://github.com/pakcheong/jqthumb/archive/master.zip",
+    "dependencies": {
+        "jquery": "1.3.0",
+        "zepto": "1.0.0",
+        "zepto-data": "1.0.0"
+    }
+}
