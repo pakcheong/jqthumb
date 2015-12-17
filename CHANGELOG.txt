@@ -234,3 +234,8 @@ Change Log:
 # V2.1.8 (Thursday, December 17th, 2015, 3:16:50 PM)
 ===================================================
 1. Add AMD support
+
+
+# V2.1.9 (Thursday, December 17th, 2015, 4:23:08 PM)
+===================================================
+1. Fix demo width issue when jQuery 1.11.2 is being used.

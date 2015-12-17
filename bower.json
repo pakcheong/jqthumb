@@ -1,6 +1,6 @@
 {
     "name"            : "jQThumb",
-    "version"         : "2.1.8",
+    "version"         : "2.1.9",
     "main"            : [
         "dist/jqthumb.js",
         "dist/jqthumb.min.js"
