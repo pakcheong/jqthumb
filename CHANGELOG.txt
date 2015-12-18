@@ -239,3 +239,8 @@ Change Log:
 # V2.1.9 (Thursday, December 17th, 2015, 4:23:08 PM)
 ===================================================
 1. Fix demo width issue when jQuery 1.11.2 is being used.
+
+
+# V2.2.0 (Friday, December 18th, 2015, 11:06:23 AM)
+===================================================
+1. Change bower name
