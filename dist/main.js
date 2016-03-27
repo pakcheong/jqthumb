@@ -113,7 +113,7 @@ $(function(){
         position  : { y: '50%', x: '100%' },
         show      : false,
         renderPosition: 'after',
-        ondemand  : true,
+        // ondemand  : true,
         before    : function(oriImage){},
         after     : function(imgObj){
             fadeIn($(imgObj));
@@ -143,7 +143,7 @@ $(function(){
         zoom           : 2,
         show           : false,
         renderPosition : 'after',
-        ondemand       : true,
+        // ondemand       : true,
         scrollCheck    : 200,
         before         : function(oriImage){},
         after          : function(imgObj){
