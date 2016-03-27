@@ -7,6 +7,7 @@ $(function(){
             height         : $('#height').val() + $('#height-type').val(),
             position       : { y: $('#y').val() + $('#y-type').val(), x: $('#x').val() + $('#x-type').val() },
             zoom           : $('#zoom').val(),
+            renderPosition : $('#renderPosition').val(),
             method         : $('#method').val(),
             done           : function(objs){
                 $('html, body').animate({scrolly: $('body').height(), scrollx: $('body').width() }, 800);
@@ -109,6 +110,8 @@ $(function(){
         height    : 295,
         position  : { y: '50%', x: '100%' },
         show      : false,
+        renderPosition: 'after',
+        ondemand  : true,
         before    : function(oriImage){},
         after     : function(imgObj){
             fadeIn($(imgObj));
@@ -131,14 +134,17 @@ $(function(){
 
 
     $('.example7').jqthumb({
-        classname : 'jqthumb',
-        width     : '100%',
-        height    : 122,
-        position  : { y: '35%', x: '43%' },
-        zoom      : 3,
-        show      : false,
-        before    : function(oriImage){},
-        after     : function(imgObj){
+        classname      : 'jqthumb',
+        width          : '100%',
+        height         : 122,
+        position       : { y: '35%', x: '43%' },
+        zoom           : 3,
+        show           : false,
+        renderPosition : 'after',
+        ondemand       : true,
+        scrollCheck    : 0,
+        before         : function(oriImage){},
+        after          : function(imgObj){
             fadeIn($(imgObj));
         }
     });
