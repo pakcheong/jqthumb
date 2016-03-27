@@ -1,6 +1,6 @@
-#jQThumb V2.2.0
+#jQThumb V2.3.0
 
-Create thumbnails from images proportionally. It even works on IE6 from jQuery >=v1.3 or Zepto (with zepto-data plugin) >=v1.1.3.
+Create thumbnails from images proportionally. On top of that, this is alaso a lazy-load plugin, which even works on IE6 from jQuery >=v1.3 or Zepto (with zepto-data plugin) >=v1.1.3.
 
 ![screenshot.jquery.png](http://pakcheong.github.io/jqthumb/demo/demo.jpg)
 
@@ -25,26 +25,29 @@ Create thumbnails from images proportionally. It even works on IE6 from jQuery >
 
             // plugin initialization
             $('img').jqthumb({
-                classname  : 'jqthumb',          // class name. DEFUALT IS jqthumb
-                width      : '100%',             // new image width after cropping. DEFAULT IS 100px.
-                height     : '100%',             // new image height after cropping. DEFAULT IS 100px.
-                position   : {
-                    x : '50%',                   // x position of the image. DEFAULT is 50%. 50% also means centerize the image.
-                    y : '50%'                    // y position of the image. DEFAULT is 50%. 50% also means centerize the image.
+                classname      : 'jqthumb',          // class name. DEFUALT IS jqthumb
+                width          : '100%',             // new image width after cropping. DEFAULT IS 100px.
+                height         : '100%',             // new image height after cropping. DEFAULT IS 100px.
+                position       : {
+                    x : '50%',                       // x position of the image. DEFAULT is 50%. 50% also means centerize the image.
+                    y : '50%'                        // y position of the image. DEFAULT is 50%. 50% also means centerize the image.
                 },
-                source     : 'src',              // to specify the image source attribute. DEFAULT IS src.
-                show       : false,              // TRUE = show immediately after processing. FALSE = do not show it. DEFAULT IS TRUE.
-                responsive : 20,                 // used by older browsers only. 0 to disable. DEFAULT IS 20
-                zoom       : 1,                  // zoom the output, 2 would double of the actual image size. DEFAULT IS 1
-                method     : 'auto',             // 3 methods available: "auto", "modern" and "native". DEFAULT IS auto
-                reinit     : true,               // TRUE = to re-init when images is re-initialized for the second time. FALSE = nothing would happen.
-                before     : function(oriImage){ // callback before each image starts processing.
+                source         : 'src',              // to specify the image source attribute. DEFAULT IS src.
+                show           : false,              // TRUE = show immediately after processing. FALSE = do not show it. DEFAULT IS TRUE.
+                renderPosition : 'before',           // available: "before" and "after".
+                ondemand       : false,              // TRUE = load image only when scolling position has reached the DOM
+                scrollCheck    : 0,                  // only works with "ondemand". Eg. Start loading the image 200px before scolling position reaches the DOM. DEFUALT IS 0
+                responsive     : 20,                 // used by older browsers only. 0 to disable. DEFAULT IS 20
+                zoom           : 1,                  // zoom the output, 2 would double of the actual image size. DEFAULT IS 1
+                method         : 'auto',             // 3 methods available: "auto", "modern" and "native". DEFAULT IS auto
+                reinit         : true,               // TRUE = to re-init when images is re-initialized for the second time. FALSE = nothing would happen.
+                before         : function(oriImage){ // callback before each image starts processing.
                     alert("I'm about to start processing now...");
                 },
-                after      : function(imgObj){   // callback when each image is cropped.
+                after          : function(imgObj){   // callback when each image is cropped.
                     console.log(imgObj);
                 },
-                done       : function(imgArray){ // callback when all images are cropped.
+                done           : function(imgArray){ // callback when all images are cropped.
                     for(i in imgArray){
                         $(imgArray[i]).fadeIn();
                     }
