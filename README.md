@@ -125,6 +125,30 @@ $('img').jqthumb({
 });
 ```
 
+####renderPosition
+Render image whether before or after the selected DOM.
+```javascript
+$('img').jqthumb({
+    renderPosition : 'after' // DEFAULT: 'before'
+});
+```
+
+####ondemand
+Load the image when scolling position has reached to the DOM. Eg: images will not start loading/processing until the scrolling position has reached the DOM. This is good when you have a lot of images on the page but user doesn't actually look through the entire site, so no point loading all at once.
+```javascript
+$('img').jqthumb({
+    renderPosition : true // DEFAULT: false
+});
+```
+
+####scrollCheck
+Only use this with "ondemad". Eg: you might want to start loading the images 200px before the scrolling position reaches the DOM.
+```javascript
+$('img').jqthumb({
+    scrollCheck : 200 // DEFAULT: 0
+});
+```
+
 ####responsive
 This is only needed by browsers that don't support CSS3. To accomplish responsive effect on older browsers, this plugin needs to do a re-calculation when `$(window).resize()` event is fired. The higher the number is the slower thumbnail gets re-calculated. 0 (zero) disables responsive feature in older browsers. **`modern` method does not support disabling responsive feature, use `method :"native"` would disable it.**
 ```javascript

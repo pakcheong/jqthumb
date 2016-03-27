@@ -27,7 +27,7 @@
     }
 
     function strToNum(str){
-        return str.toString().match(/\d+/)[0];
+        return str.replace(/[^\d.-]/g, '');
     }
 
     function validateXYperc(val, wh){
@@ -130,13 +130,15 @@
         };
 
     function Plugin ( element, options ) {// The actual plugin constructor
-        this.element             = element;
-        this.settings            = $.extend( {}, defaults, options );
-        this.settings.width      = this.settings.width.toString().replace(/px/gi, '');
-        this.settings.height     = this.settings.height.toString().replace(/px/gi, '');
-        this.settings.position.y = validateXYperc(this.settings.position.y, this.settings.width);
-        this.settings.position.x = validateXYperc(this.settings.position.x, this.settings.height);
-        this.settings.zoom       = (this.settings.zoom < 0) ? 0 : this.settings.zoom;
+        this.element              = element;
+        this.settings             = $.extend( {}, defaults, options );
+        this.settings.scrollCheck = this.settings.scrollCheck.toString().replace(/px/gi, '');
+        this.settings.width       = this.settings.width.toString().replace(/px/gi, '');
+        this.settings.height      = this.settings.height.toString().replace(/px/gi, '');
+        this.settings.position.y  = validateXYperc(this.settings.position.y, this.settings.width);
+        this.settings.position.x  = validateXYperc(this.settings.position.x, this.settings.height);
+        this.settings.zoom        = (this.settings.zoom < 0) ? 0 : this.settings.zoom;
+
         if(typeof options == 'string'){
             if(options.toLowerCase() == 'kill'){
                 this.kill(this.element);
