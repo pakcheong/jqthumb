@@ -1,14 +1,20 @@
 (function (factory) {
     if (typeof define === 'function' && define.amd) {
-        if ( '__proto__' in {} === ['jquery'] ) {
-            define(['jquery'], factory);
-        } else if ('__proto__' in {} === ['zepto'] ) {
-            define(['zepto'], factory);
-        } else {
-            factory($);
-        }
+        // AMD (Register as an anonymous module)
+        define(['jquery'], factory);
+    } else if (typeof exports === 'object') {
+        // Node/CommonJS
+        module.exports = factory(require('jquery'));
     } else {
-        factory($);
+        // Browser globals
+        factory((function(){
+            if (typeof jQuery !== 'undefined') {
+                return jQuery;
+            } else if (Zepto !== 'undefined') {
+                return Zepto;
+            }
+            return $;
+        })());
     }
 }(function ($) {
     function log(type, msg){

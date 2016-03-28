@@ -246,7 +246,7 @@ Change Log:
 1. Change bower name
 
 
-# V2.3.0 (Monday, March 28th, 2016, 4:35:17 PM)
+# V2.3.0 (Monday, March 28th, 2016, 5:05:10 PM)
 ===================================================
 1. Add "ondemand" feature. (Load the image when scolling position has reached to the DOM)
 2. Add "renderPosition" to render image whether before or after the DOM.
@@ -255,3 +255,4 @@ Change Log:
 5. Update demo image.
 6. Fix bug: not able to kill and re-render image previously.
 7. Default options can now be modified by changing values in $.fn.jqthumb.defaults
+8. Fix AMD codes.
