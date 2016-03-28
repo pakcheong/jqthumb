@@ -250,7 +250,7 @@ You might be worried the SEO impact if you were to use this plugin as changing `
     });
 </script>
 ```
-Or somethin like this:
+Or something like this:
 ```html
 ...
 <noscript attr-src="http://example.com/picture.jpg">
