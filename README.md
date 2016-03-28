@@ -231,6 +231,27 @@ $.jqthumb('killall');     // destroy all generated thumbnails on the page
 3. Safari
 4. Internet Explorer 6, 7, 8, 9 and 10
 
+
+##SEO IMPACT
+You might be worried the SEO impact if you were to use this plugin as changing `<img src="http://example.com/picture.jpg"/>` to `<img attr-src="http://example.com/picture.jpg"/>` would probably cause search engines not being able to crawl the images. But there's a trick:
+```html
+...
+<div attr-src="http://example.com/picture.jpg"></div>
+<noscript>
+    <img src="http://example.com/picture.jpg" />
+</noscript>
+...
+<script type="text/javascript">
+    $(function(){
+        $('div[attr-src]').jqthumb({
+            width  : 300,
+            height : 200
+        });
+    });
+</script>
+```
+
+
 ##EVEN MORE SAMPLE USAGE
 ```html
 ...

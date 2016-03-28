@@ -7,7 +7,7 @@
     Version      : 2.3.0
     Repo         : https://github.com/pakcheong/jqthumb
     Demo         : http://pakcheong.github.io/jqthumb/
-    Last Updated : Monday, March 28th, 2016, 4:39:50 AM
+    Last Updated : Monday, March 28th, 2016, 12:42:16 PM
     Requirements : jQuery >=v1.3.0 or Zepto (with zepto-data plugin) >=v1.0.0
 */
 (function (factory) {
@@ -111,18 +111,17 @@
         return ((elemBottom - scrollCheck <= docViewBottom) && (elemTop >= docViewTop));
     };
 
-    var pluginName           = 'jqthumb',
-        $window              = $(window),
-        resizeDataName       = pluginName + '-resize',
-        onDemandEvents       = 'scroll.' + pluginName + ' resize.' + pluginName + ' scrollstop.' + pluginName,
-        onDemandEventHandler = null,
-        renderPosDataName    = pluginName + '-render-position',
-        oriStyleDataName     = pluginName + '-original-styles',
-        successDataName      = pluginName + '-success',
-        onScrDataName        = pluginName + '-onscreen',
-        dtOption             = pluginName + '-options',
-        grandGlobal          = { outputElems: [], inputElems: [] },
-        defaults             = {
+    var pluginName             = 'jqthumb',
+        $window                = $(window),
+        resizeDataName         = pluginName + '-resize',
+        onDemandEventNames     = 'scroll.' + pluginName + ' resize.' + pluginName + ' scrollstop.' + pluginName,
+        onDemandEventHandlerFn = null,
+        renderPosDataName      = pluginName + '-render-position',
+        oriStyleDataName       = pluginName + '-original-styles',
+        onScrDataName          = pluginName + '-onscreen',
+        dtOption               = pluginName + '-options',
+        grandGlobal            = { outputElems: [], inputElems: [] },
+        defaults               = {
             classname      : pluginName,
             width          : 100,
             height         : 100,
@@ -221,7 +220,7 @@
                     $window.unbind('resize', $thumb.data(resizeDataName));
                     $thumb.removeData(resizeDataName);
                 }
-                $window.unbind(onDemandEvents, onDemandEventHandler);
+                $window.unbind(onDemandEventNames, onDemandEventHandlerFn);
                 /* END: remove attached custom event */
 
                 $thumb.remove();
@@ -242,10 +241,6 @@
 
                 if(!typeof $this.data(onScrDataName)){
                     $this.removeData(onScrDataName); // remove data that stored during plugin initialization
-                }
-
-                if(!typeof $this.data(successDataName)){
-                    $this.removeData(successDataName); // remove data that stored during plugin initialization
                 }
 
                 if(!typeof $this.data(renderPosDataName)){
@@ -414,10 +409,10 @@
                 }).attr('src', $this.attr(options.source)); // for older browsers, must bind events first then set attr later (IE7, IE8)
             }
 
-            var that                 = this,
-                $this                = $(_this),
-                imgUrl               = $this.attr(options.source),
-                onDemandEventHandler = function(){ // check scroll position
+            var that                   = this,
+                $this                  = $(_this),
+                imgUrl                 = $this.attr(options.source),
+                onDemandEventHandlerFn = function(){ // check scroll position
                                             var readyToLoad = checkPositionReach($this.parent(), options.scrollCheck);
                                             if(readyToLoad && !$this.data(onScrDataName)){
                                                 $this.data(onScrDataName, true);
@@ -436,9 +431,10 @@
 
             if(options.ondemand === true){
                 $this.wrap('<div />'); // add temporary tag to get its offset().top
-                $window.bind(onDemandEvents, onDemandEventHandler);
+                $window.bind(onDemandEventNames, onDemandEventHandlerFn);
+                onDemandEventHandlerFn();
             }else{
-                loadImg($this, imgUrl, function($featuredBgImgContainer){
+                loadImg($this, imgUrl, function($imgContainer){
                     options.after.apply(_this, [$imgContainer]);
                     that.updateGlobal(_this, $imgContainer, options);
                 });
@@ -487,7 +483,6 @@
                                             })
                                             .appendTo($featuredBgImgContainer);
 
-
                         if(options.renderPosition.toLowerCase() === 'after'){
                             $featuredBgImgContainer.insertAfter($oriImage);
                         }else{
@@ -519,6 +514,7 @@
                                     }
                                 })()
                             });
+
                         $featuredBgImgContainer.hide();
 
                         if(options.show === true){
@@ -534,10 +530,10 @@
 
             options.before.apply(_this, [_this]);
 
-            var that                 = this,
-                $oriImage            = $(_this),
-                imgUrl               = $oriImage.attr(options.source),
-                onDemandEventHandler = function(){ // check scroll position
+            var that                   = this,
+                $oriImage              = $(_this),
+                imgUrl                 = $oriImage.attr(options.source),
+                onDemandEventHandlerFn = function(){ // check scroll position
                                             var readyToLoad = checkPositionReach($oriImage.parent(), options.scrollCheck);
                                             if(readyToLoad && !$oriImage.data(onScrDataName)){
                                                 $oriImage.data(onScrDataName, true);
@@ -556,7 +552,8 @@
 
             if(options.ondemand === true){
                 $oriImage.wrap('<div />'); // add temporary tag to get its offset().top
-                $window.bind(onDemandEvents, onDemandEventHandler);
+                $window.bind(onDemandEventNames, onDemandEventHandlerFn);
+                onDemandEventHandlerFn();
             }else{
                 loadImg($oriImage, imgUrl, function($featuredBgImgContainer){
                     options.after.apply(_this, [$featuredBgImgContainer]);
