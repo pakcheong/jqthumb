@@ -79,6 +79,28 @@ Ever wonder how to support full-width billboard in older browsers that works the
 ##DEMO
 http://pakcheong.github.io/jqthumb/
 
+###DEFAULT OPTIONS
+```javascript
+$.fn.jqthumb.defaults = {
+    classname      : 'jqthumb',
+    width          : 100,
+    height         : 100,
+    position       : { x: '50%', y: '50%' },
+    source         : 'src',
+    responsive     : 20,
+    zoom           : 1,
+    show           : true,
+    renderPosition : 'before',
+    ondemand       : false,
+    scrollCheck    : 0,
+    method         : 'auto',
+    reinit         : true,
+    before         : function(){},
+    after          : function(){},
+    done           : function(){}
+};
+```
+
 ##OPTION REFERENCES
 
 ####source
