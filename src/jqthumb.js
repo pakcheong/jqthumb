@@ -67,7 +67,7 @@
         }
     }
 
-    var cssSupported = (function(){
+    var css3Supported = (function(){
         /* code available at http://net.tutsplus.com/tutorials/html-css-techniques/quick-tip-detect-css-support-in-browsers-with-javascript/ */
         var div     = document.createElement('div'),
             vendors = 'Khtml Ms O Moz Webkit'.split(' '),
@@ -108,29 +108,11 @@
         oriStyleDataName       = pluginName + '-original-styles',
         onScrDataName          = pluginName + '-onscreen',
         dtOption               = pluginName + '-options',
-        grandGlobal            = { outputElems: [], inputElems: [] },
-        defaults               = {
-            classname      : pluginName,
-            width          : 100,
-            height         : 100,
-            position       : { x: '50%', y: '50%' },
-            source         : 'src',
-            responsive     : 20,
-            zoom           : 1,
-            show           : true,
-            renderPosition : 'before', // before, after
-            ondemand       : false,
-            scrollCheck    : 0,
-            method         : 'auto', // auto, modern, native
-            reinit         : true, // true, false
-            before         : function(){},
-            after          : function(){},
-            done           : function(){}
-        };
+        grandGlobal            = { outputElems: [], inputElems: [] };
 
     function Plugin ( element, options ) {// The actual plugin constructor
         this.element              = element;
-        this.settings             = $.extend( {}, defaults, options );
+        this.settings             = $.extend( {}, $.fn[pluginName].defaults, options );
         this.settings.scrollCheck = this.settings.scrollCheck.toString().replace(/px/gi, '');
         this.settings.width       = this.settings.width.toString().replace(/px/gi, '');
         this.settings.height      = this.settings.height.toString().replace(/px/gi, '');
@@ -152,7 +134,7 @@
         init: function () {
             var method = this.settings.method.toLowerCase();
             if(method == 'auto'){
-                if(cssSupported('backgroundSize') === false){ // old browsers need to do calculation to perform same output like "background-size: cover"
+                if(css3Supported('backgroundSize') === false){ // old browsers need to do calculation to perform same output like "background-size: cover"
                     this.native(this.element, this.settings);
                 }else{ // modern browsers that support CSS3 would be easier
                     this.modern(this.element, this.settings);
@@ -178,7 +160,7 @@
                                     return $this.prev();
                                 })();
 
-                if($thumb.data(pluginName) !== pluginName){
+                if($thumb && $thumb.data(pluginName) !== pluginName){
                     log('error', 'Could not find the element. It is probably due to one or more element has been added right before the image element after the plugin initialization or it was removed.');
                     return false;
                 }
@@ -219,19 +201,19 @@
                     $this.removeData(oriStyleDataName); // remove data that stores the original stylings before the image being rendered
                 }
 
-                if(!typeof $this.data(pluginName)){
+                if($this.data(pluginName)){
                     $this.removeData(pluginName); // remove data that stored during plugin initialization
                 }
 
-                if(!typeof $this.data(dtOption)){
+                if($this.data(dtOption)){
                     $this.removeData(dtOption); // remove data that stored during plugin initialization
                 }
 
-                if(!typeof $this.data(onScrDataName)){
+                if($this.data(onScrDataName)){
                     $this.removeData(onScrDataName); // remove data that stored during plugin initialization
                 }
 
-                if(!typeof $this.data(renderPosDataName)){
+                if($this.data(renderPosDataName)){
                     $this.removeData(renderPosDataName); // remove data that stored during plugin initialization
                 }
             }
@@ -612,15 +594,34 @@
             if(typeof options == 'string'){
                 new Plugin(this, options);
             }else{
-                if (!$eachImg.data(pluginName)){
+                if (!$eachImg.data(pluginName)){ // newly render
                     $eachImg.data(pluginName, new Plugin( this, options ));
                 }else{ // re-rendered without killing it
                     if($eachImg.data(dtOption) && $eachImg.data(dtOption).reinit === true){
                         new Plugin(this, 'kill');
-                       $eachImg.data(pluginName, new Plugin( this, options ));
+                        $eachImg.data(pluginName, new Plugin( this, options ));
                     }
                 }
             }
         });
+    };
+
+    $.fn[pluginName].defaults = {
+        classname      : pluginName,
+        width          : 100,
+        height         : 100,
+        position       : { x: '50%', y: '50%' },
+        source         : 'src',
+        responsive     : 20,
+        zoom           : 1,
+        show           : true,
+        renderPosition : 'before', // before, after
+        ondemand       : false,
+        scrollCheck    : 0,
+        method         : 'auto', // auto, modern, native
+        reinit         : true, // true, false
+        before         : function(){},
+        after          : function(){},
+        done           : function(){}
     };
 }));
