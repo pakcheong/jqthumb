@@ -133,7 +133,7 @@ $(function(){
         position       : { y: '50%', x: '77%' },
         show           : false,
         renderPosition : 'after',
-        ondemand       : true,
+        // ondemand       : true,
         before         : function(oriImage){},
         after          : function(imgObj){
             fadeIn($(imgObj));
@@ -157,18 +157,18 @@ $(function(){
 
 
     $('.example7').jqthumb({
-        classname      : 'jqthumb',
-        source         : 'attr-src',
-        width          : '100%',
-        height         : 122,
-        position       : { y: '40%', x: '75%' },
-        zoom           : 2,
-        show           : false,
-        renderPosition : 'after',
-        ondemand       : true,
-        scrollCheck    : 0,
-        before         : function(oriImage){},
-        after          : function(imgObj){
+        classname           : 'jqthumb',
+        source              : 'attr-src',
+        width               : '100%',
+        height              : 122,
+        position            : { y: '40%', x: '75%' },
+        zoom                : 2,
+        show                : false,
+        renderPosition      : 'after',
+        onDemand            : true,
+        onDemandScrollCheck : 100,
+        before              : function(oriImage){},
+        after               : function(imgObj){
             fadeIn($(imgObj));
         }
     });

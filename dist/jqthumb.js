@@ -7,7 +7,7 @@
     Version      : 2.3.0
     Repo         : https://github.com/pakcheong/jqthumb
     Demo         : http://pakcheong.github.io/jqthumb/
-    Last Updated : Monday, March 28th, 2016, 5:05:09 PM
+    Last Updated : Tuesday, March 29th, 2016, 12:06:18 AM
     Requirements : jQuery >=v1.3.0 or Zepto (with zepto-data plugin) >=v1.0.0
 */
 (function (factory) {
@@ -45,7 +45,7 @@
     }
 
     function strToNum(str){
-        return str.replace(/[^\d.-]/g, '');
+        return Number(str.replace(/[^\d.-]/g, ''));
     }
 
     function validateXYperc(val, wh){
@@ -108,54 +108,71 @@
     })();
 
     var checkPositionReach = function($elem, scrollCheck){
-        var $tempWrapper  = $elem,
-            docViewTop    = $window.scrollTop(),
-            docViewBottom = docViewTop + $window.height(),
-            elemTop       = $tempWrapper.offset().top,
-            elemBottom    = elemTop + $tempWrapper.height();
-        scrollCheck = (!scrollCheck) ? scrollCheck : 0;
-        return ((elemBottom - scrollCheck <= docViewBottom) && (elemTop >= docViewTop));
+        var $win     = $(window),
+            bounds   = $elem.offset(),
+            viewport = {
+                            top  : $win.scrollTop(),
+                            left : $win.scrollLeft()
+                        };
+        viewport.right  = viewport.left + $win.width();
+        viewport.bottom = viewport.top + $win.height();
+        bounds.right    = bounds.left + $elem.outerWidth();
+        bounds.bottom   = bounds.top + $elem.outerHeight();
+        scrollCheck     = (scrollCheck) ? strToNum(scrollCheck) : 0;
+
+        return (!(
+            viewport.right  < (bounds.left   - scrollCheck) || 
+            viewport.left   > (bounds.right  + scrollCheck) || 
+            viewport.bottom < (bounds.top    - scrollCheck) || 
+            viewport.top    > (bounds.bottom + scrollCheck)
+        ));
     };
 
-    var pluginName             = 'jqthumb',
-        $window                = $(window),
-        resizeDataName         = pluginName + '-resize',
-        onDemandEventNames     = 'load.' + pluginName + ' scroll.' + pluginName + ' resize.' + pluginName + ' scrollstop.' + pluginName,
-        onDemandEventHandlerFn = null,
-        renderPosDataName      = pluginName + '-render-position',
-        oriStyleDataName       = pluginName + '-original-styles',
-        onScrDataName          = pluginName + '-onscreen',
-        dtOption               = pluginName + '-options',
-        grandGlobal            = { outputElems: [], inputElems: [] },
-        defaults               = {
-                                    classname      : pluginName,
-                                    width          : 100,
-                                    height         : 100,
-                                    position       : { x: '50%', y: '50%' },
-                                    source         : 'src',
-                                    responsive     : 20,
-                                    zoom           : 1,
-                                    show           : true,
-                                    renderPosition : 'before', // before, after
-                                    ondemand       : false,
-                                    scrollCheck    : 0,
-                                    method         : 'auto', // auto, modern, native
-                                    reinit         : true, // true, false
-                                    before         : function(){},
-                                    after          : function(){},
-                                    done           : function(){}
-                                };
+    var pluginName                       = 'jqthumb',
+        $window                          = $(window),
+        resizeDataName                   = pluginName + '-resize',
+        onDemandScrollEventNames         = 'load.' + pluginName + ' scroll.' + pluginName + ' resize.' + pluginName + ' scrollstop.' + pluginName,
+        onDemandScrollEventHandlerFn     = null,
+        onDemandClickEventName           = 'click.' + pluginName,
+        onDemandClickEventHandlerFn      = null,
+        onDemandMouseEnterEventName      = 'mouseenter.' + pluginName,
+        onDemandMouseEnterEventHandlerFn = null,
+        renderPosDataName                = pluginName + '-render-position',
+        oriStyleDataName                 = pluginName + '-original-styles',
+        onScrDataName                    = pluginName + '-onscreen',
+        dtOption                         = pluginName + '-options',
+        grandGlobal                      = { outputElems: [], inputElems: [] },
+        defaults                         = {
+                                                classname           : pluginName,
+                                                width               : 100,
+                                                height              : 100,
+                                                position            : { x: '50%', y: '50%' },
+                                                source              : 'src',
+                                                responsive          : 20,
+                                                zoom                : 1,
+                                                show                : true,
+                                                renderPosition      : 'before', // before, after
+                                                onDemand            : false,
+                                                onDemandEvent       : 'scroll',
+                                                onDemandScrollCheck : 0,
+                                                method              : 'auto', // auto, modern, native
+                                                reinit              : true, // true, false
+                                                before              : function(){},
+                                                after               : function(){},
+                                                done                : function(){}
+                                            };
 
     function Plugin ( element, options ) {// The actual plugin constructor
-        $.fn[pluginName].defaults = $.extend( {}, defaults, $.fn[pluginName].defaults );
-        this.element              = element;
-        this.settings             = $.extend( {}, $.fn[pluginName].defaults, options );
-        this.settings.scrollCheck = this.settings.scrollCheck.toString().replace(/px/gi, '');
-        this.settings.width       = this.settings.width.toString().replace(/px/gi, '');
-        this.settings.height      = this.settings.height.toString().replace(/px/gi, '');
-        this.settings.position.y  = validateXYperc(this.settings.position.y, this.settings.width);
-        this.settings.position.x  = validateXYperc(this.settings.position.x, this.settings.height);
-        this.settings.zoom        = (this.settings.zoom < 0) ? 0 : this.settings.zoom;
+        $.fn[pluginName].defaults         = $.extend( {}, defaults, $.fn[pluginName].defaults );
+        this.element                      = element;
+        this.settings                     = $.extend( {}, $.fn[pluginName].defaults, options );
+        this.settings.onDemandEvent       = this.settings.onDemandEvent.toLowerCase();
+        this.settings.onDemandScrollCheck = this.settings.onDemandScrollCheck.toString().replace(/px/gi, '');
+        this.settings.width               = this.settings.width.toString().replace(/px/gi, '');
+        this.settings.height              = this.settings.height.toString().replace(/px/gi, '');
+        this.settings.position.y          = validateXYperc(this.settings.position.y, this.settings.width);
+        this.settings.position.x          = validateXYperc(this.settings.position.x, this.settings.height);
+        this.settings.zoom                = (this.settings.zoom < 0) ? 0 : this.settings.zoom;
 
         if(typeof options == 'string'){
             if(options.toLowerCase() == 'kill'){
@@ -227,7 +244,11 @@
                     $window.unbind('resize', $thumb.data(resizeDataName));
                     $thumb.removeData(resizeDataName);
                 }
-                $window.unbind(onDemandEventNames, onDemandEventHandlerFn);
+                $window.unbind(onDemandScrollEventNames, onDemandScrollEventHandlerFn);
+                $this.unbind(onDemandClickEventName, onDemandClickEventHandlerFn);
+                $this.parent().unbind(onDemandClickEventName, onDemandClickEventHandlerFn);
+                $this.unbind(onDemandMouseEnterEventName, onDemandMouseEnterEventHandlerFn);
+                $this.parent().unbind(onDemandMouseEnterEventName, onDemandMouseEnterEventHandlerFn);
                 /* END: remove attached custom event */
 
                 $thumb.remove();
@@ -419,27 +440,51 @@
             var that   = this,
                 $this  = $(_this),
                 imgUrl = $this.attr(options.source);
-            onDemandEventHandlerFn = function(){ // check scroll position
-                                        var readyToLoad = checkPositionReach($this.parent(), options.scrollCheck);
+            onDemandScrollEventHandlerFn = function(){ // check scroll position
+                                        var readyToLoad = checkPositionReach($this.parent(), options.onDemandScrollCheck);
                                         if(readyToLoad && !$this.data(onScrDataName)){
-                                            $this.data(onScrDataName, true);
-                                            $this.unwrap(); // remove temporary tag
+                                            $this
+                                                .data(onScrDataName, true)
+                                                .unwrap(); // remove temporary tag
                                             loadImg($this, imgUrl, function($imgContainer){
                                                 options.after.apply(_this, [$imgContainer]);
                                                 that.updateGlobal(_this, $imgContainer, options);
                                             });
                                         }
                                     };
-
+            onDemandClickEventHandlerFn = function(){
+                if(!$this.data(onScrDataName)){
+                    loadImg($this, imgUrl, function($imgContainer){
+                        options.after.apply(_this, [$imgContainer]);
+                        that.updateGlobal(_this, $imgContainer, options);
+                    }, true);
+                    $this.data(onScrDataName, true);
+                }
+            };
+            onDemandMouseEnterEventHandlerFn = function(){
+                if(!$this.data(onScrDataName)){
+                    loadImg($this, imgUrl, function($imgContainer){
+                        options.after.apply(_this, [$imgContainer]);
+                        that.updateGlobal(_this, $imgContainer, options);
+                    }, true);
+                    $this.data(onScrDataName, true);
+                }
+            };
             $this.data(oriStyleDataName, $this.attr('style')); // keep original styles into data
             $this.data(renderPosDataName, options.renderPosition); // store render position (before/after) for killing purpose
 
             $this.hide();
 
-            if(options.ondemand === true){
-                $this.wrap('<div />'); // add temporary tag to get its offset().top
-                $window.bind(onDemandEventNames, onDemandEventHandlerFn);
-                onDemandEventHandlerFn();
+            if(options.onDemand === true){
+                if(options.onDemandEvent === 'scroll'){
+                    $this.wrap('<div />'); // add temporary tag to get its offset().top
+                    $window.bind(onDemandScrollEventNames, onDemandScrollEventHandlerFn);
+                    // onDemandScrollEventHandlerFn();
+                }else if(options.onDemandEvent === 'click'){
+                    $this.parent().bind(onDemandClickEventName, onDemandClickEventHandlerFn);
+                }else if(options.onDemandEvent === 'mouseenter'){
+                    $this.parent().bind(onDemandMouseEnterEventName, onDemandMouseEnterEventHandlerFn);
+                }
             }else{
                 loadImg($this, imgUrl, function($imgContainer){
                     options.after.apply(_this, [$imgContainer]);
@@ -540,27 +585,52 @@
             var that      = this,
                 $oriImage = $(_this),
                 imgUrl    = $oriImage.attr(options.source);
-            onDemandEventHandlerFn = function(){ // check scroll position
-                                        var readyToLoad = checkPositionReach($oriImage.parent(), options.scrollCheck);
+            onDemandScrollEventHandlerFn = function(){ // check scroll position
+                                        var readyToLoad = checkPositionReach($oriImage.parent(), options.onDemandScrollCheck);
                                         if(readyToLoad && !$oriImage.data(onScrDataName)){
-                                            $oriImage.data(onScrDataName, true);
-                                            $oriImage.unwrap(); // remove temporary tag
+                                            $oriImage
+                                                .data(onScrDataName, true)
+                                                .unwrap(); // remove temporary tag
                                             loadImg($oriImage, imgUrl, function($featuredBgImgContainer){
                                                 options.after.apply(_this, [$featuredBgImgContainer]);
                                                 that.updateGlobal(_this, $featuredBgImgContainer, options);
                                             }, true);
                                         }
                                     };
+            onDemandClickEventHandlerFn = function(){
+                if(!$oriImage.data(onScrDataName)){
+                    loadImg($oriImage, imgUrl, function($featuredBgImgContainer){
+                        options.after.apply(_this, [$featuredBgImgContainer]);
+                        that.updateGlobal(_this, $featuredBgImgContainer, options);
+                    }, true);
+                    $oriImage.data(onScrDataName, true);
+                }
+            };
+            onDemandMouseEnterEventHandlerFn = function(){
+                if(!$oriImage.data(onScrDataName)){
+                    loadImg($oriImage, imgUrl, function($featuredBgImgContainer){
+                        options.after.apply(_this, [$featuredBgImgContainer]);
+                        that.updateGlobal(_this, $featuredBgImgContainer, options);
+                    }, true);
+                    $oriImage.data(onScrDataName, true);
+                }
+            };
 
             $oriImage.data(oriStyleDataName, $oriImage.attr('style')); // keep original styles into data
             $oriImage.data(renderPosDataName, options.renderPosition); // store render position (before/after) for killing purpose
 
             $oriImage.hide();
 
-            if(options.ondemand === true){
-                $oriImage.wrap('<div />'); // add temporary tag to get its offset().top
-                $window.bind(onDemandEventNames, onDemandEventHandlerFn);
-                onDemandEventHandlerFn();
+            if(options.onDemand === true){
+                if(options.onDemandEvent === 'scroll'){
+                    $oriImage.wrap('<div />'); // add temporary tag to get its offset().top
+                    $window.bind(onDemandScrollEventNames, onDemandScrollEventHandlerFn);
+                    // onDemandScrollEventHandlerFn();
+                }else if(options.onDemandEvent === 'click'){
+                    $oriImage.parent().bind(onDemandClickEventName, onDemandClickEventHandlerFn);
+                }else if(options.onDemandEvent === 'mouseenter'){
+                    $oriImage.parent().bind(onDemandMouseEnterEventName, onDemandMouseEnterEventHandlerFn);
+                }
             }else{
                 loadImg($oriImage, imgUrl, function($featuredBgImgContainer){
                     options.after.apply(_this, [$featuredBgImgContainer]);
