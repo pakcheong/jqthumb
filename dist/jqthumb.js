@@ -7,7 +7,7 @@
     Version      : 2.3.0
     Repo         : https://github.com/pakcheong/jqthumb
     Demo         : http://pakcheong.github.io/jqthumb/
-    Last Updated : Monday, March 28th, 2016, 4:13:31 PM
+    Last Updated : Monday, March 28th, 2016, 4:35:17 PM
     Requirements : jQuery >=v1.3.0 or Zepto (with zepto-data plugin) >=v1.0.0
 */
 (function (factory) {
@@ -120,9 +120,28 @@
         oriStyleDataName       = pluginName + '-original-styles',
         onScrDataName          = pluginName + '-onscreen',
         dtOption               = pluginName + '-options',
-        grandGlobal            = { outputElems: [], inputElems: [] };
+        grandGlobal            = { outputElems: [], inputElems: [] },
+        defaults               = {
+                                    classname      : pluginName,
+                                    width          : 100,
+                                    height         : 100,
+                                    position       : { x: '50%', y: '50%' },
+                                    source         : 'src',
+                                    responsive     : 20,
+                                    zoom           : 1,
+                                    show           : true,
+                                    renderPosition : 'before', // before, after
+                                    ondemand       : false,
+                                    scrollCheck    : 0,
+                                    method         : 'auto', // auto, modern, native
+                                    reinit         : true, // true, false
+                                    before         : function(){},
+                                    after          : function(){},
+                                    done           : function(){}
+                                };
 
     function Plugin ( element, options ) {// The actual plugin constructor
+        $.fn[pluginName].defaults = $.extend( {}, defaults, $.fn[pluginName].defaults );
         this.element              = element;
         this.settings             = $.extend( {}, $.fn[pluginName].defaults, options );
         this.settings.scrollCheck = this.settings.scrollCheck.toString().replace(/px/gi, '');
@@ -618,22 +637,5 @@
         });
     };
 
-    $.fn[pluginName].defaults = {
-        classname      : pluginName,
-        width          : 100,
-        height         : 100,
-        position       : { x: '50%', y: '50%' },
-        source         : 'src',
-        responsive     : 20,
-        zoom           : 1,
-        show           : true,
-        renderPosition : 'before', // before, after
-        ondemand       : false,
-        scrollCheck    : 0,
-        method         : 'auto', // auto, modern, native
-        reinit         : true, // true, false
-        before         : function(){},
-        after          : function(){},
-        done           : function(){}
-    };
+    $.fn[pluginName].defaults = defaults;
 }));
