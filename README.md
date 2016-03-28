@@ -79,7 +79,7 @@ Ever wonder how to support full-width billboard in older browsers that works the
 ##DEMO
 http://pakcheong.github.io/jqthumb/
 
-###DEFAULT OPTIONS
+##DEFAULT OPTIONS
 ```javascript
 $.fn.jqthumb.defaults = {
     classname      : 'jqthumb',
