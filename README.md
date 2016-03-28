@@ -2,7 +2,7 @@
 
 Create thumbnails from images proportionally. On top of that, this is alaso a lazy-load plugin, which even works on IE6 from jQuery >=v1.3 or Zepto (with zepto-data plugin) >=v1.1.3.
 
-![screenshot](screenshots/screenshot.jquery.png?raw=true "jQThumb Screenshot")
+![screenshot](screenshots/screenshot.jquery.jpg?raw=true "jQThumb Screenshot")
 
 #USAGE
 ```html
@@ -244,6 +244,22 @@ You might be worried the SEO impact if you were to use this plugin as changing `
 <script type="text/javascript">
     $(function(){
         $('div[attr-src]').jqthumb({
+            width  : 300,
+            height : 200
+        });
+    });
+</script>
+```
+Or somethin like this:
+```html
+...
+<noscript attr-src="http://example.com/picture.jpg">
+    <img src="http://example.com/picture.jpg" />
+</noscript>
+...
+<script type="text/javascript">
+    $(function(){
+        $('noscript[attr-src]').jqthumb({
             width  : 300,
             height : 200
         });

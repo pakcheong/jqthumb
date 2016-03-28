@@ -7,7 +7,7 @@
     Version      : 2.3.0
     Repo         : https://github.com/pakcheong/jqthumb
     Demo         : http://pakcheong.github.io/jqthumb/
-    Last Updated : Monday, March 28th, 2016, 12:42:16 PM
+    Last Updated : Monday, March 28th, 2016, 3:13:12 PM
     Requirements : jQuery >=v1.3.0 or Zepto (with zepto-data plugin) >=v1.0.0
 */
 (function (factory) {
@@ -114,7 +114,7 @@
     var pluginName             = 'jqthumb',
         $window                = $(window),
         resizeDataName         = pluginName + '-resize',
-        onDemandEventNames     = 'scroll.' + pluginName + ' resize.' + pluginName + ' scrollstop.' + pluginName,
+        onDemandEventNames     = 'load.' + pluginName + ' scroll.' + pluginName + ' resize.' + pluginName + ' scrollstop.' + pluginName,
         onDemandEventHandlerFn = null,
         renderPosDataName      = pluginName + '-render-position',
         oriStyleDataName       = pluginName + '-original-styles',
@@ -409,20 +409,20 @@
                 }).attr('src', $this.attr(options.source)); // for older browsers, must bind events first then set attr later (IE7, IE8)
             }
 
-            var that                   = this,
-                $this                  = $(_this),
-                imgUrl                 = $this.attr(options.source),
-                onDemandEventHandlerFn = function(){ // check scroll position
-                                            var readyToLoad = checkPositionReach($this.parent(), options.scrollCheck);
-                                            if(readyToLoad && !$this.data(onScrDataName)){
-                                                $this.data(onScrDataName, true);
-                                                $this.unwrap(); // remove temporary tag
-                                                loadImg($this, imgUrl, function($imgContainer){
-                                                    options.after.apply(_this, [$imgContainer]);
-                                                    that.updateGlobal(_this, $imgContainer, options);
-                                                });
-                                            }
-                                        };
+            var that   = this,
+                $this  = $(_this),
+                imgUrl = $this.attr(options.source);
+            onDemandEventHandlerFn = function(){ // check scroll position
+                                        var readyToLoad = checkPositionReach($this.parent(), options.scrollCheck);
+                                        if(readyToLoad && !$this.data(onScrDataName)){
+                                            $this.data(onScrDataName, true);
+                                            $this.unwrap(); // remove temporary tag
+                                            loadImg($this, imgUrl, function($imgContainer){
+                                                options.after.apply(_this, [$imgContainer]);
+                                                that.updateGlobal(_this, $imgContainer, options);
+                                            });
+                                        }
+                                    };
 
             $this.data(oriStyleDataName, $this.attr('style')); // keep original styles into data
             $this.data(renderPosDataName, options.renderPosition); // store render position (before/after) for killing purpose
@@ -443,7 +443,7 @@
 
         modern: function (_this, options) {
 
-            function loadImg($oriImage, imgUrl, cb){
+            function loadImg($oriImage, imgUrl, cb, debug){
 
                 $tempImg = $('<img />').attr('src', imgUrl);
 
@@ -530,20 +530,20 @@
 
             options.before.apply(_this, [_this]);
 
-            var that                   = this,
-                $oriImage              = $(_this),
-                imgUrl                 = $oriImage.attr(options.source),
-                onDemandEventHandlerFn = function(){ // check scroll position
-                                            var readyToLoad = checkPositionReach($oriImage.parent(), options.scrollCheck);
-                                            if(readyToLoad && !$oriImage.data(onScrDataName)){
-                                                $oriImage.data(onScrDataName, true);
-                                                $oriImage.unwrap(); // remove temporary tag
-                                                loadImg($oriImage, imgUrl, function($featuredBgImgContainer){
-                                                    options.after.apply(_this, [$featuredBgImgContainer]);
-                                                    that.updateGlobal(_this, $featuredBgImgContainer, options);
-                                                });
-                                            }
-                                        };
+            var that      = this,
+                $oriImage = $(_this),
+                imgUrl    = $oriImage.attr(options.source);
+            onDemandEventHandlerFn = function(){ // check scroll position
+                                        var readyToLoad = checkPositionReach($oriImage.parent(), options.scrollCheck);
+                                        if(readyToLoad && !$oriImage.data(onScrDataName)){
+                                            $oriImage.data(onScrDataName, true);
+                                            $oriImage.unwrap(); // remove temporary tag
+                                            loadImg($oriImage, imgUrl, function($featuredBgImgContainer){
+                                                options.after.apply(_this, [$featuredBgImgContainer]);
+                                                that.updateGlobal(_this, $featuredBgImgContainer, options);
+                                            }, true);
+                                        }
+                                    };
 
             $oriImage.data(oriStyleDataName, $oriImage.attr('style')); // keep original styles into data
             $oriImage.data(renderPosDataName, options.renderPosition); // store render position (before/after) for killing purpose

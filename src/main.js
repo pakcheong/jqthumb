@@ -52,8 +52,24 @@ $(function(){
     }
 
 
+    $('.original').jqthumb({
+        classname : 'jqthumb',
+        source    : 'attr-src',
+        width     : 440,
+        height    : 294,
+        zoom      : 1,
+        position  : { y: '50%', x: '50%' },
+        show      : false,
+        before    : function(oriImage){},
+        after     : function(imgObj){
+            fadeIn($(imgObj));
+        }
+    });
+
+
     $('.example1').jqthumb({
         classname : 'jqthumb',
+        source    : 'attr-src',
         width     : '100%',
         height    : 121,
         zoom      : 1.3,
@@ -68,6 +84,7 @@ $(function(){
 
     $('.example2').jqthumb({
         classname : 'jqthumb',
+        source    : 'attr-src',
         width     : '100%',
         height    : 121,
         zoom      : 1.3,
@@ -82,6 +99,7 @@ $(function(){
 
     $('.example3').jqthumb({
         classname : 'jqthumb',
+        source    : 'attr-src',
         width     : '100%',
         height    : 295,
         position  : { y: '50%', x: '50%' },
@@ -95,9 +113,10 @@ $(function(){
 
     $('.example4').jqthumb({
         classname : 'jqthumb',
+        source    : 'attr-src',
         width     : '100%',
         height    : 295,
-        position  : { y: '50%', x: '0%' },
+        position  : { y: '50%', x: '12%' },
         show      : false,
         before    : function(oriImage){},
         after     : function(imgObj){
@@ -107,15 +126,16 @@ $(function(){
 
 
     $('.example5').jqthumb({
-        classname : 'jqthumb',
-        width     : '100%',
-        height    : 295,
-        position  : { y: '50%', x: '100%' },
-        show      : false,
-        renderPosition: 'after',
-        ondemand  : true,
-        before    : function(oriImage){},
-        after     : function(imgObj){
+        classname      : 'jqthumb',
+        source    : 'attr-src',
+        width          : '100%',
+        height         : 295,
+        position       : { y: '50%', x: '77%' },
+        show           : false,
+        renderPosition : 'after',
+        ondemand       : true,
+        before         : function(oriImage){},
+        after          : function(imgObj){
             fadeIn($(imgObj));
         }
     });
@@ -123,6 +143,7 @@ $(function(){
 
     $('.example6').jqthumb({
         classname : 'jqthumb',
+        source    : 'attr-src',
         width     : '100%',
         height    : 122,
         position  : { y: '-56px', x: '-56px' },
@@ -137,6 +158,7 @@ $(function(){
 
     $('.example7').jqthumb({
         classname      : 'jqthumb',
+        source         : 'attr-src',
         width          : '100%',
         height         : 122,
         position       : { y: '40%', x: '75%' },
@@ -144,7 +166,7 @@ $(function(){
         show           : false,
         renderPosition : 'after',
         ondemand       : true,
-        scrollCheck    : 200,
+        scrollCheck    : 0,
         before         : function(oriImage){},
         after          : function(imgObj){
             fadeIn($(imgObj));

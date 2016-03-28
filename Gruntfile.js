@@ -136,18 +136,20 @@ module.exports = function(grunt) {
         'screenshot-element': {
             demo: {
                 options: {
+                    streamType: 'jpg',
+                    quality: 60,
                     timeout: 2000 /* wait for animation to be done */
                 },
                 images: [
                     {
                         url      : '<%= global.dist.root %>demo.jquery.html',
-                        file     : 'screenshots/screenshot.jquery.png',
+                        file     : 'screenshots/screenshot.jquery.jpg',
                         css      : 'body { background-color: #FFF; }',
                         selector : '.screenshot-area'
                     },
                     {
                         url      : '<%= global.dist.root %>demo.zepto.html',
-                        file     : 'screenshots/screenshot.zepto.png',
+                        file     : 'screenshots/screenshot.zepto.jpg',
                         css      : 'body { background-color: #FFF; }',
                         selector : '.screenshot-area'
                     }
