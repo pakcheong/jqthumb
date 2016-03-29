@@ -2,7 +2,7 @@
 
 Create thumbnails from images proportionally. On top of that, this is alaso a lazy-load plugin, which even works on IE6 from jQuery >=v1.3 or Zepto (with zepto-data plugin) >=v1.1.3.
 
-![screenshot](screenshots/screenshot.jquery.jpg?raw=true "jQThumb Screenshot")
+![screenshot](screenshots/screenshot.jpg?raw=true "jQThumb Screenshot")
 
 #USAGE
 ```html
