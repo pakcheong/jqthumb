@@ -155,7 +155,58 @@ module.exports = function(grunt) {
                     }*/
                 ]
             }
+        },
+        bump: {
+            options: {
+                files              : ['package.json'],
+                updateConfigs      : ['pkg'],
+                commit             : true,
+                commitMessage      : (function(){
+                                        var commitMsg = grunt.option('commitmessage');
+                                        if(commitMsg){
+                                            return commitMsg;
+                                        }
+                                        var returnTxt     = 'v%VERSION%\n',
+                                            changeLogFile = 'CHANGELOG.txt',
+                                            data          = grunt.file.read(changeLogFile).toString(),
+                                            lineArr       = data.split('\n'),
+                                            search        = '# V' + pkg.version,
+                                            newData       = '',
+                                            found         = false,
+                                            skip          = 2;
+
+                                        if(data.indexOf(search) > -1){
+                                            for(var i=0; i<lineArr.length-1; i++){
+                                                if(lineArr[i].indexOf(search) > -1 || found == true){
+                                                    if(lineArr[i + skip].length > 0){
+                                                        returnTxt += lineArr[i + skip] + '\n';
+                                                        found = true;
+                                                    }else{
+                                                        found = false;
+                                                        break;
+                                                        return;
+                                                    }
+                                                }
+                                            }
+                                        }else{
+                                            throw new Error('You have not updated ' + changeLogFile);
+                                        }
+                                        return returnTxt;
+                                    })(),
+                commitFiles        : ['-a'],
+                createTag          : true,
+                tagName            : 'v%VERSION%',
+                tagMessage         : 'Version %VERSION%',
+                push               : 'branch',
+                pushTo             : 'origin',
+                gitDescribeOptions : '--tags --always --abbrev=1 --dirty=-d',
+                globalReplace      : true,
+                // prereleaseName     : 'rc',
+                metadata           : '',
+                regExp             : false
+            }
         }
+
     });
 
     grunt.loadNpmTasks('grunt-contrib-jshint');
@@ -164,6 +215,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-text-replace');
     grunt.loadNpmTasks('grunt-screenshot-element');
+    grunt.loadNpmTasks('grunt-bump');
 
     /* Update version in readme file by checking if the first line of the file contains the latest version. */
     grunt.registerTask('update-readme', '', function () {
@@ -261,4 +313,12 @@ module.exports = function(grunt) {
 
     grunt.registerTask('dev', ['jshint', 'concat', 'uglify', 'copy', 'replace']);
     grunt.registerTask('default', ['jshint', 'concat', 'uglify', 'copy', 'replace', 'update-readme', 'check-changelog', 'check-bowerjson', 'check-jqueryjson', 'screenshot-element']);
+
+    /*
+    GRUNT BUMP EXAMPLES:
+    grunt bump --setversion=2.3.0 --commitmessage="commit message" --dry-run
+        - it will read from CHANGELOG.txt when "commitmessage" is not set to anything
+        - to have new line in commit message, simply type CTRL+V+J
+        - with dry-run, it will only show the demo.
+    */
 };
