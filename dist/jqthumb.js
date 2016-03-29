@@ -7,7 +7,7 @@
     Version      : 2.3.0
     Repo         : https://github.com/pakcheong/jqthumb
     Demo         : http://pakcheong.github.io/jqthumb/
-    Last Updated : Tuesday, March 29th, 2016, 11:33:36 AM
+    Last Updated : Tuesday, March 29th, 2016, 1:06:46 PM
     Requirements : jQuery >=v1.3.0 or Zepto (with zepto-data plugin) >=v1.0.0
 */
 (function (factory) {
@@ -490,6 +490,12 @@
             if(options.onDemand === true){
                 if(options.onDemandEvent === 'scroll'){
                     $this.wrap('<div />'); // add temporary tag to get its offset().top
+                    $this
+                        .parent()
+                            .css({ // set temporarily height
+                                'width'  : (options.width) ? options.width : $this.width(),
+                                'height' : (options.height) ? options.height : $this.height()
+                            });
                     $window
                         .bind(onDemandScrollEventStr, onDemandScrollEventHandlerFn)
                         .trigger(onDemandScrollEventsArr[0]);
@@ -637,6 +643,12 @@
             if(options.onDemand === true){
                 if(options.onDemandEvent === 'scroll'){
                     $oriImage.wrap('<div />'); // add temporary tag to get its offset().top
+                    $oriImage
+                        .parent()
+                            .css({ // set temporarily height
+                                'width'  : (options.width) ? options.width : $oriImage.width(),
+                                'height' : (options.height) ? options.height : $oriImage.height()
+                            });
                     $window
                         .bind(onDemandScrollEventStr, onDemandScrollEventHandlerFn)
                         .trigger(onDemandScrollEventsArr[0]);

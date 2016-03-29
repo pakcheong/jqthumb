@@ -176,3 +176,6 @@ form .input{
 .row.mg.screenshot-area > div:nth-child(6){ height: 315px; }
 .row.mg.screenshot-area > div:nth-child(7){ height: 172px; }
 .row.mg.screenshot-area > div:nth-child(8){ height: 142px; }
+
+.row.mg.screenshot-area > div > .plr{ height: 100%; }
+// .row.mg.screenshot-area > div > .plr > .frame{ height: 100%; }

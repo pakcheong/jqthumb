@@ -201,7 +201,7 @@ $(function(){
         show                : false,
         renderPosition      : 'after',
         onDemand            : true,
-        onDemandScrollCheck : 100,
+        onDemandScrollCheck : 0,
         before              : function(oriImage){},
         after               : function(imgObj){
             fadeIn($(imgObj));

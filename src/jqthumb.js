@@ -478,6 +478,12 @@
             if(options.onDemand === true){
                 if(options.onDemandEvent === 'scroll'){
                     $this.wrap('<div />'); // add temporary tag to get its offset().top
+                    $this
+                        .parent()
+                            .css({ // set temporarily height
+                                'width'  : (options.width) ? options.width : $this.width(),
+                                'height' : (options.height) ? options.height : $this.height()
+                            });
                     $window
                         .bind(onDemandScrollEventStr, onDemandScrollEventHandlerFn)
                         .trigger(onDemandScrollEventsArr[0]);
@@ -625,6 +631,12 @@
             if(options.onDemand === true){
                 if(options.onDemandEvent === 'scroll'){
                     $oriImage.wrap('<div />'); // add temporary tag to get its offset().top
+                    $oriImage
+                        .parent()
+                            .css({ // set temporarily height
+                                'width'  : (options.width) ? options.width : $oriImage.width(),
+                                'height' : (options.height) ? options.height : $oriImage.height()
+                            });
                     $window
                         .bind(onDemandScrollEventStr, onDemandScrollEventHandlerFn)
                         .trigger(onDemandScrollEventsArr[0]);
