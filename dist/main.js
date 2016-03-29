@@ -1,15 +1,27 @@
 $(function(){
 
     $('#generate').click(function(){
+
+        if($('#ondemand').val() == 'true' && ($('#ondemandevent').val() == 'click' || $('#ondemandevent').val() == 'mouseenter')){
+            $('#demo').parent().width(200);
+            $('#demo').parent().height(200);
+        }else{
+            $('#demo').parent().css('width', 'auto');
+            $('#demo').parent().css('width', 'auto');
+        }
+
         $('#demo').jqthumb({
-            classname      : 'jqthumb',
-            width          : $('#width').val() + $('#width-type').val(),
-            height         : $('#height').val() + $('#height-type').val(),
-            position       : { y: $('#y').val() + $('#y-type').val(), x: $('#x').val() + $('#x-type').val() },
-            zoom           : $('#zoom').val(),
-            renderPosition : $('#renderPosition').val(),
-            method         : $('#method').val(),
-            done           : function(objs){
+            classname           : 'jqthumb',
+            width               : $('#width').val() + $('#width-type').val(),
+            height              : $('#height').val() + $('#height-type').val(),
+            position            : { y: $('#y').val() + $('#y-type').val(), x: $('#x').val() + $('#x-type').val() },
+            zoom                : $('#zoom').val(),
+            renderPosition      : $('#renderPosition').val(),
+            onDemand            : ($('#ondemand').val() == 'true') ? true : false,
+            onDemandEvent       : $('#ondemandevent').val(),
+            onDemandScrollCheck : $('#ondemandscrollcheck').val(),
+            method              : $('#method').val(),
+            done                : function(objs){
                 $('html, body').animate({scrolly: $('body').height(), scrollx: $('body').width() }, 800);
 
                 if($('#width-type').val() == '%'){
@@ -35,6 +47,29 @@ $(function(){
                 }
             }
         });
+    });
+
+    $('#ondemand').change(function(){
+        if($('#ondemand').val() == 'true'){
+            $('#ondemandevent').removeAttr('disabled');
+
+            if($('#ondemandevent').val() == 'scroll'){
+                $('#ondemandscrollcheck').removeAttr('disabled');
+            }else{
+                $('#ondemandscrollcheck').attr('disabled', 'disabled');
+            }
+        }else{
+            $('#ondemandevent').attr('disabled', 'disabled');
+            $('#ondemandscrollcheck').attr('disabled', 'disabled');
+        }
+    });
+
+    $('#ondemandevent').change(function(){
+        if($('#ondemandevent').val() == 'scroll'){
+            $('#ondemandscrollcheck').removeAttr('disabled');
+        }else{
+            $('#ondemandscrollcheck').attr('disabled', 'disabled');
+        }
     });
 
     $('#kill').click(function(){

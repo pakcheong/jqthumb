@@ -142,17 +142,17 @@ module.exports = function(grunt) {
                 },
                 images: [
                     {
-                        url      : '<%= global.dist.root %>demo.jquery.html',
-                        file     : 'screenshots/screenshot.jquery.jpg',
+                        url      : '<%= global.dist.root %>demo.html',
+                        file     : 'screenshots/screenshot.jpg',
                         css      : 'body { background-color: #FFF; }',
                         selector : '.screenshot-area'
-                    },
+                    }/*,
                     {
                         url      : '<%= global.dist.root %>demo.zepto.html',
                         file     : 'screenshots/screenshot.zepto.jpg',
                         css      : 'body { background-color: #FFF; }',
                         selector : '.screenshot-area'
-                    }
+                    }*/
                 ]
             }
         }

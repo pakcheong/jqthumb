@@ -7,7 +7,7 @@
     Version      : 2.3.0
     Repo         : https://github.com/pakcheong/jqthumb
     Demo         : http://pakcheong.github.io/jqthumb/
-    Last Updated : Tuesday, March 29th, 2016, 12:06:18 AM
+    Last Updated : Tuesday, March 29th, 2016, 11:33:36 AM
     Requirements : jQuery >=v1.3.0 or Zepto (with zepto-data plugin) >=v1.0.0
 */
 (function (factory) {
@@ -131,7 +131,8 @@
     var pluginName                       = 'jqthumb',
         $window                          = $(window),
         resizeDataName                   = pluginName + '-resize',
-        onDemandScrollEventNames         = 'load.' + pluginName + ' scroll.' + pluginName + ' resize.' + pluginName + ' scrollstop.' + pluginName,
+        onDemandScrollEventsArr          = ['scroll.' + pluginName, 'resize.' + pluginName, 'scrollstop.' + pluginName],
+        onDemandScrollEventStr           = onDemandScrollEventsArr.join(' '),
         onDemandScrollEventHandlerFn     = null,
         onDemandClickEventName           = 'click.' + pluginName,
         onDemandClickEventHandlerFn      = null,
@@ -205,9 +206,41 @@
         kill: function(_this){
             var $this = $(_this);
 
+            function killOri($ori){
+                /* START :: remove attached custom events from original image */
+                $window.unbind(onDemandScrollEventStr, onDemandScrollEventHandlerFn);
+                $ori.unbind(onDemandClickEventName, onDemandClickEventHandlerFn);
+                $ori.parent().unbind(onDemandClickEventName, onDemandClickEventHandlerFn);
+                $ori.unbind(onDemandMouseEnterEventName, onDemandMouseEnterEventHandlerFn);
+                $ori.parent().unbind(onDemandMouseEnterEventName, onDemandMouseEnterEventHandlerFn);
+                /* END :: remove attached custom events from original image */
+
+                $ori.removeAttr('style'); // first, remove all the styles first
+                if(!$ori.data(oriStyleDataName)){
+                    $ori.attr('style', $ori.data(oriStyleDataName)); // then re-store the original styles
+                    $ori.removeData(oriStyleDataName); // remove data that stores the original stylings before the image being rendered
+                }
+
+                if($ori.data(pluginName)){
+                    $ori.removeData(pluginName); // remove data that stored during plugin initialization
+                }
+
+                if($ori.data(dtOption)){
+                    $ori.removeData(dtOption); // remove data that stored during plugin initialization
+                }
+
+                if($ori.data(onScrDataName)){
+                    $ori.removeData(onScrDataName); // remove data that stored during plugin initialization
+                }
+
+                if($ori.data(renderPosDataName)){
+                    $ori.removeData(renderPosDataName); // remove data that stored during plugin initialization
+                }
+            }
+
             if($this.data(pluginName)){
                 var tempArr = [],
-                    $thumb = (function(){
+                    $thumb  = (function(){
                                     if($this.data(renderPosDataName) === 'after'){
                                         return $this.next();
                                     }
@@ -215,11 +248,15 @@
                                 })();
 
                 if($thumb && $thumb.data(pluginName) !== pluginName){
-                    log('error', 'Could not find the element. It is probably due to one or more element has been added right before the image element after the plugin initialization or it was removed.');
-                    return false;
+                    if($this.data(dtOption).onDemand === false){ // kill only generated thumbnails
+                        log('error', 'Could not find the element. It is probably due to one or more element has been added right before the image element after the plugin initialization or it was removed.');
+                        return false;
+                    }else{ // onDemand thumbnails are not generated yet, so customize the kill
+                        killOri($this);
+                    }
                 }
 
-                /* START: remove output elements */
+                /* START :: remove output elements */
                 tempArr = [];
                 $.each(grandGlobal.outputElems, function(index, obj){
                     if($(obj)[0] != $thumb[0]){
@@ -227,9 +264,9 @@
                     }
                 });
                 grandGlobal.outputElems = tempArr;
-                /* END: remove output elements */
+                /* END :: remove output elements */
 
-                /* START: remove input elements */
+                /* START :: remove input elements */
                 tempArr = [];
                 $.each(grandGlobal.inputElems, function(index, obj){
                     if($(obj)[0] != $this[0]){
@@ -237,43 +274,18 @@
                     }
                 });
                 grandGlobal.inputElems = tempArr;
-                /* END: remove input elements */
+                /* END :: remove input elements */
 
-                /* START: remove attached custom event */
+                /* START :: remove attached custom event */
                 if($thumb.data(resizeDataName)){
                     $window.unbind('resize', $thumb.data(resizeDataName));
                     $thumb.removeData(resizeDataName);
                 }
-                $window.unbind(onDemandScrollEventNames, onDemandScrollEventHandlerFn);
-                $this.unbind(onDemandClickEventName, onDemandClickEventHandlerFn);
-                $this.parent().unbind(onDemandClickEventName, onDemandClickEventHandlerFn);
-                $this.unbind(onDemandMouseEnterEventName, onDemandMouseEnterEventHandlerFn);
-                $this.parent().unbind(onDemandMouseEnterEventName, onDemandMouseEnterEventHandlerFn);
-                /* END: remove attached custom event */
+                /* END :: remove attached custom event */
 
                 $thumb.remove();
 
-                $this.removeAttr('style'); // first, remove all the styles first
-                if(!$this.data(oriStyleDataName)){
-                    $this.attr('style', $this.data(oriStyleDataName)); // then re-store the original styles
-                    $this.removeData(oriStyleDataName); // remove data that stores the original stylings before the image being rendered
-                }
-
-                if($this.data(pluginName)){
-                    $this.removeData(pluginName); // remove data that stored during plugin initialization
-                }
-
-                if($this.data(dtOption)){
-                    $this.removeData(dtOption); // remove data that stored during plugin initialization
-                }
-
-                if($this.data(onScrDataName)){
-                    $this.removeData(onScrDataName); // remove data that stored during plugin initialization
-                }
-
-                if($this.data(renderPosDataName)){
-                    $this.removeData(renderPosDataName); // remove data that stored during plugin initialization
-                }
+                killOri($this);
             }
         },
 
@@ -478,8 +490,9 @@
             if(options.onDemand === true){
                 if(options.onDemandEvent === 'scroll'){
                     $this.wrap('<div />'); // add temporary tag to get its offset().top
-                    $window.bind(onDemandScrollEventNames, onDemandScrollEventHandlerFn);
-                    // onDemandScrollEventHandlerFn();
+                    $window
+                        .bind(onDemandScrollEventStr, onDemandScrollEventHandlerFn)
+                        .trigger(onDemandScrollEventsArr[0]);
                 }else if(options.onDemandEvent === 'click'){
                     $this.parent().bind(onDemandClickEventName, onDemandClickEventHandlerFn);
                 }else if(options.onDemandEvent === 'mouseenter'){
@@ -624,8 +637,9 @@
             if(options.onDemand === true){
                 if(options.onDemandEvent === 'scroll'){
                     $oriImage.wrap('<div />'); // add temporary tag to get its offset().top
-                    $window.bind(onDemandScrollEventNames, onDemandScrollEventHandlerFn);
-                    // onDemandScrollEventHandlerFn();
+                    $window
+                        .bind(onDemandScrollEventStr, onDemandScrollEventHandlerFn)
+                        .trigger(onDemandScrollEventsArr[0]);
                 }else if(options.onDemandEvent === 'click'){
                     $oriImage.parent().bind(onDemandClickEventName, onDemandClickEventHandlerFn);
                 }else if(options.onDemandEvent === 'mouseenter'){
