@@ -7,7 +7,7 @@
     Version      : 2.3.0
     Repo         : https://github.com/pakcheong/jqthumb
     Demo         : http://pakcheong.github.io/jqthumb/
-    Last Updated : Tuesday, March 29th, 2016, 1:06:46 PM
+    Last Updated : Tuesday, March 29th, 2016, 2:08:08 PM
     Requirements : jQuery >=v1.3.0 or Zepto (with zepto-data plugin) >=v1.0.0
 */
 (function (factory) {
@@ -493,8 +493,8 @@
                     $this
                         .parent()
                             .css({ // set temporarily height
-                                'width'  : (options.width) ? options.width : $this.width(),
-                                'height' : (options.height) ? options.height : $this.height()
+                                'width'  : ((options.width) ? options.width + 'px' : $oriImage.width() + 'px'),
+                                'height' : ((options.height) ? options.height + 'px' : $oriImage.height() + 'px')
                             });
                     $window
                         .bind(onDemandScrollEventStr, onDemandScrollEventHandlerFn)
@@ -646,8 +646,8 @@
                     $oriImage
                         .parent()
                             .css({ // set temporarily height
-                                'width'  : (options.width) ? options.width : $oriImage.width(),
-                                'height' : (options.height) ? options.height : $oriImage.height()
+                                'width'  : ((options.width) ? options.width + 'px' : $oriImage.width() + 'px'),
+                                'height' : ((options.height) ? options.height + 'px' : $oriImage.height() + 'px')
                             });
                     $window
                         .bind(onDemandScrollEventStr, onDemandScrollEventHandlerFn)

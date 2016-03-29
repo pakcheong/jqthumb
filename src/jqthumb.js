@@ -481,8 +481,8 @@
                     $this
                         .parent()
                             .css({ // set temporarily height
-                                'width'  : (options.width) ? options.width : $this.width(),
-                                'height' : (options.height) ? options.height : $this.height()
+                                'width'  : ((options.width) ? options.width + 'px' : $oriImage.width() + 'px'),
+                                'height' : ((options.height) ? options.height + 'px' : $oriImage.height() + 'px')
                             });
                     $window
                         .bind(onDemandScrollEventStr, onDemandScrollEventHandlerFn)
@@ -634,8 +634,8 @@
                     $oriImage
                         .parent()
                             .css({ // set temporarily height
-                                'width'  : (options.width) ? options.width : $oriImage.width(),
-                                'height' : (options.height) ? options.height : $oriImage.height()
+                                'width'  : ((options.width) ? options.width + 'px' : $oriImage.width() + 'px'),
+                                'height' : ((options.height) ? options.height + 'px' : $oriImage.height() + 'px')
                             });
                     $window
                         .bind(onDemandScrollEventStr, onDemandScrollEventHandlerFn)

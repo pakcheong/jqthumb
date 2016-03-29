@@ -167,15 +167,3 @@ form .input{
         form .input button:last-child{
             margin-right: 1%;
         }
-
-.row.mg.screenshot-area > div:nth-child(1){ height: 314px; }
-.row.mg.screenshot-area > div:nth-child(2){ height: 171px; }
-.row.mg.screenshot-area > div:nth-child(3){ height: 171px; }
-.row.mg.screenshot-area > div:nth-child(4){ height: 315px; }
-.row.mg.screenshot-area > div:nth-child(5){ height: 315px; }
-.row.mg.screenshot-area > div:nth-child(6){ height: 315px; }
-.row.mg.screenshot-area > div:nth-child(7){ height: 172px; }
-.row.mg.screenshot-area > div:nth-child(8){ height: 142px; }
-
-.row.mg.screenshot-area > div > .plr{ height: 100%; }
-// .row.mg.screenshot-area > div > .plr > .frame{ height: 100%; }

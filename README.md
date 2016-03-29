@@ -37,8 +37,7 @@ Create thumbnails from images proportionally. On top of that, this is alaso a la
                 renderPosition      : 'before',           // available: "before" and "after".
                 onDemand            : false,              // TRUE = load image only when scolling position has reached the DOM
                 onDemandEvent       : 'scroll',           // available: "scroll", "click", "mouseenter". DEFAULT IS "scroll"
-                onDemandScrollCheck : 0,                  // used when "onDemand" is set to true
-                scrollCheck         : 0,                  // only works with "ondemand". Eg. Start loading the image 200px before scolling position reaches the DOM. DEFUALT IS 0
+                onDemandScrollCheck : 0,                  // used when "onDemand" is set to true AND "onDemandEvent" is set to "scroll". Eg. Start loading the image 200px before scolling position reaches the DOM. DEFUALT IS 0
                 responsive          : 20,                 // used by older browsers only. 0 to disable. DEFAULT IS 20
                 zoom                : 1,                  // zoom the output, 2 would double of the actual image size. DEFAULT IS 1
                 method              : 'auto',             // 3 methods available: "auto", "modern" and "native". DEFAULT IS auto
@@ -58,11 +57,11 @@ Create thumbnails from images proportionally. On top of that, this is alaso a la
 
             // kill command
             $('#kill').click(function(){
-                $('.example1').jqthumb('kill');
+                $('.your-dom').jqthumb('kill');
             });
 
             // kill all command
-            $('#kill').click(function(){
+            $('#destroy-all').click(function(){
                 $.jqthumb('killall');
             });
         });
@@ -107,7 +106,7 @@ $.fn.jqthumb.defaults = {
 
 ##OPTION REFERENCES
 
-####source
+#####source
 The image path attribute of the HTML tag. The source for `<img src="path/image.jpg" />` would be `src`.
 ```javascript
 $('img').jqthumb({
@@ -115,7 +114,7 @@ $('img').jqthumb({
 });
 ```
 
-####classname
+#####classname
 The class name of the generated thumbnail. This is useful when you want to attach extra stylings to the thumbnail.
 ```javascript
 $('img').jqthumb({
@@ -123,7 +122,7 @@ $('img').jqthumb({
 });
 ```
 
-####width & height
+#####width & height
 The width of the generated thumbnail. This accepts both integer and string data types. Integer input would mean the width of the thumbnail is in pixel rather than percentage and vice versa. **Note: if you define width and/or height in percentage, make sure you have a container with width and/or height defined in pixels.**
 ```javascript
 $('img').jqthumb({
@@ -132,7 +131,7 @@ $('img').jqthumb({
 });
 ```
 
-####position
+#####position
 This has to be defined as an object with **x** and **y** as its keys. **y** would be used to adjust the top-bottom position of the thumbnail and **x** adjusts left and right. **Note: both position.x and position.y must be within the range of the defined `width` and `height` respectively. If you are defining `position.x` and/or `position.y` in percenrage values instead, make sure it is within 0 to 100%**
 ```javascript
 $('img').jqthumb({
@@ -143,7 +142,7 @@ $('img').jqthumb({
 });
 ```
 
-####show
+#####show
 Whether to show the thumbnail right after processing.
 ```javascript
 $('img').jqthumb({
@@ -151,7 +150,7 @@ $('img').jqthumb({
 });
 ```
 
-####renderPosition
+#####renderPosition
 Render image whether before or after the selected DOM.
 ```javascript
 $('img').jqthumb({
@@ -159,8 +158,12 @@ $('img').jqthumb({
 });
 ```
 
-####onDemand
-Asign an event to tell when to load the images. For eg. setting the event to "scroll" is a common action as you might want to load the images only when its DOM is within the viewport. Therefore, images will not start loading/processing until the scrolling position has reached the DOM. This is good when you have a lot of images on the page but user doesn't actually look through the entire site, so no point loading all at once.
+#####onDemand / onDemandEvent / onDemandScrollCheck
+Asign an event to tell when to load the images. For eg., setting the event to "scroll" is a common action as you might want to load the images only when its DOM is within the viewport. Therefore, images will not start loading/processing until the scrolling position has reached the DOM. This is good when you have a lot of images on the page but user doesn't actually look through the entire site, so no point loading all at once.
+
+`onDemandScrollCheck`: Used only when `onDemand` is enabled AND `onDemandEvent` is set to "scroll". The scroll event will be triggered once the scrolling position has reached the DOM. For eg., you might want to load the images without users knowing it, so you will need to set `onDemandScrollCheck` to maybe "200" which means images will start loading 200PX before (all directions including top, left, bottom, right) before scrolling position reaches the DOM.
+
+`onDemandEvent`: has three possible inputs, "scroll", "click" and "mouseenter". Clicking and mouse hovering events mean that the images will only start loading when selected event is being triggered. For eg., setting `onDemandEvent` to "mouseenter" will lead image to start loading when users move the mouse cursor over it.
 ```javascript
 $('img').jqthumb({
     onDemand            : true,     // DEFAULT: false
@@ -169,7 +172,7 @@ $('img').jqthumb({
 });
 ```
 
-####responsive
+#####responsive
 This is only needed by browsers that don't support CSS3. To accomplish responsive effect on older browsers, this plugin needs to do a re-calculation when `$(window).resize()` event is fired. The higher the number is the slower thumbnail gets re-calculated. 0 (zero) disables responsive feature in older browsers. **`modern` method does not support disabling responsive feature, use `method :"native"` would disable it.**
 ```javascript
 /* responsive only works for native method / older browsers */
@@ -184,7 +187,7 @@ $('img').jqthumb({
 });
 ```
 
-####zoom
+#####zoom
 To zoom-in and out the thumbnail.
 ```javascript
 $('img').jqthumb({
@@ -192,7 +195,7 @@ $('img').jqthumb({
 });
 ```
 
-####method
+#####method
 This plugin was built in two methods which one is for browsers that support CSS3 and another one is a native method that is fully done in mathematical calculation and it's for older browsers like IE6+ and browsers that don't support CSS3. Either one would have an identical result. In some cases, you might want to change the method to test or whatever. By default, the plugin detects your browsers compatability and assign method accordingly.
 ```javascript
 $('img').jqthumb({
@@ -200,7 +203,7 @@ $('img').jqthumb({
 });
 ```
 
-####reinit
+#####reinit
 This lets the plugin know what to do when an image is intialized for the second time. By default, reinitiallization is enabled and the image will be killed and re-rendered. If set to `false`, nothing would happen.
 ```javascript
 $('img').jqthumb({
@@ -208,7 +211,7 @@ $('img').jqthumb({
 });
 ```
 
-####before
+#####before
 This is a callback function which will be called right before calculation started. This function returns the original image source/object as its parameter. If you initialize the plugins with multiple-objects classname then this would be called for multiple times.
 ```javascript
 $('img').jqthumb({
@@ -218,7 +221,7 @@ $('img').jqthumb({
 });
 ```
 
-####after
+#####after
 This is a callback function which will be called after everything is finished. This function returns the new generated thumbnail object as its parameter. If you initialize the plugin with multiple-objects classname then this would be called for multiple times.
 ```javascript
 $('img').jqthumb({
@@ -228,7 +231,7 @@ $('img').jqthumb({
 });
 ```
 
-####done
+#####done
 This is a callback function which will be called when all objects have finished processing in a single plugin initialization. This returns an array type parameter that contains the object of all generated thumbnails.
 ```javascript
 $('img').jqthumb({
@@ -245,32 +248,25 @@ $('img').jqthumb('kill'); // destroy the plugin
 $.jqthumb('killall');     // destroy all generated thumbnails on the page
 ```
 
-##TESTED BROWSERS
-1. Google Chrome
-2. Mozilla Firefox
-3. Safari
-4. Internet Explorer 6, 7, 8, 9 and 10
-
-
 ##SEO IMPACT
-You might be worried the SEO impact if you were to use this plugin as changing `<img src="http://example.com/picture.jpg"/>` to `<img attr-src="http://example.com/picture.jpg"/>` would probably cause search engines not being able to crawl the images. But there's a trick:
+You might be worried the SEO impact if you were to use this plugin. Maybe thought that changing `<img src="http://example.com/picture.jpg"/>` to `<img attr-src="http://example.com/picture.jpg"/>` would probably cause search engines not being able to crawl the images. Yes, it's right but not completely. You can always your `<noscript><img src="http://example.com/picture.jpg"/></noscript>` to output the image for search engines. Here are two examples:
 ```html
 ...
-<div attr-src="http://example.com/picture.jpg"></div>
+<img attr-src="http://example.com/picture.jpg" />
 <noscript>
     <img src="http://example.com/picture.jpg" />
 </noscript>
 ...
 <script type="text/javascript">
     $(function(){
-        $('div[attr-src]').jqthumb({
+        $('img[attr-src]').jqthumb({
             width  : 300,
             height : 200
         });
     });
 </script>
 ```
-Or something like this:
+Or a simplified version:
 ```html
 ...
 <noscript attr-src="http://example.com/picture.jpg">
@@ -287,6 +283,11 @@ Or something like this:
 </script>
 ```
 
+##TESTED BROWSERS
+1. Google Chrome
+2. Mozilla Firefox
+3. Safari
+4. Internet Explorer 6, 7, 8, 9 and 10
 
 ##EVEN MORE SAMPLE USAGE
 ```html
