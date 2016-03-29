@@ -123,7 +123,7 @@ $('img').jqthumb({
 ```
 
 #####width & height
-The width of the generated thumbnail. This accepts both integer and string data types. Integer input would mean the width of the thumbnail is in pixel rather than percentage and vice versa. **Note: if you define width and/or height in percentage, make sure you have a container with width and/or height defined in pixels.**
+The width of the generated thumbnail. This accepts both integer and string data types. Integer input would mean the width of the thumbnail is in pixel rather than percentage and vice versa. You may also set both to `auto` which means you're defining the ouput same as the actual resolution of the file. **Note: if you define width and/or height in percentage, make sure you have a container with width and/or height defined in pixels.**
 ```javascript
 $('img').jqthumb({
     width  : 200,   // DEFAULT: 100

@@ -12,8 +12,18 @@ $(function(){
 
         $('#demo').jqthumb({
             classname           : 'jqthumb',
-            width               : $('#width').val() + $('#width-type').val(),
-            height              : $('#height').val() + $('#height-type').val(),
+            width               : (function(){
+                                        if($('#width-type').val() === 'auto'){
+                                            return $('#width-type').val();
+                                        }
+                                        return $('#width').val() + $('#width-type').val();
+                                    })(),
+            height               : (function(){
+                                        if($('#height-type').val() === 'auto'){
+                                            return $('#height-type').val();
+                                        }
+                                        return $('#height').val() + $('#height-type').val();
+                                    })(),
             position            : { y: $('#y').val() + $('#y-type').val(), x: $('#x').val() + $('#x-type').val() },
             zoom                : $('#zoom').val(),
             renderPosition      : $('#renderPosition').val(),
@@ -29,6 +39,8 @@ $(function(){
                         'width' : $(objs[0]).css('width'),
                         'overflow' : 'visible'
                     });
+                }else if($('#width-type').val() == 'px'){
+                    $('#demo').parent().parent().css('width', 'auto');
                 }else{
                     $('#demo').parent().parent().css('width', 'auto');
                 }
@@ -40,13 +52,31 @@ $(function(){
                         'height' : $(objs[0]).height(),
                         'overflow' : 'visible'
                     });
-                }else{
+                }else if($('#height-type').val() == 'px'){
                     $('#playground').find('.span6').eq(1).css('height', 'auto');
                     $('#playground').find('.span6').eq(1).find('.frame .frame-pad').css('height', 'auto');
                     $('#demo').parent().parent().css('height', 'auto');
+                }else{
+                    $('#demo').parent().parent().css('width', 'auto');
                 }
             }
         });
+    });
+
+    $('#height-type').change(function(){
+        if($('#height-type').val() === 'auto'){
+            $('#height').attr('disabled', 'disabled');
+        }else{
+            $('#height').removeAttr('disabled');
+        }
+    });
+
+    $('#width-type').change(function(){
+        if($('#width-type').val() === 'auto'){
+            $('#width').attr('disabled', 'disabled');
+        }else{
+            $('#width').removeAttr('disabled');
+        }
     });
 
     $('#ondemand').change(function(){
@@ -202,6 +232,7 @@ $(function(){
         renderPosition      : 'after',
         onDemand            : true,
         onDemandScrollCheck : 0,
+        debug: true,
         before              : function(oriImage){},
         after               : function(imgObj){
             fadeIn($(imgObj));

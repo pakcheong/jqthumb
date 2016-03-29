@@ -7,7 +7,7 @@
     Version      : 2.3.0
     Repo         : https://github.com/pakcheong/jqthumb
     Demo         : http://pakcheong.github.io/jqthumb/
-    Last Updated : Tuesday, March 29th, 2016, 2:08:08 PM
+    Last Updated : Tuesday, March 29th, 2016, 7:43:24 PM
     Requirements : jQuery >=v1.3.0 or Zepto (with zepto-data plugin) >=v1.0.0
 */
 (function (factory) {
@@ -45,6 +45,10 @@
     }
 
     function strToNum(str){
+        str = $.trim(str.toString());
+        if(str.toLowerCase() === 'auto'){
+            return str;
+        }
         return Number(str.replace(/[^\d.-]/g, ''));
     }
 
@@ -83,6 +87,7 @@
                     break;
             }
         }
+        return '';
     }
 
     var css3Supported = (function(){
@@ -107,12 +112,36 @@
         };
     })();
 
+    /*
+        Zepto does not come with $.fn.outerWidth() & $.fn.outerHeight()
+        code: https://gist.github.com/pamelafox/1379704
+    */
+    ['width', 'height'].forEach(function(dimension) {
+        var offset, Dimension = dimension.replace(/./, function(m) { return m[0].toUpperCase(); });
+        if (!$.fn['outer' + Dimension]) {
+            $.fn['outer' + Dimension] = function(margin) {
+                var elem = this;
+                if (elem) {
+                    var size = elem[dimension]();
+                    var sides = { 'width': ['left', 'right'], 'height': ['top', 'bottom'] };
+                    sides[dimension].forEach(function(side) {
+                        if (margin) size += parseInt(elem.css('margin-' + side), 10);
+                    });
+                    return size;
+                } else {
+                    return null;
+                }
+            };
+        }
+    });
+
     var checkPositionReach = function($elem, scrollCheck){
         var $win     = $(window),
             bounds   = $elem.offset(),
             viewport = {
                             top  : $win.scrollTop(),
-                            left : $win.scrollLeft()
+                            // left : $win.scrollLeft() // Zepto does not support this
+                            left : window.scrollX
                         };
         viewport.right  = viewport.left + $win.width();
         viewport.bottom = viewport.top + $win.height();
@@ -171,10 +200,17 @@
         this.settings.onDemandScrollCheck = this.settings.onDemandScrollCheck.toString().replace(/px/gi, '');
         this.settings.width               = this.settings.width.toString().replace(/px/gi, '');
         this.settings.height              = this.settings.height.toString().replace(/px/gi, '');
+        if(!this.settings.width){
+            options.width = defaults.width;
+            this.settings.width = defaults.width;
+        }
+        if(!this.settings.height){
+            options.height = defaults.height;
+            this.settings.height = defaults.height;
+        }
         this.settings.position.y          = validateXYperc(this.settings.position.y, this.settings.width);
         this.settings.position.x          = validateXYperc(this.settings.position.x, this.settings.height);
         this.settings.zoom                = (this.settings.zoom < 0) ? 0 : this.settings.zoom;
-
         if(typeof options == 'string'){
             if(options.toLowerCase() == 'kill'){
                 this.kill(this.element);
@@ -294,10 +330,17 @@
             options.before.apply(_this, [_this]);
 
             function loadImg($this, imgUrl, cb){
-                var $tempImg = $('<img/>');
-                $tempImg.bind('load', function(){
+                var img = new Image();
+                img.onload = function(){
+                    var jsTempImg = this;
+                    if($.trim(options.width.toString().toLowerCase()) === 'auto'){
+                        options.width = jsTempImg.width.toString();
+                    }
+                    if($.trim(options.height.toString().toLowerCase()) === 'auto'){
+                        options.height = jsTempImg.height.toString();
+                    }
                     var newImg        = {
-                                            obj: $tempImg,
+                                            obj: jsTempImg,
                                             size: {
                                                 width  : this.width,
                                                 height : this.height
@@ -422,8 +465,8 @@
                         .css({
                             'position' : 'relative',
                             'overflow' : 'hidden',
-                            'width'    : strToNum(options.width) + getMeasurement(options.width),
-                            'height'   : strToNum(options.height) + getMeasurement(options.height)
+                            'width'    : strToNum(options.width) + (getMeasurement(options.width) ? getMeasurement(options.width) : 'px'),
+                            'height'   : strToNum(options.height) + (getMeasurement(options.height) ? getMeasurement(options.height) : 'px')
                         })
                         .data(pluginName, pluginName); // it would be easy to kill later
 
@@ -445,8 +488,8 @@
                     if (typeof cb === 'function'){
                         cb($imgContainer);
                     }
-
-                }).attr('src', $this.attr(options.source)); // for older browsers, must bind events first then set attr later (IE7, IE8)
+                };
+                img.src = imgUrl;
             }
 
             var that   = this,
@@ -490,11 +533,12 @@
             if(options.onDemand === true){
                 if(options.onDemandEvent === 'scroll'){
                     $this.wrap('<div />'); // add temporary tag to get its offset().top
+
                     $this
                         .parent()
                             .css({ // set temporarily height
-                                'width'  : ((options.width) ? options.width + 'px' : $oriImage.width() + 'px'),
-                                'height' : ((options.height) ? options.height + 'px' : $oriImage.height() + 'px')
+                                'width' : ((options.width) ? strToNum(options.width) + getMeasurement(options.width) : $this.width() + 'px'),
+                                'height' : ((options.height) ? strToNum(options.height) + getMeasurement(options.height) : $this.height() + 'px')
                             });
                     $window
                         .bind(onDemandScrollEventStr, onDemandScrollEventHandlerFn)
@@ -514,89 +558,91 @@
 
         modern: function (_this, options) {
 
-            function loadImg($oriImage, imgUrl, cb, debug){
+            function loadImg($oriImage, imgUrl, cb){
+                var img = new Image();
+                img.onload = function(){
+                    var jsTempImg = this;
+                    if($.trim(options.width.toString().toLowerCase()) === 'auto'){
+                        options.width = jsTempImg.width.toString();
+                    }
+                    if($.trim(options.height.toString().toLowerCase()) === 'auto'){
+                        options.height = jsTempImg.height.toString();
+                    }
 
-                $tempImg = $('<img />').attr('src', imgUrl);
+                    var optW                    = (options.width) ? options.width : $oriImage.width().toString(),
+                        optH                    = (options.height) ? options.height : $oriImage.height().toString(),
+                        optZ                    = options.zoom,
+                        optPosX                 = options.position.x,
+                        optPosY                 = options.position.y,
+                        $featuredBgImgContainer = null,
+                        $featuredBgImg          = null;
 
-                $.each($tempImg, function(index, obj){
-                    var $tempImg = $(obj);
+                    $featuredBgImgContainer = $('<div/>')
+                                                .css({
+                                                    'width'    : strToNum(optW) + getMeasurement(optW),
+                                                    'height'   : strToNum(optH) + getMeasurement(optH),
+                                                    'display'  : 'none',
+                                                    'position' : 'relative',
+                                                    'overflow' : 'hidden'
+                                                })
+                                                .addClass(options.classname)
+                                                .data(pluginName, pluginName); // it would be easy to kill later
 
-                    $tempImg.one('load', function() {
+                    $featuredBgImg = $('<div/>')
+                                        .css({
+                                            'width'              : '100%',
+                                            'height'             : '100%',
+                                            'background-image'   : 'url("' + imgUrl + '")',
+                                            // '-ms-filter'         : '"progid:DXImageTransform.Microsoft.AlphaImageLoader(src="' + $oriImage.attr(options.source) + '",sizingMethod="scale")', // this does not work in Zepto
+                                            'background-repeat'  : 'no-repeat',
+                                            'background-position': strToNum(optPosX) + getMeasurement(optPosX) + ' ' + strToNum(optPosY) + getMeasurement(optPosY),
+                                            'background-size'    : 'cover'
+                                        })
+                                        .appendTo($featuredBgImgContainer);
 
-                        var optW                    = options.width,
-                            optH                    = options.height,
-                            optZ                    = options.zoom,
-                            optPosX                 = options.position.x,
-                            optPosY                 = options.position.y,
-                            $featuredBgImgContainer = null,
-                            $featuredBgImg          = null;
+                    if(options.renderPosition.toLowerCase() === 'after'){
+                        $featuredBgImgContainer.insertAfter($oriImage);
+                    }else{
+                        $featuredBgImgContainer.insertBefore($oriImage);
+                    }
 
-                        $featuredBgImgContainer = $('<div/>')
-                                                    .css({
-                                                        'width'    : strToNum(optW) + getMeasurement(optW),
-                                                        'height'   : strToNum(optH) + getMeasurement(optH),
-                                                        'display'  : 'none',
-                                                        'position' : 'relative',
-                                                        'overflow' : 'hidden'
-                                                    })
-                                                    .addClass(options.classname)
-                                                    .data(pluginName, pluginName); // it would be easy to kill later
+                    $featuredBgImgContainer.show(); // must show to get resolution
+                    $featuredBgImg
+                        .css({
+                            'width'    : parseFloat(100 * optZ) + '%',
+                            'height'   : parseFloat(100 * optZ) + '%',
+                            'position' : 'absolute'
+                        })
+                        .css({ // cannot combine css() as width and height have to be defined before doing calculation
+                            'top'      : (function(){
+                                // (cH - pH) / pH * 100 / percentage
+                                var cH = $featuredBgImgContainer.height(),
+                                    pH = $featuredBgImg.height();
+                                if(getMeasurement(optPosY) == '%'){
+                                    return '-' + parseFloat((pH - cH) / cH * 100 / (100 / strToNum(optPosY) ) ) + '%';
+                                }
+                            })(),
+                            'left'     : (function(){
+                                // (cW - pW) / cW * 100 / percentage
+                                var cW = $featuredBgImgContainer.width(),
+                                    pW = $featuredBgImg.width();
+                                if(getMeasurement(optPosX) == '%'){
+                                    return '-' + parseFloat((pW - cW) / cW * 100 / (100 / strToNum(optPosX) ) ) + '%';
+                                }
+                            })()
+                        });
 
-                        $featuredBgImg = $('<div/>')
-                                            .css({
-                                                'width'              : '100%',
-                                                'height'             : '100%',
-                                                'background-image'   : 'url("' + imgUrl + '")',
-                                                // '-ms-filter'         : '"progid:DXImageTransform.Microsoft.AlphaImageLoader(src="' + $oriImage.attr(options.source) + '",sizingMethod="scale")', // this does not work in Zepto
-                                                'background-repeat'  : 'no-repeat',
-                                                'background-position': strToNum(optPosX) + getMeasurement(optPosX) + ' ' + strToNum(optPosY) + getMeasurement(optPosY),
-                                                'background-size'    : 'cover'
-                                            })
-                                            .appendTo($featuredBgImgContainer);
+                    $featuredBgImgContainer.hide();
 
-                        if(options.renderPosition.toLowerCase() === 'after'){
-                            $featuredBgImgContainer.insertAfter($oriImage);
-                        }else{
-                            $featuredBgImgContainer.insertBefore($oriImage);
-                        }
+                    if(options.show === true){
+                        $featuredBgImgContainer.show();
+                    }
 
-                        $featuredBgImgContainer.show(); // must show to get resolution
-                        $featuredBgImg
-                            .css({
-                                'width'    : parseFloat(100 * optZ) + '%',
-                                'height'   : parseFloat(100 * optZ) + '%',
-                                'position' : 'absolute'
-                            })
-                            .css({ // cannot combine css() as width and height have to be defined before doing calculation
-                                'top'      : (function(){
-                                    // (cH - pH) / pH * 100 / percentage
-                                    var cH = $featuredBgImgContainer.height(),
-                                        pH = $featuredBgImg.height();
-                                    if(getMeasurement(optPosY) == '%'){
-                                        return '-' + parseFloat((pH - cH) / cH * 100 / (100 / strToNum(optPosY) ) ) + '%';
-                                    }
-                                })(),
-                                'left'     : (function(){
-                                    // (cW - pW) / cW * 100 / percentage
-                                    var cW = $featuredBgImgContainer.width(),
-                                        pW = $featuredBgImg.width();
-                                    if(getMeasurement(optPosX) == '%'){
-                                        return '-' + parseFloat((pW - cW) / cW * 100 / (100 / strToNum(optPosX) ) ) + '%';
-                                    }
-                                })()
-                            });
-
-                        $featuredBgImgContainer.hide();
-
-                        if(options.show === true){
-                            $featuredBgImgContainer.show();
-                        }
-
-                        if (typeof cb === 'function'){
-                            cb($featuredBgImgContainer);
-                        }
-                    });
-                });
+                    if (typeof cb === 'function'){
+                        cb($featuredBgImgContainer);
+                    }
+                };
+                img.src = imgUrl;
             }
 
             options.before.apply(_this, [_this]);
@@ -646,8 +692,8 @@
                     $oriImage
                         .parent()
                             .css({ // set temporarily height
-                                'width'  : ((options.width) ? options.width + 'px' : $oriImage.width() + 'px'),
-                                'height' : ((options.height) ? options.height + 'px' : $oriImage.height() + 'px')
+                                'width' : ((options.width) ? strToNum(options.width) + getMeasurement(options.width) : $oriImage.width() + 'px'),
+                                'height' : ((options.height) ? strToNum(options.height) + getMeasurement(options.height) : $oriImage.height() + 'px')
                             });
                     $window
                         .bind(onDemandScrollEventStr, onDemandScrollEventHandlerFn)
