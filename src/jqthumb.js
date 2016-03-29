@@ -107,13 +107,15 @@
     ['width', 'height'].forEach(function(dimension) {
         var offset, Dimension = dimension.replace(/./, function(m) { return m[0].toUpperCase(); });
         if (!$.fn['outer' + Dimension]) {
-            $.fn['outer' + Dimension] = function(margin) {
+            $.fn['outer' + Dimension] = function() {
                 var elem = this;
                 if (elem) {
                     var size = elem[dimension]();
                     var sides = { 'width': ['left', 'right'], 'height': ['top', 'bottom'] };
                     sides[dimension].forEach(function(side) {
-                        if (margin) size += parseInt(elem.css('margin-' + side), 10);
+                        size += parseInt(elem.css('margin-' + side), 10);
+                        size += parseInt(elem.css('padding-' + side), 10);
+                        size += parseInt(elem.css('border-' + side + '-width'), 10);
                     });
                     return size;
                 } else {
@@ -530,7 +532,7 @@
                             });
                     $window
                         .bind(onDemandScrollEventStr, onDemandScrollEventHandlerFn)
-                        .trigger(onDemandScrollEventsArr[0]);
+                        .triggerHandler(onDemandScrollEventsArr[0]);
                 }else if(options.onDemandEvent === 'click'){
                     $this.parent().bind(onDemandClickEventName, onDemandClickEventHandlerFn);
                 }else if(options.onDemandEvent === 'mouseenter'){
@@ -685,7 +687,7 @@
                             });
                     $window
                         .bind(onDemandScrollEventStr, onDemandScrollEventHandlerFn)
-                        .trigger(onDemandScrollEventsArr[0]);
+                        .triggerHandler(onDemandScrollEventsArr[0]);
                 }else if(options.onDemandEvent === 'click'){
                     $oriImage.parent().bind(onDemandClickEventName, onDemandClickEventHandlerFn);
                 }else if(options.onDemandEvent === 'mouseenter'){

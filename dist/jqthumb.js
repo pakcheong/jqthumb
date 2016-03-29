@@ -7,7 +7,7 @@
     Version      : 2.3.0
     Repo         : https://github.com/pakcheong/jqthumb
     Demo         : http://pakcheong.github.io/jqthumb/
-    Last Updated : Tuesday, March 29th, 2016, 7:43:24 PM
+    Last Updated : Tuesday, March 29th, 2016, 9:29:56 PM
     Requirements : jQuery >=v1.3.0 or Zepto (with zepto-data plugin) >=v1.0.0
 */
 (function (factory) {
@@ -119,13 +119,15 @@
     ['width', 'height'].forEach(function(dimension) {
         var offset, Dimension = dimension.replace(/./, function(m) { return m[0].toUpperCase(); });
         if (!$.fn['outer' + Dimension]) {
-            $.fn['outer' + Dimension] = function(margin) {
+            $.fn['outer' + Dimension] = function() {
                 var elem = this;
                 if (elem) {
                     var size = elem[dimension]();
                     var sides = { 'width': ['left', 'right'], 'height': ['top', 'bottom'] };
                     sides[dimension].forEach(function(side) {
-                        if (margin) size += parseInt(elem.css('margin-' + side), 10);
+                        size += parseInt(elem.css('margin-' + side), 10);
+                        size += parseInt(elem.css('padding-' + side), 10);
+                        size += parseInt(elem.css('border-' + side + '-width'), 10);
                     });
                     return size;
                 } else {
@@ -542,7 +544,7 @@
                             });
                     $window
                         .bind(onDemandScrollEventStr, onDemandScrollEventHandlerFn)
-                        .trigger(onDemandScrollEventsArr[0]);
+                        .triggerHandler(onDemandScrollEventsArr[0]);
                 }else if(options.onDemandEvent === 'click'){
                     $this.parent().bind(onDemandClickEventName, onDemandClickEventHandlerFn);
                 }else if(options.onDemandEvent === 'mouseenter'){
@@ -697,7 +699,7 @@
                             });
                     $window
                         .bind(onDemandScrollEventStr, onDemandScrollEventHandlerFn)
-                        .trigger(onDemandScrollEventsArr[0]);
+                        .triggerHandler(onDemandScrollEventsArr[0]);
                 }else if(options.onDemandEvent === 'click'){
                     $oriImage.parent().bind(onDemandClickEventName, onDemandClickEventHandlerFn);
                 }else if(options.onDemandEvent === 'mouseenter'){
