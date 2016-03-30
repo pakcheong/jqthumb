@@ -22,6 +22,7 @@
         "backgroundsize",
         "cover",
         "lazy-load",
+        "image-loader",
         "cropper",
         "image-cropper",
         "seo-friendly"
