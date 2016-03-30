@@ -311,8 +311,36 @@ module.exports = function(grunt) {
         }
     });
 
+    grunt.registerTask('check-license-date', '', function(){
+        var filePath = 'LICENSE.txt',
+            data     = grunt.file.read(filePath).toString(),
+            lineArr  = data.split('\n'),
+            year     = grunt.template.today("yyyy"),
+            newData  = '';
+
+        if(!data.indexOf(year) > -1){
+            lineArr[0] = 'Copyright (c) 2014-' + year + ' ' + pkg.author;
+            newData = lineArr.join('\n');
+            if(newData.length > 0){
+                grunt.file.write(filePath, newData, 'utf8');
+            }
+        }
+    });
+
     grunt.registerTask('dev', ['jshint', 'concat', 'uglify', 'copy', 'replace']);
-    grunt.registerTask('default', ['jshint', 'concat', 'uglify', 'copy', 'replace', 'update-readme', 'check-changelog', 'check-bowerjson', 'check-jqueryjson', 'screenshot-element']);
+    grunt.registerTask('default', [
+        'jshint', 
+        'concat', 
+        'uglify', 
+        'copy', 
+        'replace', 
+        'update-readme', 
+        'check-changelog', 
+        'check-bowerjson', 
+        'check-jqueryjson', 
+        'check-license-date', 
+        'screenshot-element'
+    ]);
 
     /*
     GRUNT BUMP EXAMPLES:

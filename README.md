@@ -106,7 +106,7 @@ $.fn.jqthumb.defaults = {
 
 ##OPTION REFERENCES
 
-#####source
+####source
 The image path attribute of the HTML tag. The source for `<img src="path/image.jpg" />` would be `src`.
 ```javascript
 $('img').jqthumb({
@@ -114,7 +114,7 @@ $('img').jqthumb({
 });
 ```
 
-#####classname
+####classname
 The class name of the generated thumbnail. This is useful when you want to attach extra stylings to the thumbnail.
 ```javascript
 $('img').jqthumb({
@@ -122,7 +122,7 @@ $('img').jqthumb({
 });
 ```
 
-#####width & height
+####width & height
 The width of the generated thumbnail. This accepts both integer and string data types. Integer input would mean the width of the thumbnail is in pixel rather than percentage and vice versa. You may also set both to `auto` which means you're defining the ouput same as the actual resolution of the file. **Note: if you define width and/or height in percentage, make sure you have a container with width and/or height defined in pixels.**
 ```javascript
 $('img').jqthumb({
@@ -131,7 +131,7 @@ $('img').jqthumb({
 });
 ```
 
-#####position
+####position
 This has to be defined as an object with **x** and **y** as its keys. **y** would be used to adjust the top-bottom position of the thumbnail and **x** adjusts left and right. **Note: both position.x and position.y must be within the range of the defined `width` and `height` respectively. If you are defining `position.x` and/or `position.y` in percenrage values instead, make sure it is within 0 to 100%**
 ```javascript
 $('img').jqthumb({
@@ -142,7 +142,7 @@ $('img').jqthumb({
 });
 ```
 
-#####show
+####show
 Whether to show the thumbnail right after processing.
 ```javascript
 $('img').jqthumb({
@@ -150,7 +150,7 @@ $('img').jqthumb({
 });
 ```
 
-#####renderPosition
+####renderPosition
 Render image whether before or after the selected DOM.
 ```javascript
 $('img').jqthumb({
@@ -158,7 +158,7 @@ $('img').jqthumb({
 });
 ```
 
-#####onDemand / onDemandEvent / onDemandScrollCheck
+####onDemand / onDemandEvent / onDemandScrollCheck
 Asign an event to tell when to load the images. For eg., setting the event to "scroll" is a common action as you might want to load the images only when its DOM is within the viewport. Therefore, images will not start loading/processing until the scrolling position has reached the DOM. This is good when you have a lot of images on the page but user doesn't actually look through the entire site, so no point loading all at once.
 
 `onDemandScrollCheck`: Used only when `onDemand` is enabled AND `onDemandEvent` is set to "scroll". The scroll event will be triggered once the scrolling position has reached the DOM. For eg., you might want to load the images without users knowing it, so you will need to set `onDemandScrollCheck` to maybe "200" which means images will start loading 200PX before (all directions including top, left, bottom, right) before scrolling position reaches the DOM.
@@ -172,7 +172,7 @@ $('img').jqthumb({
 });
 ```
 
-#####responsive
+####responsive
 This is only needed by browsers that don't support CSS3. To accomplish responsive effect on older browsers, this plugin needs to do a re-calculation when `$(window).resize()` event is fired. The higher the number is the slower thumbnail gets re-calculated. 0 (zero) disables responsive feature in older browsers. **`modern` method does not support disabling responsive feature, use `method :"native"` would disable it.**
 ```javascript
 /* responsive only works for native method / older browsers */
@@ -187,7 +187,7 @@ $('img').jqthumb({
 });
 ```
 
-#####zoom
+####zoom
 To zoom-in and out the thumbnail.
 ```javascript
 $('img').jqthumb({
@@ -195,7 +195,7 @@ $('img').jqthumb({
 });
 ```
 
-#####method
+####method
 This plugin was built in two methods which one is for browsers that support CSS3 and another one is a native method that is fully done in mathematical calculation and it's for older browsers like IE6+ and browsers that don't support CSS3. Either one would have an identical result. In some cases, you might want to change the method to test or whatever. By default, the plugin detects your browsers compatability and assign method accordingly.
 ```javascript
 $('img').jqthumb({
@@ -203,7 +203,7 @@ $('img').jqthumb({
 });
 ```
 
-#####reinit
+####reinit
 This lets the plugin know what to do when an image is intialized for the second time. By default, reinitiallization is enabled and the image will be killed and re-rendered. If set to `false`, nothing would happen.
 ```javascript
 $('img').jqthumb({
@@ -211,7 +211,7 @@ $('img').jqthumb({
 });
 ```
 
-#####before
+####before
 This is a callback function which will be called right before calculation started. This function returns the original image source/object as its parameter. If you initialize the plugins with multiple-objects classname then this would be called for multiple times.
 ```javascript
 $('img').jqthumb({
@@ -221,7 +221,7 @@ $('img').jqthumb({
 });
 ```
 
-#####after
+####after
 This is a callback function which will be called after everything is finished. This function returns the new generated thumbnail object as its parameter. If you initialize the plugin with multiple-objects classname then this would be called for multiple times.
 ```javascript
 $('img').jqthumb({
@@ -231,7 +231,7 @@ $('img').jqthumb({
 });
 ```
 
-#####done
+####done
 This is a callback function which will be called when all objects have finished processing in a single plugin initialization. This returns an array type parameter that contains the object of all generated thumbnails.
 ```javascript
 $('img').jqthumb({
@@ -252,14 +252,14 @@ $.jqthumb('killall');     // destroy all generated thumbnails on the page
 You might be worried the SEO impact if you were to use this plugin. Maybe thought that changing `<img src="http://example.com/picture.jpg"/>` to `<img attr-src="http://example.com/picture.jpg"/>` would probably cause search engines not being able to crawl the images. Yes, it's right but not completely. You can always your `<noscript><img src="http://example.com/picture.jpg"/></noscript>` to output the image for search engines. Here are two examples:
 ```html
 ...
-<img attr-src="http://example.com/picture.jpg" />
+<img class="example" attr-src="http://example.com/picture.jpg" />
 <noscript>
     <img src="http://example.com/picture.jpg" />
 </noscript>
 ...
 <script type="text/javascript">
     $(function(){
-        $('img[attr-src]').jqthumb({
+        $('.example[attr-src]').jqthumb({
             width  : 300,
             height : 200
         });

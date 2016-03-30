@@ -20,7 +20,11 @@
         "full-width",
         "background-size",
         "backgroundsize",
-        "cover"
+        "cover",
+        "lazy-load",
+        "cropper",
+        "image-cropper",
+        "seo-friendly"
     ],
     "version": "2.3.0",
     "author": {
