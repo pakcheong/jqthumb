@@ -246,7 +246,7 @@ Change Log:
 1. Change bower name
 
 
-# V2.3.0 (Tuesday, March 29th, 2016, 9:29:57 PM)
+# V2.3.0 (Wednesday, March 30th, 2016, 10:54:16 AM)
 ===================================================
 1. Add "ondemand" feature. (Load the image when scolling position has reached to the DOM)
 2. Add "renderPosition" to render image whether before or after the DOM.
@@ -257,3 +257,5 @@ Change Log:
 7. Default options can now be modified by changing values in $.fn.jqthumb.defaults
 8. Fix AMD codes.
 9. width and height options are now support "auto" (actual resolution of the image)
+10. add MIT license file
+11. update keywords and lincese in package.json, jqthumb.jquery.json

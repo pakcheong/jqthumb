@@ -8,11 +8,11 @@ module.exports = function(grunt) {
             banner: '/*!'+
                         '\n    <%= pkg.name %> V<%= pkg.version %>' +
                         '\n    Copyright (c) 2013-<%= grunt.template.today("yyyy") %>' +
-                        '\n    Dual licensed under the MIT and GPL licenses.' +
+                        '\n    Released under the MIT license.' +
                         '\n' +
                         '\n    Author       : <%= pkg.author %>' +
                         '\n    Version      : <%= pkg.version %>' +
-                        '\n    Repo         : <%= pkg.repo %>' +
+                        '\n    Repo         : <%= pkg.repository.url %>' +
                         '\n    Demo         : <%= pkg.demo %>' +
                         '\n    Last Updated : <%= grunt.template.today("dddd, mmmm dS, yyyy, h:MM:ss TT") %>' +
                         '\n    Requirements : jQuery >=v1.3.0 or Zepto (with zepto-data plugin) >=v1.0.0' +
@@ -177,14 +177,13 @@ module.exports = function(grunt) {
 
                                         if(data.indexOf(search) > -1){
                                             for(var i=0; i<lineArr.length-1; i++){
-                                                if(lineArr[i].indexOf(search) > -1 || found == true){
+                                                if(lineArr[i].indexOf(search) > -1 || found === true){
                                                     if(lineArr[i + skip].length > 0){
                                                         returnTxt += lineArr[i + skip] + '\n';
                                                         found = true;
                                                     }else{
                                                         found = false;
                                                         break;
-                                                        return;
                                                     }
                                                 }
                                             }
@@ -318,7 +317,7 @@ module.exports = function(grunt) {
             year     = grunt.template.today("yyyy"),
             newData  = '';
 
-        if(!data.indexOf(year) > -1){
+        if(data.indexOf(year) < 0){
             lineArr[0] = 'Copyright (c) 2014-' + year + ' ' + pkg.author;
             newData = lineArr.join('\n');
             if(newData.length > 0){

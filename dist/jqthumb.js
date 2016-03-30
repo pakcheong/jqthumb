@@ -1,13 +1,13 @@
 /*!
     jQThumb V2.3.0
     Copyright (c) 2013-2016
-    Dual licensed under the MIT and GPL licenses.
+    Released under the MIT license.
 
     Author       : Pak Cheong
     Version      : 2.3.0
-    Repo         : https://github.com/pakcheong/jqthumb
+    Repo         : git@github.com:pakcheong/jqthumb.git
     Demo         : http://pakcheong.github.io/jqthumb/
-    Last Updated : Tuesday, March 29th, 2016, 9:29:56 PM
+    Last Updated : Wednesday, March 30th, 2016, 10:54:16 AM
     Requirements : jQuery >=v1.3.0 or Zepto (with zepto-data plugin) >=v1.0.0
 */
 (function (factory) {
