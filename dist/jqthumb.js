@@ -7,7 +7,7 @@
     Version      : 2.3.0
     Repo         : git@github.com:pakcheong/jqthumb.git
     Demo         : http://pakcheong.github.io/jqthumb/
-    Last Updated : Thursday, March 31st, 2016, 8:35:27 PM
+    Last Updated : Thursday, March 31st, 2016, 8:43:22 PM
     Requirements : jQuery >=v1.3.0 or Zepto (with zepto-data plugin) >=v1.0.0
 */
 (function (factory) {
@@ -116,33 +116,35 @@
         Zepto does not come with $.fn.outerWidth() & $.fn.outerHeight()
         code: https://gist.github.com/pamelafox/1379704
     */
-    if (typeof Array.prototype.forEach != 'function') { // fix for older browsers
-        Array.prototype.forEach = function(callback){
-            for (var i = 0; i < this.length; i++){
-                callback.apply(this, [this[i], i, this]);
-            }
-        };
-    }
-    ['width', 'height'].forEach(function(dimension) {
-        var offset, Dimension = dimension.replace(/./, function(m) { return m[0].toUpperCase(); });
-        if (!$.fn['outer' + Dimension]) {
-            $.fn['outer' + Dimension] = function() {
-                var elem = this;
-                if (elem) {
-                    var size = elem[dimension]();
-                    var sides = { 'width': ['left', 'right'], 'height': ['top', 'bottom'] };
-                    sides[dimension].forEach(function(side) {
-                        size += parseInt(elem.css('margin-' + side), 10);
-                        size += parseInt(elem.css('padding-' + side), 10);
-                        size += parseInt(elem.css('border-' + side + '-width'), 10);
-                    });
-                    return size;
-                } else {
-                    return null;
+    if (!$.fn.outerHeight || !$.fn.outerWidth) {
+        if (typeof Array.prototype.forEach != 'function') { // fix for older browsers
+            Array.prototype.forEach = function(callback){
+                for (var i = 0; i < this.length; i++){
+                    callback.apply(this, [this[i], i, this]);
                 }
             };
         }
-    });
+        ['width', 'height'].forEach(function(dimension) {
+            var offset, Dimension = dimension.replace(/./, function(m) { return m[0].toUpperCase(); });
+            if (!$.fn['outer' + Dimension]) {
+                $.fn['outer' + Dimension] = function() {
+                    var elem = this;
+                    if (elem) {
+                        var size = elem[dimension]();
+                        var sides = { 'width': ['left', 'right'], 'height': ['top', 'bottom'] };
+                        sides[dimension].forEach(function(side) {
+                            size += parseInt(elem.css('margin-' + side), 10);
+                            size += parseInt(elem.css('padding-' + side), 10);
+                            size += parseInt(elem.css('border-' + side + '-width'), 10);
+                        });
+                        return size;
+                    } else {
+                        return null;
+                    }
+                };
+            }
+        });
+    }
 
     var checkPositionReach = function($elem, scrollCheck){
         var $win     = $(window),
