@@ -1,6 +1,9 @@
 *{
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
+body{
+    min-width: 1010px;
+}
 hr{
     display: block;
     width: 100%;
@@ -68,6 +71,7 @@ img{
     .row .span6{ width: 49.99999999999999%; *width: 49.94791666666666%; }
     .row .span5{ width: 41.66666666666666%; *width: 41.61458333333332%; }
     .row .span4{ width: 33.33333333333333%; *width: 33.28124999999999%; }
+        .row .span4 > .pr{ padding-right: 0; }
     .row .span3{ width: 24.999999999999996%; *width: 24.947916666666664%; }
     .row .span2{ width: 16.666666666666664%; *width: 16.614583333333332%; }
     .row .span1{ width: 8.333333333333332%; *width: 8.281249999999998%; }
@@ -122,7 +126,7 @@ img{
 
 form label{
     float: left;
-    width: 120px;
+    width: 190px;
     line-height: 30px;
 }
 form .row{
@@ -133,23 +137,19 @@ form .input{
 }
     form .input input,
     form .input select{
-        width: 90%;
+        width: 92%;
         border: 1px solid #C0C0C0;
         font-size: 15px;
         padding: 0 10px;
         height: 30px;
         line-height: 30px;
-        -moz-border-radius: 3px;
-        -webkit-border-radius: 3px;
-        border-radius: 3px;
-        -khtml-border-radius: 3px;
     }
     form .input select{
         height: 32px;
         line-height: 32px;
     }
     form .input select{
-        width: 97%;
+        width: 100%;
     }
     form .input button{
         padding: 0 10px;
@@ -158,13 +158,12 @@ form .input{
         font-size: 15px;
         border: none;
         cursor: pointer;
-        -moz-border-radius: 3px;
-        -webkit-border-radius: 3px;
-        border-radius: 3px;
-        -khtml-border-radius: 3px;
         background-color: black;
         color: white;
         min-width: 100px;
         margin-left: 10px;
         margin-right: 10px;
     }
+        form .input button:last-child{
+            margin-right: 1%;
+        }

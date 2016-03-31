@@ -8,11 +8,11 @@ module.exports = function(grunt) {
             banner: '/*!'+
                         '\n    <%= pkg.name %> V<%= pkg.version %>' +
                         '\n    Copyright (c) 2013-<%= grunt.template.today("yyyy") %>' +
-                        '\n    Dual licensed under the MIT and GPL licenses.' +
+                        '\n    Released under the MIT license.' +
                         '\n' +
                         '\n    Author       : <%= pkg.author %>' +
                         '\n    Version      : <%= pkg.version %>' +
-                        '\n    Repo         : <%= pkg.repo %>' +
+                        '\n    Repo         : <%= pkg.repository.url %>' +
                         '\n    Demo         : <%= pkg.demo %>' +
                         '\n    Last Updated : <%= grunt.template.today("dddd, mmmm dS, yyyy, h:MM:ss TT") %>' +
                         '\n    Requirements : jQuery >=v1.3.0 or Zepto (with zepto-data plugin) >=v1.0.0' +
@@ -136,24 +136,76 @@ module.exports = function(grunt) {
         'screenshot-element': {
             demo: {
                 options: {
+                    streamType: 'jpg',
+                    quality: 60,
                     timeout: 2000 /* wait for animation to be done */
                 },
                 images: [
                     {
-                        url      : '<%= global.dist.root %>demo.jquery.html',
-                        file     : 'screenshots/screenshot.jquery.png',
+                        url      : '<%= global.dist.root %>demo.html',
+                        file     : 'screenshots/screenshot.jpg',
                         css      : 'body { background-color: #FFF; }',
                         selector : '.screenshot-area'
-                    },
+                    }/*,
                     {
                         url      : '<%= global.dist.root %>demo.zepto.html',
-                        file     : 'screenshots/screenshot.zepto.png',
+                        file     : 'screenshots/screenshot.zepto.jpg',
                         css      : 'body { background-color: #FFF; }',
                         selector : '.screenshot-area'
-                    }
+                    }*/
                 ]
             }
+        },
+        bump: {
+            options: {
+                files              : ['package.json'],
+                updateConfigs      : ['pkg'],
+                commit             : true,
+                commitMessage      : (function(){
+                                        var commitMsg = grunt.option('commitmessage');
+                                        if(commitMsg){
+                                            return commitMsg;
+                                        }
+                                        var returnTxt     = 'v%VERSION%\n',
+                                            changeLogFile = 'CHANGELOG.txt',
+                                            data          = grunt.file.read(changeLogFile).toString(),
+                                            lineArr       = data.split('\n'),
+                                            search        = '# V' + pkg.version,
+                                            newData       = '',
+                                            found         = false,
+                                            skip          = 2;
+
+                                        if(data.indexOf(search) > -1){
+                                            for(var i=0; i<lineArr.length-1; i++){
+                                                if(lineArr[i].indexOf(search) > -1 || found === true){
+                                                    if(lineArr[i + skip].length > 0){
+                                                        returnTxt += lineArr[i + skip] + '\n';
+                                                        found = true;
+                                                    }else{
+                                                        found = false;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        }else{
+                                            throw new Error('You have not updated ' + changeLogFile);
+                                        }
+                                        return returnTxt;
+                                    })(),
+                commitFiles        : ['-a'],
+                createTag          : true,
+                tagName            : 'v%VERSION%',
+                tagMessage         : 'Version %VERSION%',
+                push               : 'branch',
+                pushTo             : 'origin',
+                gitDescribeOptions : '--tags --always --abbrev=1 --dirty=-d',
+                globalReplace      : true,
+                // prereleaseName     : 'rc',
+                metadata           : '',
+                regExp             : false
+            }
         }
+
     });
 
     grunt.loadNpmTasks('grunt-contrib-jshint');
@@ -162,6 +214,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-text-replace');
     grunt.loadNpmTasks('grunt-screenshot-element');
+    grunt.loadNpmTasks('grunt-bump');
 
     /* Update version in readme file by checking if the first line of the file contains the latest version. */
     grunt.registerTask('update-readme', '', function () {
@@ -257,6 +310,42 @@ module.exports = function(grunt) {
         }
     });
 
+    grunt.registerTask('check-license-date', '', function(){
+        var filePath = 'LICENSE.txt',
+            data     = grunt.file.read(filePath).toString(),
+            lineArr  = data.split('\n'),
+            year     = grunt.template.today("yyyy"),
+            newData  = '';
+
+        if(data.indexOf(year) < 0){
+            lineArr[0] = 'Copyright (c) 2014-' + year + ' ' + pkg.author;
+            newData = lineArr.join('\n');
+            if(newData.length > 0){
+                grunt.file.write(filePath, newData, 'utf8');
+            }
+        }
+    });
+
     grunt.registerTask('dev', ['jshint', 'concat', 'uglify', 'copy', 'replace']);
-    grunt.registerTask('default', ['jshint', 'concat', 'uglify', 'copy', 'replace', 'update-readme', 'check-changelog', 'check-bowerjson', 'check-jqueryjson', 'screenshot-element']);
+    grunt.registerTask('default', [
+        'jshint', 
+        'concat', 
+        'uglify', 
+        'copy', 
+        'replace', 
+        'update-readme', 
+        'check-changelog', 
+        'check-bowerjson', 
+        'check-jqueryjson', 
+        'check-license-date', 
+        'screenshot-element'
+    ]);
+
+    /*
+    GRUNT BUMP EXAMPLES:
+    grunt bump --setversion=2.3.0 --commitmessage="commit message" --dry-run
+        - it will read from CHANGELOG.txt when "commitmessage" is not set to anything
+        - to have new line in commit message, simply type CTRL+V+J
+        - with dry-run, it will only show the demo.
+    */
 };

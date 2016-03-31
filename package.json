@@ -1,18 +1,48 @@
 {
-    "name"            : "jQThumb",
-    "filename"        : "jqthumb",
-    "author"          : "Pak Cheong",
-    "version"         : "2.3.0",
-    "repo"            : "https://github.com/pakcheong/jqthumb",
-    "demo"            : "http://pakcheong.github.io/jqthumb/",
-    "dependencies"    : {},
-    "devDependencies" : {
-        "grunt"                    : "~0.4.5",
-        "grunt-contrib-copy"       : "~0.4.0",
-        "grunt-text-replace"       : "~0.3.12",
-        "grunt-contrib-uglify"     : "~0.4.0",
-        "grunt-contrib-jshint"     : "~0.10.0",
-        "grunt-contrib-concat"     : "~0.4.0",
-        "grunt-screenshot-element" : "~0.1.9"
+    "name": "jQThumb",
+    "filename": "jqthumb",
+    "author": "Pak Cheong",
+    "version": "2.3.0",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:pakcheong/jqthumb.git"
+    },
+    "demo": "http://pakcheong.github.io/jqthumb/",
+    "keywords": [
+        "thumb",
+        "thumbnail",
+        "jquery",
+        "zepto",
+        "css",
+        "css3",
+        "zoom",
+        "responsive",
+        "ie6",
+        "internet-explorer-6",
+        "ie7",
+        "internet-explorer-7",
+        "ie8",
+        "internet-explorer-8",
+        "full-width",
+        "background-size",
+        "backgroundsize",
+        "cover",
+        "lazy-load",
+        "image-loader",
+        "cropper",
+        "image-cropper",
+        "seo-friendly"
+    ],
+    "dependencies": {},
+    "devDependencies": {
+        "grunt": "~0.4.5",
+        "grunt-bump": "^0.7.0",
+        "grunt-contrib-concat": "~0.4.0",
+        "grunt-contrib-copy": "~0.4.0",
+        "grunt-contrib-jshint": "~0.10.0",
+        "grunt-contrib-uglify": "~0.4.0",
+        "grunt-screenshot-element": "~0.1.9",
+        "grunt-text-replace": "~0.3.12"
     }
 }
