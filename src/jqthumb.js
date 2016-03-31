@@ -104,6 +104,13 @@
         Zepto does not come with $.fn.outerWidth() & $.fn.outerHeight()
         code: https://gist.github.com/pamelafox/1379704
     */
+    if (typeof Array.prototype.forEach != 'function') { // fix for older browsers
+        Array.prototype.forEach = function(callback){
+            for (var i = 0; i < this.length; i++){
+                callback.apply(this, [this[i], i, this]);
+            }
+        };
+    }
     ['width', 'height'].forEach(function(dimension) {
         var offset, Dimension = dimension.replace(/./, function(m) { return m[0].toUpperCase(); });
         if (!$.fn['outer' + Dimension]) {
