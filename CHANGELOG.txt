@@ -246,7 +246,7 @@ Change Log:
 1. Change bower name
 
 
-# V2.3.0 (Thursday, March 31st, 2016, 8:43:22 PM)
+# V2.3.0 (Thursday, March 31st, 2016, 8:45:31 PM)
 ===================================================
 1. Add "ondemand" feature. (Load the image when scolling position has reached to the DOM)
 2. Add "renderPosition" to render image whether before or after the DOM.

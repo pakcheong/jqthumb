@@ -7,7 +7,7 @@
     Version      : 2.3.0
     Repo         : git@github.com:pakcheong/jqthumb.git
     Demo         : http://pakcheong.github.io/jqthumb/
-    Last Updated : Thursday, March 31st, 2016, 8:43:22 PM
+    Last Updated : Thursday, March 31st, 2016, 8:45:30 PM
     Requirements : jQuery >=v1.3.0 or Zepto (with zepto-data plugin) >=v1.0.0
 */
 (function (factory) {
