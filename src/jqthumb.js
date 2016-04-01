@@ -159,8 +159,21 @@
     var pluginName                       = 'jqthumb',
         $window                          = $(window),
         resizeDataName                   = pluginName + '-resize',
-        onDemandScrollEventsArr          = ['scroll.' + pluginName, 'resize.' + pluginName, 'scrollstop.' + pluginName],
-        onDemandScrollEventStr           = onDemandScrollEventsArr.join(' '),
+        onDemandScrollEventObj           = (function(){
+                                                var tmp = ['scroll', 'resize', 'scrolltop'];
+                                                var obj = {};
+                                                for(var i=0; i<tmp.length; i++){
+                                                    obj[tmp[i]] = tmp[i] + '.' + pluginName;
+                                                }
+                                                return obj;
+                                            })(),
+        onDemandScrollEventStr           = (function(){
+                                                var tmp = [];
+                                                $.each(onDemandScrollEventObj, function(key, val){
+                                                    tmp.push(key + '.' + val);
+                                                });
+                                                return tmp.join(' ');
+                                            })(),
         onDemandScrollEventHandlerFn     = null,
         onDemandClickEventName           = 'click.' + pluginName,
         onDemandClickEventHandlerFn      = null,
@@ -243,11 +256,11 @@
 
             function killOri($ori){
                 /* START :: remove attached custom events from original image */
-                $window.unbind(onDemandScrollEventStr, onDemandScrollEventHandlerFn);
-                $ori.unbind(onDemandClickEventName, onDemandClickEventHandlerFn);
-                $ori.parent().unbind(onDemandClickEventName, onDemandClickEventHandlerFn);
-                $ori.unbind(onDemandMouseEnterEventName, onDemandMouseEnterEventHandlerFn);
-                $ori.parent().unbind(onDemandMouseEnterEventName, onDemandMouseEnterEventHandlerFn);
+                $window.unbind(onDemandScrollEventStr);
+                $ori.unbind(onDemandClickEventName);
+                $ori.parent().unbind(onDemandClickEventName);
+                $ori.unbind(onDemandMouseEnterEventName);
+                $ori.parent().unbind(onDemandMouseEnterEventName);
                 /* END :: remove attached custom events from original image */
 
                 $ori.removeAttr('style'); // first, remove all the styles first
@@ -313,7 +326,7 @@
 
                 /* START :: remove attached custom event */
                 if($thumb.data(resizeDataName)){
-                    $window.unbind('resize', $thumb.data(resizeDataName));
+                    $window.unbind(onDemandScrollEventObj.resize);
                     $thumb.removeData(resizeDataName);
                 }
                 /* END :: remove attached custom event */
@@ -473,7 +486,7 @@
 
                     if(!isNaN(optResp) && optResp > 0){
                         $imgContainer.data(resizeDataName, resizeThumb); // keep function into data for killing purpose later
-                        $window.bind('resize', $imgContainer.data(resizeDataName));
+                        $window.bind(onDemandScrollEventObj.resize, $imgContainer.data(resizeDataName));
                     }
 
                     $imgContainer
@@ -494,36 +507,7 @@
             var that   = this,
                 $this  = $(_this),
                 imgUrl = $this.attr(options.source);
-            onDemandScrollEventHandlerFn = function(){ // check scroll position
-                                        var readyToLoad = checkPositionReach($this.parent(), options.onDemandScrollCheck);
-                                        if(readyToLoad && !$this.data(onScrDataName)){
-                                            $this
-                                                .data(onScrDataName, true)
-                                                .unwrap(); // remove temporary tag
-                                            loadImg($this, imgUrl, function($imgContainer){
-                                                options.after.apply(_this, [$imgContainer]);
-                                                that.updateGlobal(_this, $imgContainer, options);
-                                            });
-                                        }
-                                    };
-            onDemandClickEventHandlerFn = function(){
-                if(!$this.data(onScrDataName)){
-                    loadImg($this, imgUrl, function($imgContainer){
-                        options.after.apply(_this, [$imgContainer]);
-                        that.updateGlobal(_this, $imgContainer, options);
-                    }, true);
-                    $this.data(onScrDataName, true);
-                }
-            };
-            onDemandMouseEnterEventHandlerFn = function(){
-                if(!$this.data(onScrDataName)){
-                    loadImg($this, imgUrl, function($imgContainer){
-                        options.after.apply(_this, [$imgContainer]);
-                        that.updateGlobal(_this, $imgContainer, options);
-                    }, true);
-                    $this.data(onScrDataName, true);
-                }
-            };
+
             $this.data(oriStyleDataName, $this.attr('style')); // keep original styles into data
             $this.data(renderPosDataName, options.renderPosition); // store render position (before/after) for killing purpose
 
@@ -531,6 +515,7 @@
 
             if(options.onDemand === true){
                 if(options.onDemandEvent === 'scroll'){
+
                     $this.wrap('<div />'); // add temporary tag to get its offset().top
 
                     $this
@@ -539,13 +524,46 @@
                                 'width' : ((options.width) ? strToNum(options.width) + getMeasurement(options.width) : $this.width() + 'px'),
                                 'height' : ((options.height) ? strToNum(options.height) + getMeasurement(options.height) : $this.height() + 'px')
                             });
+
                     $window
-                        .bind(onDemandScrollEventStr, onDemandScrollEventHandlerFn)
-                        .triggerHandler(onDemandScrollEventsArr[0]);
+                        .bind(onDemandScrollEventStr, function(){ // check scroll position
+                            var readyToLoad = checkPositionReach($this.parent(), options.onDemandScrollCheck);
+                            if(readyToLoad && !$this.data(onScrDataName)){
+                                $this
+                                    .data(onScrDataName, true)
+                                    .unwrap(); // remove temporary tag
+                                loadImg($this, imgUrl, function($imgContainer){
+                                    options.after.apply(_this, [$imgContainer]);
+                                    that.updateGlobal(_this, $imgContainer, options);
+                                });
+                            }
+                        })
+                        .triggerHandler(onDemandScrollEventObj.scroll);
+
                 }else if(options.onDemandEvent === 'click'){
-                    $this.parent().bind(onDemandClickEventName, onDemandClickEventHandlerFn);
+
+                    $this.parent().bind(onDemandClickEventName, function(){
+                        if(!$this.data(onScrDataName)){
+                            loadImg($this, imgUrl, function($imgContainer){
+                                options.after.apply(_this, [$imgContainer]);
+                                that.updateGlobal(_this, $imgContainer, options);
+                            }, true);
+                            $this.data(onScrDataName, true);
+                        }
+                    });
+
                 }else if(options.onDemandEvent === 'mouseenter'){
-                    $this.parent().bind(onDemandMouseEnterEventName, onDemandMouseEnterEventHandlerFn);
+
+                            $this.parent().bind(onDemandMouseEnterEventName, function(){
+                        if(!$this.data(onScrDataName)){
+                            loadImg($this, imgUrl, function($imgContainer){
+                                options.after.apply(_this, [$imgContainer]);
+                                that.updateGlobal(_this, $imgContainer, options);
+                            }, true);
+                            $this.data(onScrDataName, true);
+                        }
+                    });
+
                 }
             }else{
                 loadImg($this, imgUrl, function($imgContainer){
@@ -649,36 +667,6 @@
             var that      = this,
                 $oriImage = $(_this),
                 imgUrl    = $oriImage.attr(options.source);
-            onDemandScrollEventHandlerFn = function(){ // check scroll position
-                                        var readyToLoad = checkPositionReach($oriImage.parent(), options.onDemandScrollCheck);
-                                        if(readyToLoad && !$oriImage.data(onScrDataName)){
-                                            $oriImage
-                                                .data(onScrDataName, true)
-                                                .unwrap(); // remove temporary tag
-                                            loadImg($oriImage, imgUrl, function($featuredBgImgContainer){
-                                                options.after.apply(_this, [$featuredBgImgContainer]);
-                                                that.updateGlobal(_this, $featuredBgImgContainer, options);
-                                            }, true);
-                                        }
-                                    };
-            onDemandClickEventHandlerFn = function(){
-                if(!$oriImage.data(onScrDataName)){
-                    loadImg($oriImage, imgUrl, function($featuredBgImgContainer){
-                        options.after.apply(_this, [$featuredBgImgContainer]);
-                        that.updateGlobal(_this, $featuredBgImgContainer, options);
-                    }, true);
-                    $oriImage.data(onScrDataName, true);
-                }
-            };
-            onDemandMouseEnterEventHandlerFn = function(){
-                if(!$oriImage.data(onScrDataName)){
-                    loadImg($oriImage, imgUrl, function($featuredBgImgContainer){
-                        options.after.apply(_this, [$featuredBgImgContainer]);
-                        that.updateGlobal(_this, $featuredBgImgContainer, options);
-                    }, true);
-                    $oriImage.data(onScrDataName, true);
-                }
-            };
 
             $oriImage.data(oriStyleDataName, $oriImage.attr('style')); // keep original styles into data
             $oriImage.data(renderPosDataName, options.renderPosition); // store render position (before/after) for killing purpose
@@ -694,13 +682,46 @@
                                 'width' : ((options.width) ? strToNum(options.width) + getMeasurement(options.width) : $oriImage.width() + 'px'),
                                 'height' : ((options.height) ? strToNum(options.height) + getMeasurement(options.height) : $oriImage.height() + 'px')
                             });
+
                     $window
-                        .bind(onDemandScrollEventStr, onDemandScrollEventHandlerFn)
-                        .triggerHandler(onDemandScrollEventsArr[0]);
+                        .bind(onDemandScrollEventStr, function(){ // check scroll position
+                            var readyToLoad = checkPositionReach($oriImage.parent(), options.onDemandScrollCheck);
+                            if(readyToLoad && !$oriImage.data(onScrDataName)){
+                                $oriImage
+                                    .data(onScrDataName, true)
+                                    .unwrap(); // remove temporary tag
+                                loadImg($oriImage, imgUrl, function($featuredBgImgContainer){
+                                    options.after.apply(_this, [$featuredBgImgContainer]);
+                                    that.updateGlobal(_this, $featuredBgImgContainer, options);
+                                }, true);
+                            }
+                        })
+                        .triggerHandler(onDemandScrollEventObj.scroll);
+
                 }else if(options.onDemandEvent === 'click'){
-                    $oriImage.parent().bind(onDemandClickEventName, onDemandClickEventHandlerFn);
+
+                    $oriImage.parent().bind(onDemandClickEventName, function(){
+                        if(!$oriImage.data(onScrDataName)){
+                            loadImg($oriImage, imgUrl, function($featuredBgImgContainer){
+                                options.after.apply(_this, [$featuredBgImgContainer]);
+                                that.updateGlobal(_this, $featuredBgImgContainer, options);
+                            }, true);
+                            $oriImage.data(onScrDataName, true);
+                        }
+                    });
+
                 }else if(options.onDemandEvent === 'mouseenter'){
-                    $oriImage.parent().bind(onDemandMouseEnterEventName, onDemandMouseEnterEventHandlerFn);
+
+                    $oriImage.parent().bind(onDemandMouseEnterEventName, function(){
+                        if(!$oriImage.data(onScrDataName)){
+                            loadImg($oriImage, imgUrl, function($featuredBgImgContainer){
+                                options.after.apply(_this, [$featuredBgImgContainer]);
+                                that.updateGlobal(_this, $featuredBgImgContainer, options);
+                            }, true);
+                            $oriImage.data(onScrDataName, true);
+                        }
+                    });
+
                 }
             }else{
                 loadImg($oriImage, imgUrl, function($featuredBgImgContainer){
