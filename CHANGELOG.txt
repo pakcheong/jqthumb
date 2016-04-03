@@ -269,7 +269,13 @@ Change Log:
 3. Code optimization
 
 
-# V2.3.2 (Sunday, April 3rd, 2016, 6:42:04 PM)
+# V2.3.2 (Sunday, April 3rd, 2016, 10:30:53 PM)
 ===================================================
 1. Update README.md
 2. Update Gruntfile.js
+
+
+# V2.3.3 (Sunday, April 3rd, 2016, 10:32:25 PM)
+===================================================
+1. fix unbind issues
+2. fix onDemand issue
