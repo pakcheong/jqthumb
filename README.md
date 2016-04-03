@@ -1,4 +1,4 @@
-#jQThumb V2.3.0
+#jQThumb V2.3.2
 
 Create thumbnails from images proportionally. On top of that, this is alaso a lazy-load plugin, which even works on IE6 from jQuery >=v1.3 or Zepto (with zepto-data plugin) >=v1.1.3.
 
@@ -100,6 +100,7 @@ $.fn.jqthumb.defaults = {
     threshold      : 0,
     method         : 'auto',
     reinit         : true,
+    error          : function(){},
     before         : function(){},
     after          : function(){},
     done           : function(){}
@@ -221,6 +222,7 @@ $('img').jqthumb({
         console.log(dom, ' with its url "' + imgUrl + '" is invalid.');
     }
 });
+```
 
 ####before
 This is a callback function which will be called right before calculation started. This function returns the original image source/object as its parameter. If you initialize the plugins with multiple-objects classname then this would be called for multiple times.
