@@ -262,8 +262,14 @@ Change Log:
 12. optimization
 
 
-# V2.3.1 (Sunday, April 3rd, 2016, 4:00:06 PM)
+# V2.3.1 (Sunday, April 3rd, 2016, 6:39:19 PM)
 ===================================================
 1. Update README.md
 2. Add error() callback
 3. Code optimization
+
+
+# V2.3.2 (Sunday, April 3rd, 2016, 6:42:04 PM)
+===================================================
+1. Update README.md
+2. Update Gruntfile.js

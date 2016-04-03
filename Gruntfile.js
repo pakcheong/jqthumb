@@ -343,7 +343,7 @@ module.exports = function(grunt) {
 
     /*
     GRUNT BUMP EXAMPLES:
-    grunt bump --setversion=2.3.0 --commitmessage="commit message" --dry-run
+    grunt bump --setversion=X.X.X --commitmessage="commit message" --dry-run
         - it will read from CHANGELOG.txt when "commitmessage" is not set to anything
         - to have new line in commit message, simply type CTRL+V+J
         - with dry-run, it will only show the demo.
