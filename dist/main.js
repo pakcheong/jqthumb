@@ -11,27 +11,35 @@ $(function(){
         }
 
         $('#demo').jqthumb({
-            classname           : 'jqthumb',
-            width               : (function(){
+            source         : (function(){
+                                $('#demo').attr('src', $('#url').val());
+                                return 'src';
+                            })(),
+            classname      : 'jqthumb',
+            width          : (function(){
                                         if($('#width-type').val() === 'auto'){
                                             return $('#width-type').val();
                                         }
                                         return $('#width').val() + $('#width-type').val();
                                     })(),
-            height               : (function(){
+            height         : (function(){
                                         if($('#height-type').val() === 'auto'){
                                             return $('#height-type').val();
                                         }
                                         return $('#height').val() + $('#height-type').val();
                                     })(),
-            position            : { y: $('#y').val() + $('#y-type').val(), x: $('#x').val() + $('#x-type').val() },
-            zoom                : $('#zoom').val(),
-            renderPosition      : $('#renderPosition').val(),
-            onDemand            : ($('#ondemand').val() == 'true') ? true : false,
-            onDemandEvent       : $('#ondemandevent').val(),
-            onDemandScrollCheck : $('#ondemandscrollcheck').val(),
-            method              : $('#method').val(),
-            done                : function(objs){
+            position       : { y: $('#y').val() + $('#y-type').val(), x: $('#x').val() + $('#x-type').val() },
+            zoom           : $('#zoom').val(),
+            renderPosition : $('#renderPosition').val(),
+            onDemand       : ($('#ondemand').val() == 'true') ? true : false,
+            onDemandEvent  : $('#ondemandevent').val(),
+            threshold      : $('#threshold').val(),
+            method         : $('#method').val(),
+            error          : function(status, imgUrl){
+                console.log(status);
+                console.log(imgUrl);
+            },
+            done           : function(objs){
                 $('html, body').animate({scrolly: $('body').height(), scrollx: $('body').width() }, 800);
 
                 if($('#width-type').val() == '%'){

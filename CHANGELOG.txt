@@ -246,7 +246,7 @@ Change Log:
 1. Change bower name
 
 
-# V2.3.0 (Sunday, April 3rd, 2016, 4:00:06 PM)
+# V2.3.0 (Sunday, April 3rd, 2016, 6:29:56 PM)
 ===================================================
 1. Add "ondemand" feature. (Load the image when scolling position has reached to the DOM)
 2. Add "renderPosition" to render image whether before or after the DOM.
@@ -260,3 +260,10 @@ Change Log:
 10. add MIT license file
 11. update keywords and lincese in package.json, jqthumb.jquery.json
 12. optimization
+
+
+# V2.3.1 (Sunday, April 3rd, 2016, 4:00:06 PM)
+===================================================
+1. Update README.md
+2. Add error() callback
+3. Code optimization
