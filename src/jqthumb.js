@@ -37,7 +37,8 @@
         if(str.toLowerCase() === 'auto'){
             return str;
         }
-        return Number(str.replace(/[^\d.-]/g, ''));
+        return parseFloat(str);
+        // return Number(str.replace(/[^\d.-]/g, ''));
     }
 
     function validateXYperc(val, wh){
@@ -104,26 +105,46 @@
         Zepto does not come with $.fn.outerWidth() & $.fn.outerHeight()
         code: https://gist.github.com/pamelafox/1379704
     */
-    ['width', 'height'].forEach(function(dimension) {
-        var offset, Dimension = dimension.replace(/./, function(m) { return m[0].toUpperCase(); });
-        if (!$.fn['outer' + Dimension]) {
-            $.fn['outer' + Dimension] = function() {
-                var elem = this;
-                if (elem) {
-                    var size = elem[dimension]();
-                    var sides = { 'width': ['left', 'right'], 'height': ['top', 'bottom'] };
-                    sides[dimension].forEach(function(side) {
-                        size += parseInt(elem.css('margin-' + side), 10);
-                        size += parseInt(elem.css('padding-' + side), 10);
-                        size += parseInt(elem.css('border-' + side + '-width'), 10);
-                    });
-                    return size;
-                } else {
-                    return null;
+    if (!$.fn.outerHeight || !$.fn.outerWidth) {
+        if (typeof Array.prototype.forEach != 'function') { // fix for older browsers
+            Array.prototype.forEach = function(callback){
+                for (var i = 0; i < this.length; i++){
+                    callback.apply(this, [this[i], i, this]);
                 }
             };
         }
-    });
+        ['width', 'height'].forEach(function(dimension) {
+            var offset, Dimension = dimension.replace(/./, function(m) { return m[0].toUpperCase(); });
+            if (!$.fn['outer' + Dimension]) {
+                $.fn['outer' + Dimension] = function() {
+                    var elem = this;
+                    if (elem) {
+                        var size = elem[dimension]();
+                        var sides = { 'width': ['left', 'right'], 'height': ['top', 'bottom'] };
+                        sides[dimension].forEach(function(side) {
+                            size += parseInt(elem.css('margin-' + side), 10);
+                            size += parseInt(elem.css('padding-' + side), 10);
+                            size += parseInt(elem.css('border-' + side + '-width'), 10);
+                        });
+                        return size;
+                    } else {
+                        return null;
+                    }
+                };
+            }
+        });
+    }
+
+    /* Fallback for older versions of jQuery */
+    if(!$.fn.unwrap){
+        $.fn.unwrap = function(){
+            this.parent().each(function() {
+                if ( !$.nodeName( this, 'body' ) ) {
+                    $( this ).replaceWith( this.childNodes );
+                }
+            }).end();
+        };
+    }
 
     var checkPositionReach = function($elem, scrollCheck){
         var $win     = $(window),
@@ -147,49 +168,59 @@
         ));
     };
 
-    var pluginName                       = 'jqthumb',
-        $window                          = $(window),
-        resizeDataName                   = pluginName + '-resize',
-        onDemandScrollEventsArr          = ['scroll.' + pluginName, 'resize.' + pluginName, 'scrollstop.' + pluginName],
-        onDemandScrollEventStr           = onDemandScrollEventsArr.join(' '),
-        onDemandScrollEventHandlerFn     = null,
-        onDemandClickEventName           = 'click.' + pluginName,
-        onDemandClickEventHandlerFn      = null,
-        onDemandMouseEnterEventName      = 'mouseenter.' + pluginName,
-        onDemandMouseEnterEventHandlerFn = null,
-        renderPosDataName                = pluginName + '-render-position',
-        oriStyleDataName                 = pluginName + '-original-styles',
-        onScrDataName                    = pluginName + '-onscreen',
-        dtOption                         = pluginName + '-options',
-        grandGlobal                      = { outputElems: [], inputElems: [] },
-        defaults                         = {
-                                                classname           : pluginName,
-                                                width               : 100,
-                                                height              : 100,
-                                                position            : { x: '50%', y: '50%' },
-                                                source              : 'src',
-                                                responsive          : 20,
-                                                zoom                : 1,
-                                                show                : true,
-                                                renderPosition      : 'before', // before, after
-                                                onDemand            : false,
-                                                onDemandEvent       : 'scroll',
-                                                onDemandScrollCheck : 0,
-                                                method              : 'auto', // auto, modern, native
-                                                reinit              : true, // true, false
-                                                before              : function(){},
-                                                after               : function(){},
-                                                done                : function(){}
-                                            };
+    var pluginName                  = 'jqthumb',
+        $window                     = $(window),
+        resizeDataName              = pluginName + '-resize',
+        onDemandScrollEventObj      = (function(){
+                                            var tmp = ['scroll', 'resize', 'scrolltop'];
+                                            var obj = {};
+                                            for(var i=0; i<tmp.length; i++){
+                                                obj[tmp[i]] = tmp[i] + '.' + pluginName;
+                                            }
+                                            return obj;
+                                        })(),
+        onDemandScrollEventStr      = (function(){
+                                            var tmp = [];
+                                            $.each(onDemandScrollEventObj, function(key, val){
+                                                tmp.push(key + '.' + val);
+                                            });
+                                            return tmp.join(' ');
+                                        })(),
+        onDemandClickEventName      = 'click.' + pluginName,
+        onDemandMouseEnterEventName = 'mouseenter.' + pluginName,
+        renderPosDataName           = pluginName + '-render-position',
+        oriStyleDataName            = pluginName + '-original-styles',
+        onScrDataName               = pluginName + '-onscreen',
+        dtOption                    = pluginName + '-options',
+        grandGlobal                 = { outputElems: [], inputElems: [] },
+        defaults                    = {
+                                            classname      : pluginName,
+                                            width          : 100,
+                                            height         : 100,
+                                            position       : { x: '50%', y: '50%' },
+                                            source         : 'src',
+                                            responsive     : 20,
+                                            zoom           : 1,
+                                            show           : true,
+                                            renderPosition : 'before', // before, after
+                                            onDemand       : false,
+                                            onDemandEvent  : 'scroll',
+                                            threshold      : 0,
+                                            method         : 'auto', // auto, modern, native
+                                            reinit         : true, // true, false
+                                            before         : function(){},
+                                            after          : function(){},
+                                            done           : function(){}
+                                        };
 
     function Plugin ( element, options ) {// The actual plugin constructor
-        $.fn[pluginName].defaults         = $.extend( {}, defaults, $.fn[pluginName].defaults );
-        this.element                      = element;
-        this.settings                     = $.extend( {}, $.fn[pluginName].defaults, options );
-        this.settings.onDemandEvent       = this.settings.onDemandEvent.toLowerCase();
-        this.settings.onDemandScrollCheck = this.settings.onDemandScrollCheck.toString().replace(/px/gi, '');
-        this.settings.width               = this.settings.width.toString().replace(/px/gi, '');
-        this.settings.height              = this.settings.height.toString().replace(/px/gi, '');
+        $.fn[pluginName].defaults   = $.extend( {}, defaults, $.fn[pluginName].defaults );
+        this.element                = element;
+        this.settings               = $.extend( {}, $.fn[pluginName].defaults, options );
+        this.settings.onDemandEvent = this.settings.onDemandEvent.toLowerCase();
+        this.settings.threshold     = this.settings.threshold.toString().replace(/px/gi, '');
+        this.settings.width         = this.settings.width.toString().replace(/px/gi, '');
+        this.settings.height        = this.settings.height.toString().replace(/px/gi, '');
         if(!this.settings.width){
             options.width = defaults.width;
             this.settings.width = defaults.width;
@@ -198,47 +229,31 @@
             options.height = defaults.height;
             this.settings.height = defaults.height;
         }
-        this.settings.position.y          = validateXYperc(this.settings.position.y, this.settings.width);
-        this.settings.position.x          = validateXYperc(this.settings.position.x, this.settings.height);
-        this.settings.zoom                = (this.settings.zoom < 0) ? 0 : this.settings.zoom;
+        this.settings.position.y    = validateXYperc(this.settings.position.y, this.settings.width);
+        this.settings.position.x    = validateXYperc(this.settings.position.x, this.settings.height);
+        this.settings.zoom          = (this.settings.zoom < 0) ? 0 : this.settings.zoom;
         if(typeof options == 'string'){
             if(options.toLowerCase() == 'kill'){
                 this.kill(this.element);
             }
         }else{
             $(this.element).data(dtOption, this.settings);
-            this.init();
+            this.init(this.element, this.settings);
         }
     }
 
     Plugin.prototype = {
-        init: function () {
-            var method = this.settings.method.toLowerCase();
-            if(method == 'auto'){
-                if(css3Supported('backgroundSize') === false){ // old browsers need to do calculation to perform same output like "background-size: cover"
-                    this.native(this.element, this.settings);
-                }else{ // modern browsers that support CSS3 would be easier
-                    this.modern(this.element, this.settings);
-                }
-            }else if(method == 'modern'){
-                this.modern(this.element, this.settings);
-            }else if(method == 'native'){
-                this.native(this.element, this.settings);
-            }else{
-                log('error', 'Invalid method. Only "auto", "modern" and "native" are allowed.');
-            }
-        },
 
-        kill: function(_this){
-            var $this = $(_this);
+        kill: function(self){
+            var $oriImage = $(self);
 
             function killOri($ori){
                 /* START :: remove attached custom events from original image */
-                $window.unbind(onDemandScrollEventStr, onDemandScrollEventHandlerFn);
-                $ori.unbind(onDemandClickEventName, onDemandClickEventHandlerFn);
-                $ori.parent().unbind(onDemandClickEventName, onDemandClickEventHandlerFn);
-                $ori.unbind(onDemandMouseEnterEventName, onDemandMouseEnterEventHandlerFn);
-                $ori.parent().unbind(onDemandMouseEnterEventName, onDemandMouseEnterEventHandlerFn);
+                $window.unbind(onDemandScrollEventStr);
+                $ori.unbind(onDemandClickEventName);
+                $ori.parent().unbind(onDemandClickEventName);
+                $ori.unbind(onDemandMouseEnterEventName);
+                $ori.parent().unbind(onDemandMouseEnterEventName);
                 /* END :: remove attached custom events from original image */
 
                 $ori.removeAttr('style'); // first, remove all the styles first
@@ -264,21 +279,21 @@
                 }
             }
 
-            if($this.data(pluginName)){
+            if($oriImage.data(pluginName)){
                 var tempArr = [],
                     $thumb  = (function(){
-                                    if($this.data(renderPosDataName) === 'after'){
-                                        return $this.next();
+                                    if($oriImage.data(renderPosDataName) === 'after'){
+                                        return $oriImage.next();
                                     }
-                                    return $this.prev();
+                                    return $oriImage.prev();
                                 })();
 
                 if($thumb && $thumb.data(pluginName) !== pluginName){
-                    if($this.data(dtOption).onDemand === false){ // kill only generated thumbnails
+                    if($oriImage.data(dtOption).onDemand === false){ // kill only generated thumbnails
                         log('error', 'Could not find the element. It is probably due to one or more element has been added right before the image element after the plugin initialization or it was removed.');
                         return false;
                     }else{ // onDemand thumbnails are not generated yet, so customize the kill
-                        killOri($this);
+                        killOri($oriImage);
                     }
                 }
 
@@ -295,7 +310,7 @@
                 /* START :: remove input elements */
                 tempArr = [];
                 $.each(grandGlobal.inputElems, function(index, obj){
-                    if($(obj)[0] != $this[0]){
+                    if($(obj)[0] != $oriImage[0]){
                         tempArr.push(grandGlobal.inputElems[index]);
                     }
                 });
@@ -303,410 +318,335 @@
                 /* END :: remove input elements */
 
                 /* START :: remove attached custom event */
-                if($thumb.data(resizeDataName)){
-                    $window.unbind('resize', $thumb.data(resizeDataName));
-                    $thumb.removeData(resizeDataName);
-                }
+                $window.unbind(onDemandScrollEventObj.resize);
                 /* END :: remove attached custom event */
 
                 $thumb.remove();
 
-                killOri($this);
+                killOri($oriImage);
             }
         },
 
-        native: function(_this, options){
+        lazyload: function(self, options, fnDoMathOnSuccess){
 
-            options.before.apply(_this, [_this]);
+            var PluginClass = this,
+                $oriImage   = $(self),
+                imgUrl      = $oriImage.attr(options.source),
+                img         = new Image();
 
-            function loadImg($this, imgUrl, cb){
-                var img = new Image();
-                img.onload = function(){
-                    var jsTempImg = this;
-                    if($.trim(options.width.toString().toLowerCase()) === 'auto'){
-                        options.width = jsTempImg.width.toString();
+            img.onload  = function(){
+                fnDoMathOnSuccess({
+                    tmpImgDom : img,
+                    oriImg    : $oriImage,
+                    width     : this.width,
+                    height    : this.height,
+                    done      : function($wrapper){
+                        if(options.show === true){
+                            $wrapper.show();
+                        }
+                        options.after.apply(self, [$wrapper]);
+                        PluginClass.updateGlobal(self, $wrapper, options);
                     }
-                    if($.trim(options.height.toString().toLowerCase()) === 'auto'){
-                        options.height = jsTempImg.height.toString();
-                    }
-                    var newImg        = {
-                                            obj: jsTempImg,
-                                            size: {
-                                                width  : this.width,
-                                                height : this.height
-                                            }
-                                        },
-                        pw            = getMeasurement(options.width),
-                        ph            = getMeasurement(options.height),
-                        optResp       = options.responsive,
-                        $newImgObj    = $(newImg.obj),
-                        $imgContainer = $('<div />'),
-                        ratio         = 0,
-                        resizeThumb   = function(){ // custom event for $(window).resize()
-                                            setTimeout(function(){
-                                                calculateReso();
-                                            }, optResp);
-                                        },
-                        calculateReso = function(){
-                                            var $newImgObjContainer      = $newImgObj.parent(),
-                                                newImgObjContainerHeight = $newImgObjContainer.height(),
-                                                newImgObjContainerWidth  = $newImgObjContainer.width(),
-                                                optZ                     = options.zoom,
-                                                optPosX                  = options.position.x,
-                                                optPosY                  = options.position.y;
-
-                                            if(newImg.size.width > newImg.size.height){ // horizontal
-
-                                                $newImgObj.css({
-                                                    'width'      : 'auto',
-                                                    'max-height' : 99999999,
-                                                    'min-height' : 0,
-                                                    'max-width'  : 99999999,
-                                                    'min-width'  : 0,
-                                                    'height'     : newImgObjContainerHeight + 'px'
-                                                });
-
-                                                ratio = $newImgObj.height() / $newImgObj.width(); // get ratio
-
-                                                if($newImgObj.width() < newImgObjContainerWidth){
-                                                    $newImgObj.css({
-                                                        'width' : newImgObjContainerWidth * optZ,
-                                                        'height': parseFloat(newImgObjContainerWidth * ratio) * optZ
-                                                    });
-                                                }else{
-                                                    $newImgObj.css({
-                                                        'width' : $newImgObj.width() * optZ,
-                                                        'height': parseFloat($newImgObj.width() * ratio) * optZ
-                                                    });
-                                                }
-
-                                            }else{ // vertical
-
-                                                $newImgObj.css({
-                                                    'width'      : newImgObjContainerWidth + 'px',
-                                                    'max-height' : 99999999,
-                                                    'min-height' : 0,
-                                                    'max-width'  : 99999999,
-                                                    'min-width'  : 0,
-                                                    'height'     : 'auto'
-                                                });
-
-                                                ratio = $newImgObj.width() / $newImgObj.height(); // get ratio
-
-                                                if($newImgObj.height() < newImgObjContainerHeight){
-                                                    $newImgObj.css({
-                                                        'width' : parseFloat(newImgObjContainerHeight * ratio) * optZ,
-                                                        'height': newImgObjContainerHeight * optZ
-                                                    });
-                                                }
-
-                                            }
-
-                                            if(options.zoom < 1){ // workaround for zoom level < 1
-                                                var $subContainer = $('<div />'),
-                                                    optStrW       = options.width.toString(),
-                                                    optStrH       = options.height.toString(),
-                                                    mW            = getMeasurement(optStrW),
-                                                    mH            = getMeasurement(optStrH);
-
-                                                $subContainer
-                                                    .css({
-                                                        'width'    : parseFloat(strToNum(optStrW) * options.zoom) + mW,
-                                                        'height'   : parseFloat(strToNum(optStrH) * options.zoom) + mH,
-                                                        'position' : 'relative',
-                                                        'overflow' : 'hidden'
-                                                    })
-                                                    .appendTo($newImgObj.parent());
-
-                                                $newImgObj.appendTo($subContainer); // move $newImgObj into $subContainer
-                                            }
-
-                                            $newImgObj.css({
-                                                'position'    : 'absolute',
-                                                'left'        : (function(){
-                                                    var x = 0;
-                                                    if(getMeasurement(optPosX) == '%'){
-                                                        x = parseFloat(($newImgObj.width() - $newImgObj.parent().width()) / 100 * strToNum(optPosX));
-                                                        return (x <= 0) ? x + 'px' : '-' + x + 'px';
-                                                    }else if(getMeasurement(optPosX) == 'px' || isNaN(optPosX) === false){
-                                                        return strToNum(optPosX) + 'px';
-                                                    }
-                                                })(),
-                                                'top'         : (function(){
-                                                    var y = 0;
-                                                    if(getMeasurement(optPosY) == '%'){
-                                                        y = parseFloat(($newImgObj.height() - $newImgObj.parent().height()) / 100 * strToNum(optPosY));
-                                                        return (y <= 0) ? y + 'px' : '-' + y + 'px';
-                                                    }else if(getMeasurement(optPosY) == 'px' || isNaN(optPosY) === false){
-                                                        return strToNum(optPosY) + 'px';
-                                                    }
-                                                })()
-                                            });
-                                        };
-
-                    if(options.renderPosition.toLowerCase() === 'after'){
-                        $imgContainer.insertAfter($this);
-                    }else{
-                        $imgContainer.insertBefore($this);
-                    }
-
-                    $imgContainer
-                        .append($newImgObj)
-                        .css({
-                            'position' : 'relative',
-                            'overflow' : 'hidden',
-                            'width'    : strToNum(options.width) + (getMeasurement(options.width) ? getMeasurement(options.width) : 'px'),
-                            'height'   : strToNum(options.height) + (getMeasurement(options.height) ? getMeasurement(options.height) : 'px')
-                        })
-                        .data(pluginName, pluginName); // it would be easy to kill later
-
-                    calculateReso();
-
-                    if(!isNaN(optResp) && optResp > 0){
-                        $imgContainer.data(resizeDataName, resizeThumb); // keep function into data for killing purpose later
-                        $window.bind('resize', $imgContainer.data(resizeDataName));
-                    }
-
-                    $imgContainer
-                        .hide()
-                        .addClass(options.classname);
-
-                    if(options.show === true){
-                        $imgContainer.show();
-                    }
-
-                    if (typeof cb === 'function'){
-                        cb($imgContainer);
-                    }
-                };
-                img.src = imgUrl;
-            }
-
-            var that   = this,
-                $this  = $(_this),
-                imgUrl = $this.attr(options.source);
-            onDemandScrollEventHandlerFn = function(){ // check scroll position
-                                        var readyToLoad = checkPositionReach($this.parent(), options.onDemandScrollCheck);
-                                        if(readyToLoad && !$this.data(onScrDataName)){
-                                            $this
-                                                .data(onScrDataName, true)
-                                                .unwrap(); // remove temporary tag
-                                            loadImg($this, imgUrl, function($imgContainer){
-                                                options.after.apply(_this, [$imgContainer]);
-                                                that.updateGlobal(_this, $imgContainer, options);
-                                            });
-                                        }
-                                    };
-            onDemandClickEventHandlerFn = function(){
-                if(!$this.data(onScrDataName)){
-                    loadImg($this, imgUrl, function($imgContainer){
-                        options.after.apply(_this, [$imgContainer]);
-                        that.updateGlobal(_this, $imgContainer, options);
-                    }, true);
-                    $this.data(onScrDataName, true);
-                }
-            };
-            onDemandMouseEnterEventHandlerFn = function(){
-                if(!$this.data(onScrDataName)){
-                    loadImg($this, imgUrl, function($imgContainer){
-                        options.after.apply(_this, [$imgContainer]);
-                        that.updateGlobal(_this, $imgContainer, options);
-                    }, true);
-                    $this.data(onScrDataName, true);
-                }
-            };
-            $this.data(oriStyleDataName, $this.attr('style')); // keep original styles into data
-            $this.data(renderPosDataName, options.renderPosition); // store render position (before/after) for killing purpose
-
-            $this.hide();
-
-            if(options.onDemand === true){
-                if(options.onDemandEvent === 'scroll'){
-                    $this.wrap('<div />'); // add temporary tag to get its offset().top
-
-                    $this
-                        .parent()
-                            .css({ // set temporarily height
-                                'width' : ((options.width) ? strToNum(options.width) + getMeasurement(options.width) : $this.width() + 'px'),
-                                'height' : ((options.height) ? strToNum(options.height) + getMeasurement(options.height) : $this.height() + 'px')
-                            });
-                    $window
-                        .bind(onDemandScrollEventStr, onDemandScrollEventHandlerFn)
-                        .triggerHandler(onDemandScrollEventsArr[0]);
-                }else if(options.onDemandEvent === 'click'){
-                    $this.parent().bind(onDemandClickEventName, onDemandClickEventHandlerFn);
-                }else if(options.onDemandEvent === 'mouseenter'){
-                    $this.parent().bind(onDemandMouseEnterEventName, onDemandMouseEnterEventHandlerFn);
-                }
-            }else{
-                loadImg($this, imgUrl, function($imgContainer){
-                    options.after.apply(_this, [$imgContainer]);
-                    that.updateGlobal(_this, $imgContainer, options);
                 });
-            }
+            };
+            img.src = imgUrl;
         },
 
-        modern: function (_this, options) {
+        init: function (self, options) {
+            function modernMath(obj){
+                var optW    = ($.trim(options.width.toString().toLowerCase()) === 'auto') ? obj.width.toString() : options.width,
+                    optH    = ($.trim(options.height.toString().toLowerCase()) === 'auto') ? obj.height.toString() : options.height,
+                    optZ    = options.zoom,
+                    optPosX = options.position.x,
+                    optPosY = options.position.y,
+                    $wrapper, $fakeImg;
 
-            function loadImg($oriImage, imgUrl, cb){
-                var img = new Image();
-                img.onload = function(){
-                    var jsTempImg = this;
-                    if($.trim(options.width.toString().toLowerCase()) === 'auto'){
-                        options.width = jsTempImg.width.toString();
-                    }
-                    if($.trim(options.height.toString().toLowerCase()) === 'auto'){
-                        options.height = jsTempImg.height.toString();
-                    }
+                $wrapper = $('<div/>')
+                            .css({
+                                'width'    : strToNum(optW) + getMeasurement(optW),
+                                'height'   : strToNum(optH) + getMeasurement(optH),
+                                'display'  : 'none',
+                                'position' : 'relative',
+                                'overflow' : 'hidden'
+                            })
+                            .addClass(options.classname)
+                            .data(pluginName, pluginName); // it would be easy to kill later
 
-                    var optW                    = (options.width) ? options.width : $oriImage.width().toString(),
-                        optH                    = (options.height) ? options.height : $oriImage.height().toString(),
-                        optZ                    = options.zoom,
-                        optPosX                 = options.position.x,
-                        optPosY                 = options.position.y,
-                        $featuredBgImgContainer = null,
-                        $featuredBgImg          = null;
+                $fakeImg = $('<div/>')
+                            .css({
+                                'width'              : '100%',
+                                'height'             : '100%',
+                                'background-image'   : 'url("' + imgUrl + '")',
+                                // '-ms-filter'         : '"progid:DXImageTransform.Microsoft.AlphaImageLoader(src="' + $oriImage.attr(options.source) + '",sizingMethod="scale")', // this does not work in Zepto
+                                'background-repeat'  : 'no-repeat',
+                                'background-position': strToNum(optPosX) + getMeasurement(optPosX) + ' ' + strToNum(optPosY) + getMeasurement(optPosY),
+                                'background-size'    : 'cover'
+                            })
+                            .appendTo($wrapper);
 
-                    $featuredBgImgContainer = $('<div/>')
-                                                .css({
-                                                    'width'    : strToNum(optW) + getMeasurement(optW),
-                                                    'height'   : strToNum(optH) + getMeasurement(optH),
-                                                    'display'  : 'none',
-                                                    'position' : 'relative',
-                                                    'overflow' : 'hidden'
-                                                })
-                                                .addClass(options.classname)
-                                                .data(pluginName, pluginName); // it would be easy to kill later
+                if(options.renderPosition.toLowerCase() === 'after'){
+                    $wrapper.insertAfter(obj.oriImg);
+                }else{
+                    $wrapper.insertBefore(obj.oriImg);
+                }
 
-                    $featuredBgImg = $('<div/>')
-                                        .css({
-                                            'width'              : '100%',
-                                            'height'             : '100%',
-                                            'background-image'   : 'url("' + imgUrl + '")',
-                                            // '-ms-filter'         : '"progid:DXImageTransform.Microsoft.AlphaImageLoader(src="' + $oriImage.attr(options.source) + '",sizingMethod="scale")', // this does not work in Zepto
-                                            'background-repeat'  : 'no-repeat',
-                                            'background-position': strToNum(optPosX) + getMeasurement(optPosX) + ' ' + strToNum(optPosY) + getMeasurement(optPosY),
-                                            'background-size'    : 'cover'
-                                        })
-                                        .appendTo($featuredBgImgContainer);
+                $wrapper.show(); // must show first to get resolution
+                $fakeImg
+                    .css({
+                        'width'    : parseFloat(100 * optZ) + '%',
+                        'height'   : parseFloat(100 * optZ) + '%',
+                        'position' : 'absolute'
+                    })
+                    .css({ // cannot combine css() as width and height have to be defined before doing calculation
+                        'top'      : (function(){
+                            // (cH - pH) / pH * 100 / percentage
+                            var cH = $wrapper.height(),
+                                pH = $fakeImg.height();
+                            if(getMeasurement(optPosY) == '%'){
+                                return '-' + parseFloat((pH - cH) / cH * 100 / (100 / strToNum(optPosY) ) ) + '%';
+                            }
+                        })(),
+                        'left'     : (function(){
+                            // (cW - pW) / cW * 100 / percentage
+                            var cW = $wrapper.width(),
+                                pW = $fakeImg.width();
+                            if(getMeasurement(optPosX) == '%'){
+                                return '-' + parseFloat((pW - cW) / cW * 100 / (100 / strToNum(optPosX) ) ) + '%';
+                            }
+                        })()
+                    });
+                $wrapper.hide();
 
-                    if(options.renderPosition.toLowerCase() === 'after'){
-                        $featuredBgImgContainer.insertAfter($oriImage);
-                    }else{
-                        $featuredBgImgContainer.insertBefore($oriImage);
-                    }
+                if (typeof obj.done === 'function'){
+                    obj.done($wrapper);
+                }
+            }
 
-                    $featuredBgImgContainer.show(); // must show to get resolution
-                    $featuredBgImg
-                        .css({
-                            'width'    : parseFloat(100 * optZ) + '%',
-                            'height'   : parseFloat(100 * optZ) + '%',
-                            'position' : 'absolute'
-                        })
-                        .css({ // cannot combine css() as width and height have to be defined before doing calculation
-                            'top'      : (function(){
-                                // (cH - pH) / pH * 100 / percentage
-                                var cH = $featuredBgImgContainer.height(),
-                                    pH = $featuredBgImg.height();
-                                if(getMeasurement(optPosY) == '%'){
-                                    return '-' + parseFloat((pH - cH) / cH * 100 / (100 / strToNum(optPosY) ) ) + '%';
-                                }
-                            })(),
-                            'left'     : (function(){
-                                // (cW - pW) / cW * 100 / percentage
-                                var cW = $featuredBgImgContainer.width(),
-                                    pW = $featuredBgImg.width();
-                                if(getMeasurement(optPosX) == '%'){
-                                    return '-' + parseFloat((pW - cW) / cW * 100 / (100 / strToNum(optPosX) ) ) + '%';
-                                }
-                            })()
+            function nativeMath(obj){
+                var oriW         = obj.width,
+                    oriH         = obj.height,
+                    optW         = ($.trim(options.width.toString().toLowerCase()) === 'auto') ? oriW.toString() : options.width,
+                    optH         = ($.trim(options.height.toString().toLowerCase()) === 'auto') ? oriH.toString() : options.height,
+                    optZ         = options.zoom,
+                    optPosX      = options.position.x,
+                    optPosY      = options.position.y,
+                    measure_optW = getMeasurement(optW),
+                    measure_optH = getMeasurement(optH),
+                    optResp      = options.responsive,
+                    $wrapper, $fakeImg;
+                $fakeImg      = $(obj.tmpImgDom);
+                $wrapper      = $('<div />');
+
+                function calculateReso(){
+                    var ratio = 0;
+
+                    if(oriW > oriH){ // horizontal
+
+                        $fakeImg.css({
+                            'width'      : 'auto',
+                            'max-height' : 99999999,
+                            'min-height' : 0,
+                            'max-width'  : 99999999,
+                            'min-width'  : 0,
+                            'height'     : $wrapper.height() + 'px'
                         });
 
-                    $featuredBgImgContainer.hide();
+                        ratio = $fakeImg.height() / $fakeImg.width(); // get ratio
 
-                    if(options.show === true){
-                        $featuredBgImgContainer.show();
+                        if($fakeImg.width() < $wrapper.width()){
+                            $fakeImg.css({
+                                'width' : $wrapper.width() * optZ,
+                                'height': parseFloat($wrapper.width() * ratio) * optZ
+                            });
+                        }else{
+                            $fakeImg.css({
+                                'width' : $fakeImg.width() * optZ,
+                                'height': parseFloat($fakeImg.width() * ratio) * optZ
+                            });
+                        }
+
+                    }else{ // vertical
+
+                        $fakeImg.css({
+                            'width'      : $wrapper.width() + 'px',
+                            'max-height' : 99999999,
+                            'min-height' : 0,
+                            'max-width'  : 99999999,
+                            'min-width'  : 0,
+                            'height'     : 'auto'
+                        });
+
+                        ratio = $fakeImg.width() / $fakeImg.height(); // get ratio
+
+                        if($fakeImg.height() < $wrapper.height()){
+                            $fakeImg.css({
+                                'width' : parseFloat($wrapper.height() * ratio) * optZ,
+                                'height': $wrapper.height() * optZ
+                            });
+                        }
+
                     }
 
-                    if (typeof cb === 'function'){
-                        cb($featuredBgImgContainer);
+                    if(optZ < 1){ // workaround for zoom level < 1
+                        var $subContainer = $('<div />');
+
+                        $subContainer
+                            .css({
+                                'width'    : parseFloat(strToNum(optW.toString()) * optZ) + getMeasurement(optW.toString()),
+                                'height'   : parseFloat(strToNum(optH.toString()) * optZ) + getMeasurement(optH.toString()),
+                                'position' : 'relative',
+                                'overflow' : 'hidden'
+                            })
+                            .appendTo($fakeImg.parent());
+
+                        $fakeImg.appendTo($subContainer); // move $fakeImg into $subContainer
                     }
-                };
-                img.src = imgUrl;
+
+                    $fakeImg.css({
+                        'position'    : 'absolute',
+                        'left'        : (function(){
+                            var x = 0;
+                            if(getMeasurement(optPosX) == '%'){
+                                x = parseFloat(($fakeImg.width() - $fakeImg.parent().width()) / 100 * strToNum(optPosX));
+                                return (x <= 0) ? x + 'px' : '-' + x + 'px';
+                            }else if(getMeasurement(optPosX) == 'px' || isNaN(optPosX) === false){
+                                return strToNum(optPosX) + 'px';
+                            }
+                        })(),
+                        'top'         : (function(){
+                            var y = 0;
+                            if(getMeasurement(optPosY) == '%'){
+                                y = parseFloat(($fakeImg.height() - $fakeImg.parent().height()) / 100 * strToNum(optPosY));
+                                return (y <= 0) ? y + 'px' : '-' + y + 'px';
+                            }else if(getMeasurement(optPosY) == 'px' || isNaN(optPosY) === false){
+                                return strToNum(optPosY) + 'px';
+                            }
+                        })()
+                    });
+                }
+
+                if(options.renderPosition.toLowerCase() === 'after'){
+                    $wrapper.insertAfter(obj.oriImg);
+                }else{
+                    $wrapper.insertBefore(obj.oriImg);
+                }
+
+                $wrapper
+                    .append($fakeImg)
+                    .css({
+                        'position' : 'relative',
+                        'overflow' : 'hidden',
+                        'width'    : strToNum(optW) + (measure_optW ? measure_optW : 'px'),
+                        'height'   : strToNum(optH) + (measure_optH ? measure_optH : 'px')
+                    })
+                    .data(pluginName, pluginName); // it would be easy to kill later
+
+                calculateReso();
+
+                if(!isNaN(optResp) && optResp > 0){
+                    // $wrapper.data(resizeDataName, resizeThumb); // keep function into data for killing purpose later
+                    $window.bind(onDemandScrollEventObj.resize, function(){
+                        setTimeout(function(){
+                            calculateReso();
+                        }, optResp);
+                    });
+                }
+
+                $wrapper
+                    .hide()
+                    .addClass(options.classname);
+
+                if(options.show === true){
+                    $wrapper.show();
+                }
+
+                if (typeof cb === 'function'){
+                    cb($wrapper);
+                }
             }
 
-            options.before.apply(_this, [_this]);
+            options.before.apply(self, [self]);
 
-            var that      = this,
-                $oriImage = $(_this),
-                imgUrl    = $oriImage.attr(options.source);
-            onDemandScrollEventHandlerFn = function(){ // check scroll position
-                                        var readyToLoad = checkPositionReach($oriImage.parent(), options.onDemandScrollCheck);
-                                        if(readyToLoad && !$oriImage.data(onScrDataName)){
-                                            $oriImage
-                                                .data(onScrDataName, true)
-                                                .unwrap(); // remove temporary tag
-                                            loadImg($oriImage, imgUrl, function($featuredBgImgContainer){
-                                                options.after.apply(_this, [$featuredBgImgContainer]);
-                                                that.updateGlobal(_this, $featuredBgImgContainer, options);
-                                            }, true);
+            var PluginClass = this,
+                $oriImage   = $(self),
+                imgUrl      = $oriImage.attr(options.source),
+                doMath      = (function(method){
+                                    if(method == 'auto'){
+                                        if(css3Supported('backgroundSize') === false){ // old browsers need to do calculation to perform same output like "background-size: cover"
+                                            return nativeMath;
                                         }
-                                    };
-            onDemandClickEventHandlerFn = function(){
-                if(!$oriImage.data(onScrDataName)){
-                    loadImg($oriImage, imgUrl, function($featuredBgImgContainer){
-                        options.after.apply(_this, [$featuredBgImgContainer]);
-                        that.updateGlobal(_this, $featuredBgImgContainer, options);
-                    }, true);
-                    $oriImage.data(onScrDataName, true);
-                }
-            };
-            onDemandMouseEnterEventHandlerFn = function(){
-                if(!$oriImage.data(onScrDataName)){
-                    loadImg($oriImage, imgUrl, function($featuredBgImgContainer){
-                        options.after.apply(_this, [$featuredBgImgContainer]);
-                        that.updateGlobal(_this, $featuredBgImgContainer, options);
-                    }, true);
-                    $oriImage.data(onScrDataName, true);
-                }
-            };
+                                        return modernMath; // modern browsers that support CSS3 would be easier
+                                    }else if(method == 'modern'){
+                                        return modernMath;
+                                    }else if(method == 'native'){
+                                        return nativeMath;
+                                    }else{
+                                        log('error', 'Invalid method. Only "auto", "modern" and "native" are allowed.');
+                                        return null;
+                                    }
+                                })(options.method.toLowerCase());
 
             $oriImage.data(oriStyleDataName, $oriImage.attr('style')); // keep original styles into data
             $oriImage.data(renderPosDataName, options.renderPosition); // store render position (before/after) for killing purpose
 
             $oriImage.hide();
 
+            PluginClass.demand(self, options, doMath);
+        },
+
+        demand: function(self, options, fnDoMathOnSuccess){
+            var PluginClass = this,
+                $oriImage   = $(self);
+
             if(options.onDemand === true){
                 if(options.onDemandEvent === 'scroll'){
                     $oriImage.wrap('<div />'); // add temporary tag to get its offset().top
-                    $oriImage
-                        .parent()
-                            .css({ // set temporarily height
-                                'width' : ((options.width) ? strToNum(options.width) + getMeasurement(options.width) : $oriImage.width() + 'px'),
-                                'height' : ((options.height) ? strToNum(options.height) + getMeasurement(options.height) : $oriImage.height() + 'px')
-                            });
+                    var $tmpWrapper = $oriImage.parent();
+                    $tmpWrapper.css({ // set temporarily height
+                        'width' : ((options.width) ? strToNum(options.width) + getMeasurement(options.width) : $oriImage.width() + 'px'),
+                        'height' : ((options.height) ? strToNum(options.height) + getMeasurement(options.height) : $oriImage.height() + 'px')
+                    });
+
                     $window
-                        .bind(onDemandScrollEventStr, onDemandScrollEventHandlerFn)
-                        .triggerHandler(onDemandScrollEventsArr[0]);
-                }else if(options.onDemandEvent === 'click'){
-                    $oriImage.parent().bind(onDemandClickEventName, onDemandClickEventHandlerFn);
-                }else if(options.onDemandEvent === 'mouseenter'){
-                    $oriImage.parent().bind(onDemandMouseEnterEventName, onDemandMouseEnterEventHandlerFn);
+                        .bind(onDemandScrollEventStr, function(){ // check scroll position
+                            if(
+                                checkPositionReach($tmpWrapper, options.threshold) && 
+                                !$oriImage.data(onScrDataName)
+                            ){
+                                $oriImage
+                                    .data(onScrDataName, true)
+                                    .unwrap(); // remove temporary tag
+                                PluginClass.lazyload(self, options, fnDoMathOnSuccess);
+                            }
+                        })
+                        .triggerHandler(onDemandScrollEventObj.scroll);
+                }else{
+                    if(
+                        options.onDemandEvent === 'click' || 
+                        options.onDemandEvent === 'mouseenter'
+                    ){
+                        $oriImage.parent().bind(
+                            ((options.onDemandEvent === 'click') ? onDemandClickEventName : onDemandMouseEnterEventName),
+                            function(){
+                                if(!$oriImage.data(onScrDataName)){
+                                    PluginClass.lazyload(self, options, fnDoMathOnSuccess);
+                                    $oriImage.data(onScrDataName, true);
+                                }
+                            }
+                        );
+                    }
                 }
             }else{
-                loadImg($oriImage, imgUrl, function($featuredBgImgContainer){
-                    options.after.apply(_this, [$featuredBgImgContainer]);
-                    that.updateGlobal(_this, $featuredBgImgContainer, options);
-                });
+                PluginClass.lazyload(self, options, fnDoMathOnSuccess);
             }
         },
 
-        updateGlobal: function(_this, obj, options){
-            _this.global.outputElems.push( $(obj)[0] );
-            _this.global.elemCounter++;
+        updateGlobal: function(self, obj, options){
+            self.global.outputElems.push( $(obj)[0] );
+            self.global.elemCounter++;
             grandGlobal.outputElems.push( $(obj)[0] );
-            if(_this.global.elemCounter == _this.global.inputElems.length){
-                options.done.apply(_this, [_this.global.outputElems]);
+            if(self.global.elemCounter == self.global.inputElems.length){
+                options.done.apply(self, [self.global.outputElems]);
             }
         }
     };
@@ -727,16 +667,6 @@
                                             return tempArr;
                                         })($(this))
                     };
-
-        if(!$.fn.unwrap){
-            $.fn.unwrap = function(){
-                this.parent().each(function() {
-                    if ( !$.nodeName( this, 'body' ) ) {
-                        $( this ).replaceWith( this.childNodes );
-                    }
-                }).end();
-            };
-        }
 
         obj[pluginName] = function(action){
             if(typeof action == 'undefined'){

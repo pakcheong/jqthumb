@@ -25,24 +25,24 @@ Create thumbnails from images proportionally. On top of that, this is alaso a la
 
             // plugin initialization
             $('img').jqthumb({
-                classname           : 'jqthumb',          // class name. DEFUALT IS jqthumb
-                width               : '100%',             // new image width after cropping. DEFAULT IS 100px.
-                height              : '100%',             // new image height after cropping. DEFAULT IS 100px.
-                position            : {
-                    x : '50%',                            // x position of the image. DEFAULT is 50%. 50% also means centerize the image.
-                    y : '50%'                             // y position of the image. DEFAULT is 50%. 50% also means centerize the image.
+                classname      : 'jqthumb',          // class name. DEFUALT IS jqthumb
+                width          : '100%',             // new image width after cropping. DEFAULT IS 100px.
+                height         : '100%',             // new image height after cropping. DEFAULT IS 100px.
+                position       : {
+                    x : '50%',                       // x position of the image. DEFAULT is 50%. 50% also means centerize the image.
+                    y : '50%'                        // y position of the image. DEFAULT is 50%. 50% also means centerize the image.
                 },
-                source              : 'src',              // to specify the image source attribute. DEFAULT IS src.
-                show                : false,              // TRUE = show immediately after processing. FALSE = do not show it. DEFAULT IS TRUE.
-                renderPosition      : 'before',           // available: "before" and "after".
-                onDemand            : false,              // TRUE = load image only when scolling position has reached the DOM
-                onDemandEvent       : 'scroll',           // available: "scroll", "click", "mouseenter". DEFAULT IS "scroll"
-                onDemandScrollCheck : 0,                  // used when "onDemand" is set to true AND "onDemandEvent" is set to "scroll". Eg. Start loading the image 200px before scolling position reaches the DOM. DEFUALT IS 0
-                responsive          : 20,                 // used by older browsers only. 0 to disable. DEFAULT IS 20
-                zoom                : 1,                  // zoom the output, 2 would double of the actual image size. DEFAULT IS 1
-                method              : 'auto',             // 3 methods available: "auto", "modern" and "native". DEFAULT IS auto
-                reinit              : true,               // TRUE = to re-init when images is re-initialized for the second time. FALSE = nothing would happen.
-                before              : function(oriImage){ // callback before each image starts processing.
+                source         : 'src',              // to specify the image source attribute. DEFAULT IS src.
+                show           : false,              // TRUE = show immediately after processing. FALSE = do not show it. DEFAULT IS TRUE.
+                renderPosition : 'before',           // available: "before" and "after".
+                onDemand       : false,              // TRUE = load image only when scolling position has reached the DOM
+                onDemandEvent  : 'scroll',           // available: "scroll", "click", "mouseenter". DEFAULT IS "scroll"
+                threshold      : 0,                  // used when "onDemand" is set to true AND "onDemandEvent" is set to "scroll". Eg. Start loading the image 200px before scolling position reaches the DOM. DEFUALT IS 0
+                responsive     : 20,                 // used by older browsers only. 0 to disable. DEFAULT IS 20
+                zoom           : 1,                  // zoom the output, 2 would double of the actual image size. DEFAULT IS 1
+                method         : 'auto',             // 3 methods available: "auto", "modern" and "native". DEFAULT IS auto
+                reinit         : true,               // TRUE = to re-init when images is re-initialized for the second time. FALSE = nothing would happen.
+                before         : function(oriImage){ // callback before each image starts processing.
                     alert("I'm about to start processing now...");
                 },
                 after          : function(imgObj){   // callback when each image is cropped.
@@ -83,24 +83,23 @@ http://pakcheong.github.io/jqthumb/
 ##DEFAULT OPTIONS
 ```javascript
 $.fn.jqthumb.defaults = {
-    classname           : 'jqthumb',
-    width               : 100,
-    height              : 100,
-    position            : { x: '50%', y: '50%' },
-    source              : 'src',
-    responsive          : 20,
-    zoom                : 1,
-    show                : true,
-    renderPosition      : 'before',
-    onDemand            : false,
-    onDemandEvent       : 'scroll',
-    onDemandScrollCheck : 0,
-    scrollCheck         : 0,
-    method              : 'auto',
-    reinit              : true,
-    before              : function(){},
-    after               : function(){},
-    done                : function(){}
+    classname      : 'jqthumb',
+    width          : 100,
+    height         : 100,
+    position       : { x: '50%', y: '50%' },
+    source         : 'src',
+    responsive     : 20,
+    zoom           : 1,
+    show           : true,
+    renderPosition : 'before',
+    onDemand       : false,
+    onDemandEvent  : 'scroll',
+    threshold      : 0,
+    method         : 'auto',
+    reinit         : true,
+    before         : function(){},
+    after          : function(){},
+    done           : function(){}
 };
 ```
 
@@ -158,17 +157,17 @@ $('img').jqthumb({
 });
 ```
 
-####onDemand / onDemandEvent / onDemandScrollCheck
+####onDemand / onDemandEvent / threshold
 Asign an event to tell when to load the images. For eg., setting the event to "scroll" is a common action as you might want to load the images only when its DOM is within the viewport. Therefore, images will not start loading/processing until the scrolling position has reached the DOM. This is good when you have a lot of images on the page but user doesn't actually look through the entire site, so no point loading all at once.
 
-`onDemandScrollCheck`: Used only when `onDemand` is enabled AND `onDemandEvent` is set to "scroll". The scroll event will be triggered once the scrolling position has reached the DOM. For eg., you might want to load the images without users knowing it, so you will need to set `onDemandScrollCheck` to maybe "200" which means images will start loading 200PX before (all directions including top, left, bottom, right) before scrolling position reaches the DOM.
+`threshold`: Used only when `onDemand` is enabled AND `onDemandEvent` is set to "scroll". The scroll event will be triggered once the scrolling position has reached the DOM. For eg., you might want to load the images without users knowing it, so you will need to set `threshold` to maybe "200" which means images will start loading 200PX before (all directions including top, left, bottom, right) before scrolling position reaches the DOM.
 
 `onDemandEvent`: has three possible inputs, "scroll", "click" and "mouseenter". Clicking and mouse hovering events mean that the images will only start loading when selected event is being triggered. For eg., setting `onDemandEvent` to "mouseenter" will lead image to start loading when users move the mouse cursor over it.
 ```javascript
 $('img').jqthumb({
     onDemand            : true,     // DEFAULT: false
     onDemandEvent       : 'scroll', // DEFAULT: scroll
-    onDemandScrollCheck : 100       // DEFAULT: 0
+    threshold : 100       // DEFAULT: 0
 });
 ```
 
