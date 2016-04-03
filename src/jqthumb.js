@@ -170,7 +170,6 @@
 
     var pluginName                  = 'jqthumb',
         $window                     = $(window),
-        resizeDataName              = pluginName + '-resize',
         onDemandScrollEventObj      = (function(){
                                             var tmp = ['scroll', 'resize', 'scrolltop'];
                                             var obj = {};
@@ -190,8 +189,9 @@
         onDemandMouseEnterEventName = 'mouseenter.' + pluginName,
         renderPosDataName           = pluginName + '-render-position',
         oriStyleDataName            = pluginName + '-original-styles',
-        onScrDataName               = pluginName + '-onscreen',
+        inViewPortDataName          = pluginName + '-inviewport',
         dtOption                    = pluginName + '-options',
+        dtStatus                    = pluginName + '-status',
         grandGlobal                 = { outputElems: [], inputElems: [] },
         defaults                    = {
                                             classname      : pluginName,
@@ -208,6 +208,7 @@
                                             threshold      : 0,
                                             method         : 'auto', // auto, modern, native
                                             reinit         : true, // true, false
+                                            error          : function(){},
                                             before         : function(){},
                                             after          : function(){},
                                             done           : function(){}
@@ -270,12 +271,16 @@
                     $ori.removeData(dtOption); // remove data that stored during plugin initialization
                 }
 
-                if($ori.data(onScrDataName)){
-                    $ori.removeData(onScrDataName); // remove data that stored during plugin initialization
+                if($ori.data(inViewPortDataName)){
+                    $ori.removeData(inViewPortDataName); // remove data that stored during plugin initialization
                 }
 
                 if($ori.data(renderPosDataName)){
                     $ori.removeData(renderPosDataName); // remove data that stored during plugin initialization
+                }
+
+                if($ori.data(dtStatus)){
+                    $ori.removeData(dtStatus); // remove data that stored during plugin initialization
                 }
             }
 
@@ -289,8 +294,11 @@
                                 })();
 
                 if($thumb && $thumb.data(pluginName) !== pluginName){
-                    if($oriImage.data(dtOption).onDemand === false){ // kill only generated thumbnails
-                        log('error', 'Could not find the element. It is probably due to one or more element has been added right before the image element after the plugin initialization or it was removed.');
+                    if($oriImage.data(dtStatus) === 'error'){
+                        killOri($oriImage);
+                        return false;
+                    }else if($oriImage.data(dtOption).onDemand === false){ // kill only generated thumbnails
+                        log('error', 'Could not find the generated element.');
                         return false;
                     }else{ // onDemand thumbnails are not generated yet, so customize the kill
                         killOri($oriImage);
@@ -327,29 +335,35 @@
             }
         },
 
-        lazyload: function(self, options, fnDoMathOnSuccess){
-
-            var PluginClass = this,
-                $oriImage   = $(self),
-                imgUrl      = $oriImage.attr(options.source),
-                img         = new Image();
-
-            img.onload  = function(){
-                fnDoMathOnSuccess({
-                    tmpImgDom : img,
-                    oriImg    : $oriImage,
-                    width     : this.width,
-                    height    : this.height,
-                    done      : function($wrapper){
-                        if(options.show === true){
-                            $wrapper.show();
-                        }
-                        options.after.apply(self, [$wrapper]);
-                        PluginClass.updateGlobal(self, $wrapper, options);
-                    }
-                });
+        lazyload: function(imgUrl, cb){
+            var img = new Image();
+            img.onload = function(){
+                cb({ status: 'success', img: this });
+            };
+            img.onerror = function(){
+                cb({ status: 'error', img: this });
             };
             img.src = imgUrl;
+        },
+
+        processImg: function(self, options, img, fnDoMathOnSuccess){
+            var PluginClass = this,
+                $oriImage   = $(self),
+                imgUrl      = $oriImage.attr(options.source);
+
+            fnDoMathOnSuccess({
+                tmpImgDom : img,
+                oriImg    : $oriImage,
+                width     : img.naturalWidth,
+                height    : img.naturalHeight,
+                done      : function($wrapper){
+                    if(options.show === true){
+                        $wrapper.show();
+                    }
+                    options.after.apply(self, [$wrapper]);
+                    PluginClass.updateGlobal(self, $wrapper, options);
+                }
+            });
         },
 
         init: function (self, options) {
@@ -434,6 +448,7 @@
                     measure_optH = getMeasurement(optH),
                     optResp      = options.responsive,
                     $wrapper, $fakeImg;
+
                 $fakeImg      = $(obj.tmpImgDom);
                 $wrapper      = $('<div />');
 
@@ -544,7 +559,6 @@
                 calculateReso();
 
                 if(!isNaN(optResp) && optResp > 0){
-                    // $wrapper.data(resizeDataName, resizeThumb); // keep function into data for killing purpose later
                     $window.bind(onDemandScrollEventObj.resize, function(){
                         setTimeout(function(){
                             calculateReso();
@@ -556,12 +570,8 @@
                     .hide()
                     .addClass(options.classname);
 
-                if(options.show === true){
-                    $wrapper.show();
-                }
-
-                if (typeof cb === 'function'){
-                    cb($wrapper);
+                if (typeof obj.done === 'function'){
+                    obj.done($wrapper);
                 }
             }
 
@@ -569,75 +579,87 @@
 
             var PluginClass = this,
                 $oriImage   = $(self),
-                imgUrl      = $oriImage.attr(options.source),
-                doMath      = (function(method){
-                                    if(method == 'auto'){
-                                        if(css3Supported('backgroundSize') === false){ // old browsers need to do calculation to perform same output like "background-size: cover"
-                                            return nativeMath;
-                                        }
-                                        return modernMath; // modern browsers that support CSS3 would be easier
-                                    }else if(method == 'modern'){
-                                        return modernMath;
-                                    }else if(method == 'native'){
+                imgUrl      = $oriImage.attr(options.source);
+
+            PluginClass.lazyload(imgUrl, function(obj){
+                if(obj.status === 'error'){
+                    options.error.apply(self, [self, (imgUrl) ? imgUrl : undefined]);
+                    $oriImage.data(dtStatus, 'error');
+                    PluginClass.kill($oriImage);
+                    return false;
+                }
+
+                var doMath = (function(method){
+                                if(method == 'auto'){
+                                    if(css3Supported('backgroundSize') === false){ // old browsers need to do calculation to perform same output like "background-size: cover"
                                         return nativeMath;
-                                    }else{
-                                        log('error', 'Invalid method. Only "auto", "modern" and "native" are allowed.');
-                                        return null;
                                     }
-                                })(options.method.toLowerCase());
+                                    return modernMath; // modern browsers that support CSS3 would be easier
+                                }else if(method == 'modern'){
+                                    return modernMath;
+                                }else if(method == 'native'){
+                                    return nativeMath;
+                                }else{
+                                    log('error', 'Invalid method. Only "auto", "modern" and "native" are allowed.');
+                                }
+                            })(options.method.toString().toLowerCase());
 
-            $oriImage.data(oriStyleDataName, $oriImage.attr('style')); // keep original styles into data
-            $oriImage.data(renderPosDataName, options.renderPosition); // store render position (before/after) for killing purpose
-
-            $oriImage.hide();
-
-            PluginClass.demand(self, options, doMath);
+                if(doMath){
+                    $oriImage.data(oriStyleDataName, $oriImage.attr('style')); // keep original styles into data
+                    $oriImage.data(renderPosDataName, options.renderPosition); // store render position (before/after) for killing purpose
+                    $oriImage.hide();
+                    if(options.onDemand === true){
+                        PluginClass.demand(self, options, doMath, obj.img);
+                    }else{
+                        PluginClass.processImg(self, options, obj.img, doMath);
+                    }
+                }else{
+                    $oriImage.data(dtStatus, 'error');
+                    PluginClass.kill($oriImage);
+                }
+            });
         },
 
-        demand: function(self, options, fnDoMathOnSuccess){
+        demand: function(self, options, fnDoMathOnSuccess, img){
             var PluginClass = this,
                 $oriImage   = $(self);
 
-            if(options.onDemand === true){
-                if(options.onDemandEvent === 'scroll'){
-                    $oriImage.wrap('<div />'); // add temporary tag to get its offset().top
-                    var $tmpWrapper = $oriImage.parent();
-                    $tmpWrapper.css({ // set temporarily height
-                        'width' : ((options.width) ? strToNum(options.width) + getMeasurement(options.width) : $oriImage.width() + 'px'),
-                        'height' : ((options.height) ? strToNum(options.height) + getMeasurement(options.height) : $oriImage.height() + 'px')
-                    });
+            if(options.onDemandEvent === 'scroll'){
+                $oriImage.wrap('<div />'); // add temporary tag to get its offset().top
+                var $tmpWrapper = $oriImage.parent();
+                $tmpWrapper.css({ // set temporarily height
+                    'width' : ((options.width) ? strToNum(options.width) + getMeasurement(options.width) : $oriImage.width() + 'px'),
+                    'height' : ((options.height) ? strToNum(options.height) + getMeasurement(options.height) : $oriImage.height() + 'px')
+                });
 
-                    $window
-                        .bind(onDemandScrollEventStr, function(){ // check scroll position
-                            if(
-                                checkPositionReach($tmpWrapper, options.threshold) && 
-                                !$oriImage.data(onScrDataName)
-                            ){
-                                $oriImage
-                                    .data(onScrDataName, true)
-                                    .unwrap(); // remove temporary tag
-                                PluginClass.lazyload(self, options, fnDoMathOnSuccess);
-                            }
-                        })
-                        .triggerHandler(onDemandScrollEventObj.scroll);
-                }else{
-                    if(
-                        options.onDemandEvent === 'click' || 
-                        options.onDemandEvent === 'mouseenter'
-                    ){
-                        $oriImage.parent().bind(
-                            ((options.onDemandEvent === 'click') ? onDemandClickEventName : onDemandMouseEnterEventName),
-                            function(){
-                                if(!$oriImage.data(onScrDataName)){
-                                    PluginClass.lazyload(self, options, fnDoMathOnSuccess);
-                                    $oriImage.data(onScrDataName, true);
-                                }
-                            }
-                        );
-                    }
-                }
+                $window
+                    .bind(onDemandScrollEventStr, function(){ // check scroll position
+                        if(
+                            checkPositionReach($tmpWrapper, options.threshold) && 
+                            !$oriImage.data(inViewPortDataName)
+                        ){
+                            $oriImage
+                                .data(inViewPortDataName, true)
+                                .unwrap(); // remove temporary tag
+                            PluginClass.processImg(self, options, img, fnDoMathOnSuccess);
+                        }
+                    })
+                    .triggerHandler(onDemandScrollEventObj.scroll);
             }else{
-                PluginClass.lazyload(self, options, fnDoMathOnSuccess);
+                if(
+                    options.onDemandEvent === 'click' || 
+                    options.onDemandEvent === 'mouseenter'
+                ){
+                    $oriImage.parent().bind(
+                        ((options.onDemandEvent === 'click') ? onDemandClickEventName : onDemandMouseEnterEventName),
+                        function(){
+                            if(!$oriImage.data(inViewPortDataName)){
+                                PluginClass.processImg(self, options, img, fnDoMathOnSuccess);
+                                $oriImage.data(inViewPortDataName, true);
+                            }
+                        }
+                    );
+                }
             }
         },
 
