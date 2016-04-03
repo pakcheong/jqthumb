@@ -15,56 +15,56 @@
                     <div class="span6 tc">
                         <div class="plr">
                             <div class="frame">
-                                <div class="frame-pad"><img src="picture.jpg" /></div>
+                                <div class="frame-pad"><div class="original" attr-src="picture.jpg"></div></div>
                             </div>
                         </div>
                     </div>
                     <div class="span6">
                         <div class="plr mb">
                             <div class="frame">
-                                <div class="frame-pad"><img class="example1" src="picture.jpg" /></div>
+                            <div class="frame-pad"><div class="example1" attr-src="picture.jpg"></div></div>
                             </div>
                         </div>
                     </div>
                     <div class="span6">
                         <div class="plr mb">
                             <div class="frame">
-                                <div class="frame-pad"><img class="example2" src="picture.jpg" /></div>
+                                <div class="frame-pad"><div class="example2" attr-src="picture.jpg"></div></div>
                             </div>
                         </div>
                     </div>
                     <div class="span4">
                         <div class="plr">
                             <div class="frame">
-                                <div class="frame-pad"><img class="example3" src="picture.jpg" /></div>
+                                <div class="frame-pad"><div class="example3" attr-src="picture.jpg"></div></div>
                             </div>
                         </div>
                     </div>
                     <div class="span3">
                         <div class="plr">
                             <div class="frame">
-                                <div class="frame-pad"><img class="example4" src="picture.jpg" /></div>
+                                <div class="frame-pad"><div class="example4" attr-src="picture.jpg"></div></div>
                             </div>
                         </div>
                     </div>
                     <div class="span3">
                         <div class="plr">
                             <div class="frame">
-                                <div class="frame-pad"><img class="example5" src="picture.jpg" /></div>
+                                <div class="frame-pad"><div class="example5" attr-src="picture.jpg"></div></div>
                             </div>
                         </div>
                     </div>
                     <div class="span2">
                         <div class="plr mb">
                             <div class="frame">
-                                <div class="frame-pad"><img class="example6" src="picture.jpg" /></div>
+                                <div class="frame-pad"><div class="example6" attr-src="picture.jpg"></div></div>
                             </div>
                         </div>
                     </div>
                     <div class="span2">
                         <div class="plr">
                             <div class="frame">
-                                <div class="frame-pad"><img class="example7" src="picture.jpg" /></div>
+                                <div class="frame-pad"><div class="example7" attr-src="picture.jpg"></div></div>
                             </div>
                         </div>
                     </div>
@@ -93,6 +93,7 @@
                                                 <select id="width-type">
                                                     <option value="px" selected>PX</option>
                                                     <option value="%">%</option>
+                                                    <option value="auto">Auto (full width)</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -115,6 +116,7 @@
                                                 <select id="height-type">
                                                     <option value="px" selected>PX</option>
                                                     <option value="%">%</option>
+                                                    <option value="auto">Auto (full height)</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -171,6 +173,38 @@
                             <div class="input"><div class="plr"><input type="text" id="zoom" placeholder="1" value="1" /></div></div>
                         </div>
                         <div class="row">
+                            <label class="tr">Render Position:</label>
+                            <div class="input"><div class="plr">
+                                <select id="renderPosition">
+                                    <option value="before" selected="selected">Before</option>
+                                    <option value="after">After</option>
+                                </select>
+                            </div></div>
+                        </div>
+                        <div class="row">
+                            <label class="tr">On Demand:</label>
+                            <div class="input"><div class="plr">
+                                <select id="ondemand">
+                                    <option value="false" selected="selected">False</option>
+                                    <option value="true">True</option>
+                                </select>
+                            </div></div>
+                        </div>
+                        <div class="row">
+                            <label class="tr">On Demand Event:</label>
+                            <div class="input"><div class="plr">
+                                <select id="ondemandevent" disabled>
+                                    <option value="scroll" selected="selected">scroll</option>
+                                    <option value="click">click</option>
+                                    <option value="mouseenter">mouseenter</option>
+                                </select>
+                            </div></div>
+                        </div>
+                        <div class="row">
+                            <label class="tr">On Demand Scroll Check:</label>
+                            <div class="input"><div class="plr"><input disabled type="text" id="ondemandscrollcheck" placeholder="0" value="0" /></div></div>
+                        </div>
+                        <div class="row">
                             <label class="tr">Method:</label>
                             <div class="input"><div class="plr">
                                 <select id="method">
@@ -193,7 +227,7 @@
                 </div>
                 <div class="span6 tc">
                     <div class="plr tc">
-                        <div class="frame" style="width: auto;">
+                        <div class="frame">
                             <div class="frame-pad"><img src="picture.jpg" id="demo" /></div>
                         </div>
                     </div>

@@ -20,9 +20,14 @@
         "full-width",
         "background-size",
         "backgroundsize",
-        "cover"
+        "cover",
+        "lazy-load",
+        "image-loader",
+        "cropper",
+        "image-cropper",
+        "seo-friendly"
     ],
-    "version": "2.2.0",
+    "version": "2.3.0",
     "author": {
         "name": "Pak Cheong",
         "email": "jqthumb@gmail.com",

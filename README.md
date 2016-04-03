@@ -1,8 +1,8 @@
-#jQThumb V2.2.0
+#jQThumb V2.3.0
 
-Create thumbnails from images proportionally. It even works on IE6 from jQuery >=v1.3 or Zepto (with zepto-data plugin) >=v1.1.3.
+Create thumbnails from images proportionally. On top of that, this is alaso a lazy-load plugin, which even works on IE6 from jQuery >=v1.3 or Zepto (with zepto-data plugin) >=v1.1.3.
 
-![screenshot.jquery.png](http://pakcheong.github.io/jqthumb/demo/demo.jpg)
+![screenshot](screenshots/screenshot.jpg?raw=true "jQThumb Screenshot")
 
 #USAGE
 ```html
@@ -25,26 +25,30 @@ Create thumbnails from images proportionally. It even works on IE6 from jQuery >
 
             // plugin initialization
             $('img').jqthumb({
-                classname  : 'jqthumb',          // class name. DEFUALT IS jqthumb
-                width      : '100%',             // new image width after cropping. DEFAULT IS 100px.
-                height     : '100%',             // new image height after cropping. DEFAULT IS 100px.
-                position   : {
-                    x : '50%',                   // x position of the image. DEFAULT is 50%. 50% also means centerize the image.
-                    y : '50%'                    // y position of the image. DEFAULT is 50%. 50% also means centerize the image.
+                classname      : 'jqthumb',          // class name. DEFUALT IS jqthumb
+                width          : '100%',             // new image width after cropping. DEFAULT IS 100px.
+                height         : '100%',             // new image height after cropping. DEFAULT IS 100px.
+                position       : {
+                    x : '50%',                       // x position of the image. DEFAULT is 50%. 50% also means centerize the image.
+                    y : '50%'                        // y position of the image. DEFAULT is 50%. 50% also means centerize the image.
                 },
-                source     : 'src',              // to specify the image source attribute. DEFAULT IS src.
-                show       : false,              // TRUE = show immediately after processing. FALSE = do not show it. DEFAULT IS TRUE.
-                responsive : 20,                 // used by older browsers only. 0 to disable. DEFAULT IS 20
-                zoom       : 1,                  // zoom the output, 2 would double of the actual image size. DEFAULT IS 1
-                method     : 'auto',             // 3 methods available: "auto", "modern" and "native". DEFAULT IS auto
-                reinit     : true,               // TRUE = to re-init when images is re-initialized for the second time. FALSE = nothing would happen.
-                before     : function(oriImage){ // callback before each image starts processing.
+                source         : 'src',              // to specify the image source attribute. DEFAULT IS src.
+                show           : false,              // TRUE = show immediately after processing. FALSE = do not show it. DEFAULT IS TRUE.
+                renderPosition : 'before',           // available: "before" and "after".
+                onDemand       : false,              // TRUE = load image only when scolling position has reached the DOM
+                onDemandEvent  : 'scroll',           // available: "scroll", "click", "mouseenter". DEFAULT IS "scroll"
+                threshold      : 0,                  // used when "onDemand" is set to true AND "onDemandEvent" is set to "scroll". Eg. Start loading the image 200px before scolling position reaches the DOM. DEFUALT IS 0
+                responsive     : 20,                 // used by older browsers only. 0 to disable. DEFAULT IS 20
+                zoom           : 1,                  // zoom the output, 2 would double of the actual image size. DEFAULT IS 1
+                method         : 'auto',             // 3 methods available: "auto", "modern" and "native". DEFAULT IS auto
+                reinit         : true,               // TRUE = to re-init when images is re-initialized for the second time. FALSE = nothing would happen.
+                before         : function(oriImage){ // callback before each image starts processing.
                     alert("I'm about to start processing now...");
                 },
-                after      : function(imgObj){   // callback when each image is cropped.
+                after          : function(imgObj){   // callback when each image is cropped.
                     console.log(imgObj);
                 },
-                done       : function(imgArray){ // callback when all images are cropped.
+                done           : function(imgArray){ // callback when all images are cropped.
                     for(i in imgArray){
                         $(imgArray[i]).fadeIn();
                     }
@@ -53,11 +57,11 @@ Create thumbnails from images proportionally. It even works on IE6 from jQuery >
 
             // kill command
             $('#kill').click(function(){
-                $('.example1').jqthumb('kill');
+                $('.your-dom').jqthumb('kill');
             });
 
             // kill all command
-            $('#kill').click(function(){
+            $('#destroy-all').click(function(){
                 $.jqthumb('killall');
             });
         });
@@ -68,13 +72,36 @@ Create thumbnails from images proportionally. It even works on IE6 from jQuery >
 ##INTRODUCTION
 This is a plugin helps creating thumbnails proportionally from images. As many of you may know that `background-size: cover;` would solve most of the major issues when dealing with thumbnails. But `background-size: cover;` does not work in older browsers like IE6, 7 and 8 therefore this is one of the reasons why this plugin was built.
 
-Ever wonder how to support full-width billboard in older browsers that works the same as modern browser? This plugin helps exactly in this. Never assume this plugin only generates thumbnails, in fact this works perfectly with big images like billboards.
+Ever wonder how to support full-width billboard in older browsers that works the same as modern browser? This plugin helps exactly in this. Never assume this plugin only generates thumbnails, in fact this works perfectly with big images like billboards. On top of that, the plugin also comes with lazy-load feature.
 
 ##BOWER
 `bower install jqthumb`
 
 ##DEMO
 http://pakcheong.github.io/jqthumb/
+
+##DEFAULT OPTIONS
+```javascript
+$.fn.jqthumb.defaults = {
+    classname      : 'jqthumb',
+    width          : 100,
+    height         : 100,
+    position       : { x: '50%', y: '50%' },
+    source         : 'src',
+    responsive     : 20,
+    zoom           : 1,
+    show           : true,
+    renderPosition : 'before',
+    onDemand       : false,
+    onDemandEvent  : 'scroll',
+    threshold      : 0,
+    method         : 'auto',
+    reinit         : true,
+    before         : function(){},
+    after          : function(){},
+    done           : function(){}
+};
+```
 
 ##OPTION REFERENCES
 
@@ -95,7 +122,7 @@ $('img').jqthumb({
 ```
 
 ####width & height
-The width of the generated thumbnail. This accepts both integer and string data types. Integer input would mean the width of the thumbnail is in pixel rather than percentage and vice versa. **Note: if you define width and/or height in percentage, make sure you have a container with width and/or height defined in pixels.**
+The width of the generated thumbnail. This accepts both integer and string data types. Integer input would mean the width of the thumbnail is in pixel rather than percentage and vice versa. You may also set both to `auto` which means you're defining the ouput same as the actual resolution of the file. **Note: if you define width and/or height in percentage, make sure you have a container with width and/or height defined in pixels.**
 ```javascript
 $('img').jqthumb({
     width  : 200,   // DEFAULT: 100
@@ -119,6 +146,28 @@ Whether to show the thumbnail right after processing.
 ```javascript
 $('img').jqthumb({
     show : false // DEFAULT: true
+});
+```
+
+####renderPosition
+Render image whether before or after the selected DOM.
+```javascript
+$('img').jqthumb({
+    renderPosition : 'after' // DEFAULT: 'before'
+});
+```
+
+####onDemand / onDemandEvent / threshold
+Asign an event to tell when to load the images. For eg., setting the event to "scroll" is a common action as you might want to load the images only when its DOM is within the viewport. Therefore, images will not start loading/processing until the scrolling position has reached the DOM. This is good when you have a lot of images on the page but user doesn't actually look through the entire site, so no point loading all at once.
+
+`threshold`: Used only when `onDemand` is enabled AND `onDemandEvent` is set to "scroll". The scroll event will be triggered once the scrolling position has reached the DOM. For eg., you might want to load the images without users knowing it, so you will need to set `threshold` to maybe "200" which means images will start loading 200PX before (all directions including top, left, bottom, right) before scrolling position reaches the DOM.
+
+`onDemandEvent`: has three possible inputs, "scroll", "click" and "mouseenter". Clicking and mouse hovering events mean that the images will only start loading when selected event is being triggered. For eg., setting `onDemandEvent` to "mouseenter" will lead image to start loading when users move the mouse cursor over it.
+```javascript
+$('img').jqthumb({
+    onDemand            : true,     // DEFAULT: false
+    onDemandEvent       : 'scroll', // DEFAULT: scroll
+    threshold : 100       // DEFAULT: 0
 });
 ```
 
@@ -196,6 +245,41 @@ $('img').jqthumb({
 ```javascript
 $('img').jqthumb('kill'); // destroy the plugin
 $.jqthumb('killall');     // destroy all generated thumbnails on the page
+```
+
+##SEO IMPACT
+You might be worried the SEO impact if you were to use this plugin. Maybe thought that changing `<img src="http://example.com/picture.jpg"/>` to `<img attr-src="http://example.com/picture.jpg"/>` would probably cause search engines not being able to crawl the images. Yes, it's right but not completely. You can always your `<noscript><img src="http://example.com/picture.jpg"/></noscript>` to output the image for search engines. Here are two examples:
+```html
+...
+<img class="example" attr-src="http://example.com/picture.jpg" />
+<noscript>
+    <img src="http://example.com/picture.jpg" />
+</noscript>
+...
+<script type="text/javascript">
+    $(function(){
+        $('.example[attr-src]').jqthumb({
+            width  : 300,
+            height : 200
+        });
+    });
+</script>
+```
+Or a simplified version:
+```html
+...
+<noscript attr-src="http://example.com/picture.jpg">
+    <img src="http://example.com/picture.jpg" />
+</noscript>
+...
+<script type="text/javascript">
+    $(function(){
+        $('noscript[attr-src]').jqthumb({
+            width  : 300,
+            height : 200
+        });
+    });
+</script>
 ```
 
 ##TESTED BROWSERS
