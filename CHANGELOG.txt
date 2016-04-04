@@ -279,3 +279,8 @@ Change Log:
 ===================================================
 1. fix unbind issues
 2. fix onDemand issue
+
+
+# V2.3.4 (Monday, April 4th, 2016, 1:57:42 PM)
+===================================================
+1. fix AMD codes
