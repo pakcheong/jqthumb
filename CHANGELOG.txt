@@ -284,3 +284,8 @@ Change Log:
 # V2.3.4 (Monday, April 4th, 2016, 1:57:42 PM)
 ===================================================
 1. fix AMD codes
+
+
+# V2.3.5 (Tuesday, April 5th, 2016, 3:25:18 AM)
+===================================================
+1. catch re-init before image is loaded

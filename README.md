@@ -1,4 +1,4 @@
-#jQThumb V2.3.4
+#jQThumb V2.3.5
 
 Create thumbnails from images proportionally. On top of that, this is alaso a lazy-load plugin, which even works on IE6 from jQuery >=v1.3 or Zepto (with zepto-data plugin) >=v1.1.3.
 

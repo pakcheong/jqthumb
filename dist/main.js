@@ -12,7 +12,10 @@ $(function(){
 
         $('#demo').jqthumb({
             source         : (function(){
-                                $('#demo').attr('src', $('#url').val());
+                                if($('#url').val()){
+                                    $('#demo').attr('attr-src', $('#url').val());
+                                    return 'attr-src';
+                                }
                                 return 'src';
                             })(),
             classname      : 'jqthumb',
@@ -36,8 +39,8 @@ $(function(){
             threshold      : $('#threshold').val(),
             method         : $('#method').val(),
             error          : function(status, imgUrl){
-                console.log(status);
-                console.log(imgUrl);
+                // console.log(status);
+                // console.log(imgUrl);
             },
             done           : function(objs){
                 $('html, body').animate({scrolly: $('body').height(), scrollx: $('body').width() }, 800);
@@ -191,6 +194,7 @@ $(function(){
         height    : 295,
         position  : { y: '50%', x: '12%' },
         show      : false,
+        onDemand: true,
         before    : function(oriImage){},
         after     : function(imgObj){
             fadeIn($(imgObj));
