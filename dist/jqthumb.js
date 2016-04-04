@@ -7,7 +7,7 @@
     Version      : 2.3.5
     Repo         : git@github.com:pakcheong/jqthumb.git
     Demo         : http://pakcheong.github.io/jqthumb/
-    Last Updated : Tuesday, April 5th, 2016, 3:25:18 AM
+    Last Updated : Tuesday, April 5th, 2016, 3:35:04 AM
     Requirements : jQuery >=v1.3.0 or Zepto (with zepto-data plugin) >=v1.0.0
 */
 (function (factory) {
@@ -637,6 +637,7 @@
                     $oriImage.data(dtTmpImg, new Image());
                     PluginClass.lazyload(PluginClass, self, options, function(img){
                         PluginClass.processImg(self, options, img, doMath);
+                        $oriImage.removeData(dtTmpImg);
                     });
                 }
             }else{
@@ -665,6 +666,7 @@
                         $oriImage.data(dtTmpImg, new Image());
                         PluginClass.lazyload(PluginClass, self, options, function(img){
                             PluginClass.processImg(self, options, img, fnDoMathOnSuccess);
+                            $oriImage.removeData(dtTmpImg);
                         });
                     }
                 });
@@ -685,6 +687,7 @@
                     $oriImage.data(dtTmpImg, new Image());
                     PluginClass.lazyload(PluginClass, self, options, function(img){
                         PluginClass.processImg(self, options, img, fnDoMathOnSuccess);
+                        $oriImage.removeData(dtTmpImg);
                     });
                     $oriImage.data(inViewPortDataName, true);
                 });

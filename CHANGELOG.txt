@@ -286,6 +286,7 @@ Change Log:
 1. fix AMD codes
 
 
-# V2.3.5 (Tuesday, April 5th, 2016, 3:25:18 AM)
+# V2.3.5 (Tuesday, April 5th, 2016, 3:35:04 AM)
 ===================================================
 1. catch re-init before image is loaded
+2. unbind ondemand events when tasks have been executed to save CPU usage

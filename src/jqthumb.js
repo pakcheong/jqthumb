@@ -625,6 +625,7 @@
                     $oriImage.data(dtTmpImg, new Image());
                     PluginClass.lazyload(PluginClass, self, options, function(img){
                         PluginClass.processImg(self, options, img, doMath);
+                        $oriImage.removeData(dtTmpImg);
                     });
                 }
             }else{
@@ -653,6 +654,7 @@
                         $oriImage.data(dtTmpImg, new Image());
                         PluginClass.lazyload(PluginClass, self, options, function(img){
                             PluginClass.processImg(self, options, img, fnDoMathOnSuccess);
+                            $oriImage.removeData(dtTmpImg);
                         });
                     }
                 });
@@ -673,6 +675,7 @@
                     $oriImage.data(dtTmpImg, new Image());
                     PluginClass.lazyload(PluginClass, self, options, function(img){
                         PluginClass.processImg(self, options, img, fnDoMathOnSuccess);
+                        $oriImage.removeData(dtTmpImg);
                     });
                     $oriImage.data(inViewPortDataName, true);
                 });
