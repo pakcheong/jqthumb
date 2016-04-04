@@ -1,13 +1,13 @@
 /*!
-    jQThumb V2.3.3
+    jQThumb V2.3.4
     Copyright (c) 2013-2016
     Released under the MIT license.
 
     Author       : Pak Cheong
-    Version      : 2.3.3
+    Version      : 2.3.4
     Repo         : git@github.com:pakcheong/jqthumb.git
     Demo         : http://pakcheong.github.io/jqthumb/
-    Last Updated : Sunday, April 3rd, 2016, 10:32:25 PM
+    Last Updated : Monday, April 4th, 2016, 1:57:42 PM
     Requirements : jQuery >=v1.3.0 or Zepto (with zepto-data plugin) >=v1.0.0
 */
 (function (factory) {
@@ -22,13 +22,13 @@
         factory((function(){
             if (typeof jQuery !== 'undefined') {
                 return jQuery;
-            } else if (Zepto !== 'undefined') {
+            } else if (typeof Zepto !== 'undefined') {
                 return Zepto;
             }
-            return $;
         })());
     }
 }(function ($) {
+    if(typeof $ === 'undefined') return false;
     function log(type, msg){
         if(window.console){
             if(typeof type != 'undefined' && type && typeof msg != 'undefined' && msg){

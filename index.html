@@ -8,52 +8,75 @@
         <link rel="stylesheet" href="stylesheets/styles.css">
         <link rel="stylesheet" href="stylesheets/pygment_trac.css">
         <link rel="stylesheet" href="demo/demo.css">
-        <script src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
-        <script src="javascripts/scale.fix.js"></script>
-        <script src="demo/jqthumb.min.js"></script>
-        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-        <script>
-            $(document).ready(function(){
-                $('#example1 noscript[attr-src]').jqthumb({
-                    classname : 'jqthumb',
-                    width     : 200,
-                    height    : 200,
-                    onDemand  : true,
-                    source    : 'attr-src',
-                    show      : false,
-                    before    : function(oriImg){},
-                    after     : function(imgObj){
-                        $(imgObj).fadeIn();
+        <script type='text/javascript'>
+            (function () {
+                function loadScript(url, callback) {
+                    var script = document.createElement("script")
+                    script.type = "text/javascript";
+                    if (script.readyState) { //IE
+                        script.onreadystatechange = function () {
+                            if (script.readyState == "loaded" || script.readyState == "complete") {
+                                script.onreadystatechange = null;
+                                callback();
+                            }
+                        };
+                    } else { //Others
+                        script.onload = callback;
                     }
+                    script.src = url;
+                    document.getElementsByTagName("head")[0].appendChild(script);
+                }
+
+                var isLive = (window.location.host.indexOf('github.io') > -1) ? true : false;
+
+                loadScript(isLive ? 'http://code.jquery.com/jquery-1.8.0.min.js' : 'javascripts/jquery-1.8.0.min.js', function () {
+                    loadScript(isLive ? 'demo/jqthumb.min.js' : 'demo/jqthumb.js', function () {
+                        // $(document).ready(function(){
+                            $('#example1 noscript[attr-src]').jqthumb({
+                                classname : 'jqthumb',
+                                width     : 200,
+                                height    : 200,
+                                onDemand  : true,
+                                source    : 'attr-src',
+                                show      : false,
+                                before    : function(oriImg){},
+                                after     : function(imgObj){
+                                    $(imgObj).fadeIn();
+                                }
+                            });
+                            $('#example2 noscript[attr-src]').jqthumb({
+                                classname : 'jqthumb',
+                                width     : 250,
+                                height    : 100,
+                                onDemand  : true,
+                                source    : 'attr-src',
+                                show      : false,
+                                after     : function(imgObj){
+                                    $(imgObj).fadeIn();
+                                    $(imgObj).parent().next().text('after() callback is called!');
+                                }
+                            });
+                            $('#example3 noscript[attr-src]').jqthumb({
+                                classname : 'jqthumb',
+                                width     : 250,
+                                height    : 500,
+                                onDemand  : true,
+                                source    : 'attr-src',
+                                show      : false,
+                                done      : function(imgObjs){
+                                    $.each(imgObjs, function(){
+                                        $(this).fadeIn();
+                                        $(this).parent().next().text('done() callback is called!');
+                                    });
+                                }
+                            });
+                        // });
+                    });
+                    loadScript('javascripts/scale.fix.js');
                 });
-                $('#example2 noscript[attr-src]').jqthumb({
-                    classname : 'jqthumb',
-                    width     : 250,
-                    height    : 100,
-                    onDemand  : true,
-                    source    : 'attr-src',
-                    show      : false,
-                    after     : function(imgObj){
-                        $(imgObj).fadeIn();
-                        $(imgObj).parent().next().text('after() callback is called!');
-                    }
-                });
-                $('#example3 noscript[attr-src]').jqthumb({
-                    classname : 'jqthumb',
-                    width     : 250,
-                    height    : 500,
-                    onDemand  : true,
-                    source    : 'attr-src',
-                    show      : false,
-                    done      : function(imgObjs){
-                        $.each(imgObjs, function(){
-                            $(this).fadeIn();
-                            $(this).parent().next().text('done() callback is called!');
-                        });
-                    }
-                });
-            });
+            })();
         </script>
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
         <!--[if lt IE 9]>
         <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
@@ -61,7 +84,7 @@
     <body>
         <div class="wrapper">
             <header>
-                <h1>jQThumb v2.3.3</h1>
+                <h1>jQThumb v2.3.4</h1>
                 <p>
                     Create thumbnails from images proportionally. On top of that, this is alaso a lazy-load plugin, which even works on IE6 from jQuery >=v1.3 or Zepto (with zepto-data plugin) >=v1.1.3.
                 </p>
