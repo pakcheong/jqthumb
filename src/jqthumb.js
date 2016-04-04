@@ -10,7 +10,7 @@
         factory((function(){
             if (typeof jQuery !== 'undefined') {
                 return jQuery;
-            } else if (Zepto !== 'undefined') {
+            } else if (typeof Zepto !== 'undefined') {
                 return Zepto;
             }
             return $;
