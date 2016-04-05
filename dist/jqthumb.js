@@ -1,13 +1,13 @@
 /*!
-    jQThumb V2.3.4
+    jQThumb V2.3.5
     Copyright (c) 2013-2016
     Released under the MIT license.
 
     Author       : Pak Cheong
-    Version      : 2.3.4
+    Version      : 2.3.5
     Repo         : git@github.com:pakcheong/jqthumb.git
     Demo         : http://pakcheong.github.io/jqthumb/
-    Last Updated : Monday, April 4th, 2016, 1:57:42 PM
+    Last Updated : Tuesday, April 5th, 2016, 3:35:04 AM
     Requirements : jQuery >=v1.3.0 or Zepto (with zepto-data plugin) >=v1.0.0
 */
 (function (factory) {
@@ -193,7 +193,7 @@
         onDemandScrollEventStr      = (function(){
                                             var tmp = [];
                                             $.each(onDemandScrollEventObj, function(key, val){
-                                                tmp.push(key + '.' + val);
+                                                tmp.push(val);
                                             });
                                             return tmp.join(' ');
                                         })(),
@@ -207,6 +207,7 @@
         dtEvtFnOneTime              = pluginName + '-onetime-event',
         dtEvtFnOngoing              = pluginName + '-ongoing-event',
         dtEvtFnResponsive           = pluginName + '-responsive',
+        dtTmpImg                    = pluginName + 'tmp-img',
         grandGlobal                 = { outputElems: [], inputElems: [] },
         defaults                    = {
                                             classname      : pluginName,
@@ -280,7 +281,6 @@
                 if($ori.data(pluginName)){
                     $ori.removeData(pluginName); // remove data that stored during plugin initialization
                 }
-
                 if($ori.data(dtOption)){
                     $ori.removeData(dtOption); // remove data that stored during plugin initialization
                 }
@@ -303,6 +303,10 @@
 
                 if($ori.data(dtEvtFnOngoing)){
                     $ori.removeData(dtEvtFnOngoing); // remove data that stored during plugin initialization
+                }
+
+                if($ori.data(dtTmpImg)){
+                    $ori.removeData(dtTmpImg); // remove data that stored during plugin initialization
                 }
             }
 
@@ -358,8 +362,8 @@
         },
 
         lazyload: function(PluginClass, self, options, cb){
-            var img       = new Image(),
-                $oriImage = $(self);
+            var $oriImage = $(self),
+                img       = $oriImage.data(dtTmpImg),
                 imgUrl    = ($oriImage.attr(options.source)) ? $oriImage.attr(options.source) : ''; // prevent "undefined" error
 
             img.onload = function(){
@@ -630,8 +634,10 @@
                 if(options.onDemand === true){
                     PluginClass.demand(self, options, imgUrl, doMath);
                 }else{
+                    $oriImage.data(dtTmpImg, new Image());
                     PluginClass.lazyload(PluginClass, self, options, function(img){
                         PluginClass.processImg(self, options, img, doMath);
+                        $oriImage.removeData(dtTmpImg);
                     });
                 }
             }else{
@@ -653,16 +659,14 @@
                 });
 
                 $oriImage.data(dtEvtFnOngoing, function(){ // store event fn into data for unbinding purpose
-                    if( // check scroll position
-                        checkPositionReach($tmpWrapper, options.threshold) && 
-                        !$oriImage.data(inViewPortDataName)
-                    ){
-                        $oriImage
-                            .data(inViewPortDataName, true)
-                            .unwrap(); // remove temporary tag
-
+                    if( checkPositionReach($tmpWrapper, options.threshold) ){ // check scroll position
+                        $window.unbind(onDemandScrollEventStr, $oriImage.data(dtEvtFnOngoing)); // unbind when it is done process to save CPU usage
+                        $oriImage.removeData(dtEvtFnOngoing);
+                        $oriImage.unwrap(); // remove temporary tag
+                        $oriImage.data(dtTmpImg, new Image());
                         PluginClass.lazyload(PluginClass, self, options, function(img){
                             PluginClass.processImg(self, options, img, fnDoMathOnSuccess);
+                            $oriImage.removeData(dtTmpImg);
                         });
                     }
                 });
@@ -674,15 +678,20 @@
                 options.onDemandEvent === 'click' || 
                 options.onDemandEvent === 'mouseenter'
             ){
+                var $bindTarget = $oriImage.parent(),
+                    bindName    = ((options.onDemandEvent === 'click') ? onDemandClickEventName : onDemandMouseEnterEventName);
+
                 $oriImage.data(dtEvtFnOneTime, function(){ // store event fn into data for unbinding purpose
-                    if(!$oriImage.data(inViewPortDataName)){
-                        PluginClass.lazyload(PluginClass, self, options, function(img){
-                            PluginClass.processImg(self, options, img, fnDoMathOnSuccess);
-                        });
-                        $oriImage.data(inViewPortDataName, true);
-                    }
+                    $bindTarget.unbind(bindName, $oriImage.data(dtEvtFnOneTime)); // unbind when it is done process to save CPU usage
+                    $oriImage.removeData(dtEvtFnOneTime);
+                    $oriImage.data(dtTmpImg, new Image());
+                    PluginClass.lazyload(PluginClass, self, options, function(img){
+                        PluginClass.processImg(self, options, img, fnDoMathOnSuccess);
+                        $oriImage.removeData(dtTmpImg);
+                    });
+                    $oriImage.data(inViewPortDataName, true);
                 });
-                $oriImage.parent().bind(((options.onDemandEvent === 'click') ? onDemandClickEventName : onDemandMouseEnterEventName), $oriImage.data(dtEvtFnOneTime));
+                $bindTarget.bind(bindName, $oriImage.data(dtEvtFnOneTime));
             }
         },
 
@@ -738,6 +747,10 @@
             if(typeof options == 'string'){
                 new Plugin(this, options);
             }else{
+                if($eachImg.data(dtTmpImg) && $eachImg.data(dtTmpImg).complete === false){ // catch re-initialization before image is loaded
+                    $eachImg.data(dtTmpImg).src = ''; // abort loading image;
+                    new Plugin(this, 'kill');
+                }
                 if (!$eachImg.data(pluginName)){ // newly render
                     $eachImg.data(pluginName, new Plugin( this, options ));
                 }else{ // re-rendered without killing it
