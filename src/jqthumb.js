@@ -387,8 +387,8 @@
 
         init: function (self, options) {
             function modernMath(obj){
-                var optW    = ($.trim(options.width.toString().toLowerCase()) === 'auto') ? obj.width.toString() : options.width,
-                    optH    = ($.trim(options.height.toString().toLowerCase()) === 'auto') ? obj.height.toString() : options.height,
+                var optW    = ($.trim(options.width.toString().toLowerCase()) === 'auto') ? obj.tmpImgDom.width.toString() : options.width,
+                    optH    = ($.trim(options.height.toString().toLowerCase()) === 'auto') ? obj.tmpImgDom.height.toString() : options.height,
                     optZ    = options.zoom,
                     optPosX = options.position.x,
                     optPosY = options.position.y,
@@ -456,8 +456,8 @@
             }
 
             function nativeMath(obj){
-                var oriW         = obj.width,
-                    oriH         = obj.height,
+                var oriW         = obj.tmpImgDom.width,
+                    oriH         = obj.tmpImgDom.height,
                     optW         = ($.trim(options.width.toString().toLowerCase()) === 'auto') ? oriW.toString() : options.width,
                     optH         = ($.trim(options.height.toString().toLowerCase()) === 'auto') ? oriH.toString() : options.height,
                     optZ         = options.zoom,

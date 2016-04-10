@@ -6,7 +6,7 @@ module.exports = function(grunt) {
         pkg: grunt.file.readJSON('package.json'),
         meta: {
             banner: '/*!'+
-                        '\n    <%= pkg.name %> V<%= pkg.version %>' +
+                        '\n    <%= pkg.name %> v<%= pkg.version %>' +
                         '\n    Copyright (c) 2013-<%= grunt.template.today("yyyy") %>' +
                         '\n    Released under the MIT license.' +
                         '\n' +
@@ -170,7 +170,7 @@ module.exports = function(grunt) {
                                             changeLogFile = 'CHANGELOG.txt',
                                             data          = grunt.file.read(changeLogFile).toString(),
                                             lineArr       = data.split('\n'),
-                                            search        = '# V' + pkg.version,
+                                            search        = '# v' + pkg.version,
                                             newData       = '',
                                             found         = false,
                                             skip          = 2;
@@ -219,7 +219,7 @@ module.exports = function(grunt) {
     /* Update version in readme file by checking if the first line of the file contains the latest version. */
     grunt.registerTask('update-readme', '', function () {
         var readMeFile     = 'README.md',
-            replaceLineOne = '#' + pkg.name + ' V' + pkg.version,
+            replaceLineOne = '#' + pkg.name + ' v' + pkg.version,
             data           = grunt.file.read(readMeFile).toString();
 
         if(data.indexOf(replaceLineOne) > -1){
@@ -236,7 +236,7 @@ module.exports = function(grunt) {
         var changeLogFile = 'CHANGELOG.txt',
             data          = grunt.file.read(changeLogFile).toString(),
             lineArr       = data.split('\n'),
-            search        = '# V' + pkg.version,
+            search        = '# v' + pkg.version,
             newData       = '';
 
         if(data.indexOf(search) > -1){
