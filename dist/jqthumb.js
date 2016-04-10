@@ -1,13 +1,13 @@
 /*!
-    jQThumb V2.3.5
+    jQThumb v2.3.6
     Copyright (c) 2013-2016
     Released under the MIT license.
 
     Author       : Pak Cheong
-    Version      : 2.3.5
+    Version      : 2.3.6
     Repo         : git@github.com:pakcheong/jqthumb.git
     Demo         : http://pakcheong.github.io/jqthumb/
-    Last Updated : Tuesday, April 5th, 2016, 3:35:04 AM
+    Last Updated : Sunday, April 10th, 2016, 2:42:38 PM
     Requirements : jQuery >=v1.3.0 or Zepto (with zepto-data plugin) >=v1.0.0
 */
 (function (factory) {
@@ -399,8 +399,8 @@
 
         init: function (self, options) {
             function modernMath(obj){
-                var optW    = ($.trim(options.width.toString().toLowerCase()) === 'auto') ? obj.width.toString() : options.width,
-                    optH    = ($.trim(options.height.toString().toLowerCase()) === 'auto') ? obj.height.toString() : options.height,
+                var optW    = ($.trim(options.width.toString().toLowerCase()) === 'auto') ? obj.tmpImgDom.width.toString() : options.width,
+                    optH    = ($.trim(options.height.toString().toLowerCase()) === 'auto') ? obj.tmpImgDom.height.toString() : options.height,
                     optZ    = options.zoom,
                     optPosX = options.position.x,
                     optPosY = options.position.y,
@@ -468,8 +468,8 @@
             }
 
             function nativeMath(obj){
-                var oriW         = obj.width,
-                    oriH         = obj.height,
+                var oriW         = obj.tmpImgDom.width,
+                    oriH         = obj.tmpImgDom.height,
                     optW         = ($.trim(options.width.toString().toLowerCase()) === 'auto') ? oriW.toString() : options.width,
                     optH         = ($.trim(options.height.toString().toLowerCase()) === 'auto') ? oriH.toString() : options.height,
                     optZ         = options.zoom,
